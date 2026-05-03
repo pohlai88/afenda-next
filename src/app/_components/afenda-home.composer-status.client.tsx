@@ -1,5 +1,12 @@
 "use client";
 
+/**
+ * @afenda-owner afenda-home
+ * @afenda-subject composer-status
+ * @afenda-artifact status
+ * @afenda-boundary client
+ * @afenda-description Client status display for the home composer
+ */
 import { useAppState } from "@/client-runtime/state/app-state.client";
 
 export function ComposerStatus() {

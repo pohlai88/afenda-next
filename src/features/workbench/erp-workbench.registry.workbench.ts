@@ -1,3 +1,10 @@
+/**
+ * @afenda-owner erp-workbench
+ * @afenda-subject registry
+ * @afenda-artifact registry
+ * @afenda-boundary workbench
+ * @afenda-description Workbench registry for approved ERP UI contracts
+ */
 import { createElement } from "react";
 
 import {

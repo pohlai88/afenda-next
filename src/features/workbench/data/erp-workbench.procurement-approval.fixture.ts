@@ -1,3 +1,10 @@
+/**
+ * @afenda-owner erp-workbench
+ * @afenda-subject procurement-approval
+ * @afenda-artifact fixture
+ * @afenda-boundary fixture
+ * @afenda-description Fixture rows for the procurement approval workbench scene
+ */
 export type ProcurementApprovalDemoRow = {
   id: string;
   requestId: string;

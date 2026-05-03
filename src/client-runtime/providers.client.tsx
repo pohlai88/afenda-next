@@ -1,5 +1,12 @@
 "use client";
 
+/**
+ * @afenda-owner client-runtime
+ * @afenda-subject providers
+ * @afenda-artifact provider
+ * @afenda-boundary client
+ * @afenda-description Client provider boundary for global browser runtime wiring
+ */
 import { I18nProvider } from "react-aria-components/I18nProvider";
 
 import { AppStateProvider } from "@/client-runtime/state/app-state.client";

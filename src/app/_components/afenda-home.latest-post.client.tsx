@@ -1,5 +1,12 @@
 "use client";
 
+/**
+ * @afenda-owner afenda-home
+ * @afenda-subject latest-post
+ * @afenda-artifact composer
+ * @afenda-boundary client
+ * @afenda-description Client composer for creating and showing the latest post
+ */
 import { AppButton, AppTextField } from "@/components/ui/app.controls.client";
 import { useAppState } from "@/client-runtime/state/app-state.client";
 import { api } from "@/trpc/trpc.react.client";

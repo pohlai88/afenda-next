@@ -1,3 +1,10 @@
+/**
+ * @afenda-owner db
+ * @afenda-subject schema
+ * @afenda-artifact schema
+ * @afenda-boundary shared
+ * @afenda-description Shared Drizzle schema for database contracts
+ */
 import { relations } from "drizzle-orm";
 import {
   boolean,

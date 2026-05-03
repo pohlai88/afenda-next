@@ -1,5 +1,12 @@
 "use client";
 
+/**
+ * @afenda-owner erp-workbench
+ * @afenda-subject surfaces
+ * @afenda-artifact catalog
+ * @afenda-boundary client
+ * @afenda-description Client catalog of ERP workbench visual surfaces
+ */
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import type { Key } from "react-aria-components";

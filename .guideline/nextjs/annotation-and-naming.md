@@ -101,6 +101,96 @@ index
 
 Use role-specific names instead, such as `contract.shared.ts`, `fixture.ts`, `query.server.ts`, or `table.client.tsx`.
 
+## Annotation Doctrine
+
+Annotation must be executable or enforceable. Do not add decorative boundary comments that drift from behavior.
+
+Use these annotations:
+
+```ts
+/**
+ * @afenda-owner procurement
+ * @afenda-subject purchase-request
+ * @afenda-artifact policy
+ * @afenda-boundary server
+ * @afenda-description Server policy for procurement purchase requests
+ */
+```
+
+```txt
+"use client"              React/Next.js Client Component or browser module boundary.
+import "server-only"      privileged server runtime boundary.
+.client.ts/.client.tsx    browser or Client Component source file.
+.server.ts                server runtime source file.
+.server.tsx               Server Component source file; add server-only only when it touches privileged runtime APIs.
+.shared.ts/.shared.tsx    runtime-neutral contract, type, schema, or pure helper.
+.workbench.ts/.tsx        workbench-only visual contract or registry source.
+.fixture.ts               deterministic test/demo data.
+.test.ts/.test.tsx        test-only source.
+```
+
+Every non-route source file under `src` must include the five `@afenda-*` annotations near the top of the file. Official App Router convention files such as `page.tsx`, `layout.tsx`, and `route.ts` are exempt because the framework filename is the annotation.
+
+Description rules:
+
+```txt
+@afenda-description is for short HITL scanning.
+Use one line only.
+Use 24-120 characters.
+Do not end with sentence punctuation.
+Mention the boundary word, such as client, server, shared, fixture, workbench, or test.
+Mention at least one subject or artifact token so the checker can catch obvious drift.
+```
+
+Client annotations:
+
+```txt
+Every .client.ts or .client.tsx file must start with "use client".
+Client files must not import @/server/**.
+Client files must not import server-only.
+```
+
+Server annotations:
+
+```txt
+Every .server.ts file must import "server-only".
+Server runtime modules that touch env, DB, auth, cookies, headers, secrets, or tRPC context must import "server-only".
+Do not use .server.ts for pure contracts or type-only files; use .shared.ts instead.
+```
+
+Shared annotations:
+
+```txt
+Shared files must stay runtime-neutral.
+Shared files must not contain "use client", import "server-only", import @/server/**, import @/client-runtime/**, or import tRPC client/server runtime bindings.
+```
+
+Fixture annotations:
+
+```txt
+Fixture files are deterministic test/demo data.
+Fixture files must stay runtime-neutral like shared files.
+Fixture files may be imported by workbench or tests, but not by privileged server runtime as production seed truth.
+```
+
+Workbench annotations:
+
+```txt
+Workbench files are visual-contract and registry sources only.
+Workbench files must not import @/server/**, @/client-runtime/**, tRPC runtime bindings, Better Auth runtime bindings, next/headers, or process.env.
+Workbench files may import approved UI primitives, workbench client surfaces, fixture data, and shared contracts.
+```
+
+Test annotations:
+
+```txt
+Test files and src/test helpers are test-only.
+Production source must not import @/test/**.
+Only files under __tests__ or src/test may import @/test/**.
+```
+
+Route files are the exception to boundary suffix naming. Keep official App Router convention files as `page.tsx`, `layout.tsx`, `route.ts`, and related framework names.
+
 ## Enforcement Status
 
 Current enforcement covers:
@@ -113,6 +203,15 @@ better-auth/react is limited to the approved client runtime boundary.
 strict file naming formula
 banned vague filenames
 boundary suffix coverage
+client files require "use client"
+server runtime files require import "server-only"
+shared files remain runtime-neutral
+fixture files remain runtime-neutral
+workbench files stay out of privileged runtime bindings
+@/test imports stay inside tests and test helpers
+non-route source files include @afenda owner, subject, artifact, boundary, and description headers
+@afenda-boundary must match the filename boundary suffix
+@afenda-description is required, length-limited, and checked against boundary and intent metadata
 ```
 
 Keep future enforcement changes focused. Do not mix naming hardening with feature work, domain migrations, or TypeScript strictness changes.

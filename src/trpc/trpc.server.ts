@@ -1,5 +1,12 @@
 import "server-only";
 
+/**
+ * @afenda-owner trpc
+ * @afenda-subject server
+ * @afenda-artifact hydration
+ * @afenda-boundary server
+ * @afenda-description Server hydration helpers for tRPC React Server Components
+ */
 import { createHydrationHelpers } from "@trpc/react-query/rsc";
 import { headers } from "next/headers";
 import { cache } from "react";

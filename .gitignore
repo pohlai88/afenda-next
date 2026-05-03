@@ -45,5 +45,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 
+# tooling caches
+.turbo
+.eslintcache
+.prettiercache
+
+# OS
+Thumbs.db
+
 # idea files
 .idea

@@ -1,5 +1,12 @@
 import "server-only";
 
+/**
+ * @afenda-owner server-api
+ * @afenda-subject post
+ * @afenda-artifact router
+ * @afenda-boundary server
+ * @afenda-description Server router for post procedures
+ */
 import { z } from "zod";
 
 import {

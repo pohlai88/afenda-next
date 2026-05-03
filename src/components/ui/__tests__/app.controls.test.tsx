@@ -1,3 +1,10 @@
+/**
+ * @afenda-owner app
+ * @afenda-subject controls
+ * @afenda-artifact primitive-test
+ * @afenda-boundary test
+ * @afenda-description Test coverage for shared app control primitives
+ */
 import { act, useState, type FormEvent } from "react";
 import { User } from "@react-aria/test-utils";
 import { screen, waitFor } from "@testing-library/react";
@@ -18,7 +25,7 @@ import {
   AppTableHeader,
   AppTextField,
 } from "@/components/ui/app.controls.client";
-import { renderWithProviders, setupUser } from "@/test/test.render.shared";
+import { renderWithProviders, setupUser } from "@/test/test.render.test";
 
 describe("shared React Aria controls", () => {
   beforeEach(() => {

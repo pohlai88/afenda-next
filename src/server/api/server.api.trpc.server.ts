@@ -1,5 +1,12 @@
 import "server-only";
 
+/**
+ * @afenda-owner server-api
+ * @afenda-subject trpc
+ * @afenda-artifact adapter
+ * @afenda-boundary server
+ * @afenda-description Server adapter for tRPC context and procedures
+ */
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";

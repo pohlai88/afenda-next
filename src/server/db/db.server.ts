@@ -1,5 +1,12 @@
 import "server-only";
 
+/**
+ * @afenda-owner db
+ * @afenda-subject postgres
+ * @afenda-artifact adapter
+ * @afenda-boundary server
+ * @afenda-description Server adapter for the Postgres database client
+ */
 import { drizzle, type PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 

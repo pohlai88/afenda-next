@@ -1,5 +1,12 @@
 "use client";
 
+/**
+ * @afenda-owner app
+ * @afenda-subject controls
+ * @afenda-artifact primitive
+ * @afenda-boundary client
+ * @afenda-description Client primitives for shared React Aria app controls
+ */
 import { cva } from "class-variance-authority";
 import {
   Button,

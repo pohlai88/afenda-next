@@ -1,3 +1,10 @@
+/**
+ * @afenda-owner test
+ * @afenda-subject render
+ * @afenda-artifact helper
+ * @afenda-boundary test
+ * @afenda-description Test helper for rendering React components with providers
+ */
 import { render, type RenderOptions } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";

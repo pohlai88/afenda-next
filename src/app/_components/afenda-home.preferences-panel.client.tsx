@@ -1,5 +1,12 @@
 "use client";
 
+/**
+ * @afenda-owner afenda-home
+ * @afenda-subject preferences-panel
+ * @afenda-artifact dialog
+ * @afenda-boundary client
+ * @afenda-description Client dialog for home preference controls
+ */
 import {
   AppButton,
   AppDialog,

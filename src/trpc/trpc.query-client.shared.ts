@@ -1,3 +1,10 @@
+/**
+ * @afenda-owner trpc
+ * @afenda-subject query-client
+ * @afenda-artifact factory
+ * @afenda-boundary shared
+ * @afenda-description Shared factory for tRPC query client creation
+ */
 import {
   defaultShouldDehydrateQuery,
   QueryClient,

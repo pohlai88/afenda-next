@@ -1,5 +1,12 @@
 import "server-only";
 
+/**
+ * @afenda-owner server-api
+ * @afenda-subject root
+ * @afenda-artifact router
+ * @afenda-boundary server
+ * @afenda-description Server root router for the tRPC API
+ */
 import { postRouter } from "@/server/api/routers/server.api.post.router.server";
 import {
   createCallerFactory,

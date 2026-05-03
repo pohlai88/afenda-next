@@ -1,5 +1,12 @@
 import "server-only";
 
+/**
+ * @afenda-owner auth
+ * @afenda-subject config
+ * @afenda-artifact adapter
+ * @afenda-boundary server
+ * @afenda-description Server adapter for Better Auth configuration
+ */
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 

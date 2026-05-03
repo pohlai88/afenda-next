@@ -1,9 +1,16 @@
+/**
+ * @afenda-owner afenda-home
+ * @afenda-subject preferences-panel
+ * @afenda-artifact interaction-test
+ * @afenda-boundary test
+ * @afenda-description Test coverage for the preferences panel interaction
+ */
 import userEvent from "@testing-library/user-event";
 import { screen, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { PreferencesPanel } from "@/app/_components/afenda-home.preferences-panel.client";
-import { renderWithProviders } from "@/test/test.render.shared";
+import { renderWithProviders } from "@/test/test.render.test";
 
 describe("PreferencesPanel", () => {
   it("opens a dialog, keeps focus inside it, and closes on escape", async () => {

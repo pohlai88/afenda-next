@@ -1,5 +1,12 @@
 import "server-only";
 
+/**
+ * @afenda-owner auth
+ * @afenda-subject session
+ * @afenda-artifact query
+ * @afenda-boundary server
+ * @afenda-description Server query for resolving the current auth session
+ */
 import { headers } from "next/headers";
 import { cache } from "react";
 

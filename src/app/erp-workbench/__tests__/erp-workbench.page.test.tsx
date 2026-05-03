@@ -1,10 +1,17 @@
+/**
+ * @afenda-owner erp-workbench
+ * @afenda-subject page
+ * @afenda-artifact route-test
+ * @afenda-boundary test
+ * @afenda-description Test coverage for the ERP workbench page route
+ */
 import userEvent from "@testing-library/user-event";
 import { screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { WorkbenchPageClient } from "@/features/workbench/client/erp-workbench.page.client";
 import { WORKBENCH_ITEMS } from "@/features/workbench/erp-workbench.registry.workbench";
-import { renderWithProviders } from "@/test/test.render.shared";
+import { renderWithProviders } from "@/test/test.render.test";
 
 describe("ERP Workbench", () => {
   it("renders the main sections and updates the inspector selection", async () => {

@@ -1,3 +1,10 @@
+/**
+ * @afenda-owner erp-workbench
+ * @afenda-subject contract
+ * @afenda-artifact contract
+ * @afenda-boundary shared
+ * @afenda-description Shared contract types for ERP workbench catalog items
+ */
 export type WorkbenchItemCategory =
   | "primitive"
   | "pattern"

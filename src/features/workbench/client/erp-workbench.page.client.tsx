@@ -1,5 +1,12 @@
 "use client";
 
+/**
+ * @afenda-owner erp-workbench
+ * @afenda-subject page
+ * @afenda-artifact surface
+ * @afenda-boundary client
+ * @afenda-description Client surface for the ERP workbench page
+ */
 import { useState } from "react";
 
 import {

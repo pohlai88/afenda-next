@@ -1,5 +1,12 @@
 "use client";
 
+/**
+ * @afenda-owner trpc
+ * @afenda-subject react
+ * @afenda-artifact provider
+ * @afenda-boundary client
+ * @afenda-description Client provider and hooks for tRPC React usage
+ */
 import { QueryClientProvider, type QueryClient } from "@tanstack/react-query";
 import { httpBatchStreamLink, loggerLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";

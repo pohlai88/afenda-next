@@ -1,5 +1,12 @@
 "use client";
 
+/**
+ * @afenda-owner client-runtime
+ * @afenda-subject app-state
+ * @afenda-artifact state-provider
+ * @afenda-boundary client
+ * @afenda-description Client state provider for global browser preferences
+ */
 import {
   createContext,
   useContext,

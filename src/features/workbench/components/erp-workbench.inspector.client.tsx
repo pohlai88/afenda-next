@@ -1,5 +1,12 @@
 "use client";
 
+/**
+ * @afenda-owner erp-workbench
+ * @afenda-subject inspector
+ * @afenda-artifact panel
+ * @afenda-boundary client
+ * @afenda-description Client panel for inspecting workbench contract items
+ */
 import { AppPanel, AppStatus } from "@/components/ui/app.controls.client";
 import type { WorkbenchItem } from "@/features/workbench/types/erp-workbench.contract.shared";
 

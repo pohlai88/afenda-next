@@ -75,6 +75,13 @@ const bannedGenericBasenames = new Set([
   "manager",
   "index",
 ]);
+const requiredAfendaAnnotations = [
+  "owner",
+  "subject",
+  "artifact",
+  "boundary",
+  "description",
+];
 
 const errors = [];
 
@@ -348,6 +355,165 @@ function hasAllowedBoundarySuffix(relativePath) {
   return allowedBoundarySuffixes.some((suffix) => relativePath.endsWith(suffix));
 }
 
+function expectedBoundaryFromSuffix(relativePath) {
+  if (relativePath.endsWith(".client.ts") || relativePath.endsWith(".client.tsx")) {
+    return "client";
+  }
+  if (relativePath.endsWith(".server.ts") || relativePath.endsWith(".server.tsx")) {
+    return "server";
+  }
+  if (relativePath.endsWith(".shared.ts") || relativePath.endsWith(".shared.tsx")) {
+    return "shared";
+  }
+  if (
+    relativePath.endsWith(".workbench.ts") ||
+    relativePath.endsWith(".workbench.tsx")
+  ) {
+    return "workbench";
+  }
+  if (relativePath.endsWith(".fixture.ts")) return "fixture";
+  if (relativePath.endsWith(".test.ts") || relativePath.endsWith(".test.tsx")) {
+    return "test";
+  }
+
+  return undefined;
+}
+
+function readAfendaAnnotations(content) {
+  const header = content.split(/\r?\n/).slice(0, 20).join("\n");
+  const annotations = new Map();
+
+  for (const match of header.matchAll(
+    /@afenda-(owner|subject|artifact|boundary)\s+([a-z0-9][a-z0-9-]*)/g,
+  )) {
+    annotations.set(match[1], match[2]);
+  }
+
+  const descriptionMatch = header.match(/@afenda-description\s+(.+)/);
+  if (descriptionMatch?.[1]) {
+    annotations.set("description", descriptionMatch[1].trim());
+  }
+
+  return annotations;
+}
+
+function metadataTokens(...values) {
+  return values
+    .filter(Boolean)
+    .flatMap((value) => value.split("-"))
+    .map((token) => token.toLowerCase())
+    .filter((token) => token.length >= 3);
+}
+
+function checkDescriptionDrift(relativePath, annotations) {
+  const description = annotations.get("description");
+  if (description === undefined) return;
+
+  if (description.length < 24 || description.length > 120) {
+    errors.push(
+      `${relativePath} has @afenda-description outside the 24-120 character HITL range.`,
+    );
+  }
+
+  if (/[.!?]$/.test(description)) {
+    errors.push(
+      `${relativePath} @afenda-description must be a short label without sentence punctuation.`,
+    );
+  }
+
+  const normalizedDescription = description.toLowerCase();
+  const boundary = annotations.get("boundary");
+  if (boundary && !normalizedDescription.includes(boundary)) {
+    errors.push(
+      `${relativePath} @afenda-description must mention its boundary "${boundary}" to reduce metadata drift.`,
+    );
+  }
+
+  const intentTokens = metadataTokens(
+    annotations.get("subject"),
+    annotations.get("artifact"),
+  );
+
+  if (
+    intentTokens.length > 0 &&
+    !intentTokens.some((token) => normalizedDescription.includes(token))
+  ) {
+    errors.push(
+      `${relativePath} @afenda-description must mention the subject or artifact metadata to reduce drift.`,
+    );
+  }
+}
+
+function isClientBoundaryFile(relativePath) {
+  return relativePath.endsWith(".client.ts") || relativePath.endsWith(".client.tsx");
+}
+
+function isServerRuntimeBoundaryFile(relativePath) {
+  return relativePath.endsWith(".server.ts");
+}
+
+function isSharedBoundaryFile(relativePath) {
+  return relativePath.endsWith(".shared.ts") || relativePath.endsWith(".shared.tsx");
+}
+
+function isFixtureBoundaryFile(relativePath) {
+  return relativePath.endsWith(".fixture.ts");
+}
+
+function isWorkbenchBoundaryFile(relativePath) {
+  return relativePath.endsWith(".workbench.ts") || relativePath.endsWith(".workbench.tsx");
+}
+
+function isTestSourceFile(relativePath) {
+  return (
+    relativePath.includes("/__tests__/") ||
+    relativePath.startsWith("src/test/") ||
+    relativePath.endsWith(".test.ts") ||
+    relativePath.endsWith(".test.tsx")
+  );
+}
+
+function findRuntimeNeutralityMarkers(content) {
+  const markers = [];
+
+  if (hasUseClientDirective(content)) markers.push('"use client"');
+  if (hasServerOnlyImport(content)) markers.push('import "server-only"');
+  if (content.includes("@/server/")) markers.push("@/server/**");
+  if (content.includes("@/client-runtime/")) markers.push("@/client-runtime/**");
+  if (content.includes("@/trpc/trpc.server")) markers.push("@/trpc/trpc.server");
+  if (content.includes("@/trpc/trpc.react.client")) {
+    markers.push("@/trpc/trpc.react.client");
+  }
+  if (content.includes("next/headers")) markers.push("next/headers");
+  if (content.includes("better-auth/react")) markers.push("better-auth/react");
+  if (content.includes("process.env")) markers.push("process.env");
+
+  return markers;
+}
+
+function findWorkbenchRuntimeMarkers(content) {
+  return findRuntimeNeutralityMarkers(content).filter(
+    (marker) => marker !== '"use client"',
+  );
+}
+
+function checkTestImports() {
+  const sourceFiles = walk(srcRoot).filter((filePath) =>
+    sourceFilePattern.test(filePath),
+  );
+
+  for (const filePath of sourceFiles) {
+    const relativePath = relative(filePath);
+    const content = read(filePath);
+    if (!content.includes("@/test/")) continue;
+    if (isTestSourceFile(relativePath)) continue;
+
+    errors.push(
+      `${relativePath} imports @/test/**. Test helpers are only allowed from __tests__ files or src/test.`,
+    );
+  }
+}
+
 function checkFileNaming() {
   const sourceFiles = walk(srcRoot).filter((filePath) =>
     sourceFilePattern.test(filePath),
@@ -371,12 +537,79 @@ function checkFileNaming() {
       );
     }
 
+    const content = read(filePath);
+    const annotations = readAfendaAnnotations(content);
+
+    for (const annotation of requiredAfendaAnnotations) {
+      if (!annotations.has(annotation)) {
+        errors.push(
+          `${relativePath} must include @afenda-${annotation} in its source annotation header.`,
+        );
+      }
+    }
+
+    const expectedBoundary = expectedBoundaryFromSuffix(relativePath);
+    const annotatedBoundary = annotations.get("boundary");
     if (
-      (relativePath.endsWith(".client.ts") ||
-        relativePath.endsWith(".client.tsx")) &&
-      !hasUseClientDirective(read(filePath))
+      expectedBoundary !== undefined &&
+      annotatedBoundary !== undefined &&
+      annotatedBoundary !== expectedBoundary
     ) {
-      errors.push(`${relativePath} is a client file and must include "use client".`);
+      errors.push(
+        `${relativePath} has @afenda-boundary ${annotatedBoundary}, but its filename requires ${expectedBoundary}.`,
+      );
+    }
+
+    checkDescriptionDrift(relativePath, annotations);
+
+    if (isClientBoundaryFile(relativePath)) {
+      if (!hasUseClientDirective(content)) {
+        errors.push(
+          `${relativePath} is a client file and must include "use client".`,
+        );
+      }
+
+      if (hasServerOnlyImport(content)) {
+        errors.push(
+          `${relativePath} is a client file and must not import "server-only".`,
+        );
+      }
+    }
+
+    if (
+      isServerRuntimeBoundaryFile(relativePath) &&
+      !hasServerOnlyImport(content)
+    ) {
+      errors.push(
+        `${relativePath} is a .server.ts runtime file and must import "server-only". Use .shared.ts for runtime-neutral contracts or types.`,
+      );
+    }
+
+    if (isSharedBoundaryFile(relativePath)) {
+      const markers = findRuntimeNeutralityMarkers(content);
+      if (markers.length > 0) {
+        errors.push(
+          `${relativePath} is shared and must stay runtime-neutral. Remove: ${markers.join(", ")}.`,
+        );
+      }
+    }
+
+    if (isFixtureBoundaryFile(relativePath)) {
+      const markers = findRuntimeNeutralityMarkers(content);
+      if (markers.length > 0) {
+        errors.push(
+          `${relativePath} is a fixture and must stay runtime-neutral. Remove: ${markers.join(", ")}.`,
+        );
+      }
+    }
+
+    if (isWorkbenchBoundaryFile(relativePath)) {
+      const markers = findWorkbenchRuntimeMarkers(content);
+      if (markers.length > 0) {
+        errors.push(
+          `${relativePath} is workbench-only and must not touch privileged runtime bindings. Remove: ${markers.join(", ")}.`,
+        );
+      }
     }
   }
 }
@@ -386,6 +619,7 @@ checkAppRouteShape();
 checkClientServerImports();
 checkServerOnlyMarkers();
 checkBetterAuthReactBoundary();
+checkTestImports();
 checkFileNaming();
 
 if (errors.length > 0) {
