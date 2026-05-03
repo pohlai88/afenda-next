@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "next build",
-    "check": "eslint . && tsc --noEmit && pnpm format:check && pnpm check:workbench-contract && pnpm test",
+    "check": "eslint . && pnpm typecheck && pnpm format:check && pnpm check:workbench-contract && pnpm test",
     "check:workbench-contract": "node scripts/check-workbench-contract.mjs",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
@@ -25,7 +25,7 @@
     "test:e2e:ui": "playwright test --ui",
     "test:serial": "vitest run --fileParallelism=false --maxWorkers=1",
     "test:watch": "vitest",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "next typegen && tsc --noEmit",
     "check:e2e": "pnpm test && pnpm test:coverage && pnpm test:e2e"
   },
   "dependencies": {

@@ -12,29 +12,36 @@ const appControlsPath = path.join(
 );
 const workbenchShellPath = path.join(
   srcRoot,
-  "app",
-  "erp-workbench",
-  "page.workbench.tsx",
+  "features",
+  "workbench",
+  "client",
+  "workbench-page-client.tsx",
 );
 const workbenchComponentsPath = path.join(
   srcRoot,
+  "features",
+  "workbench",
   "components",
-  "ui",
-  "app-controls.workbench.tsx",
+  "workbench-surfaces.tsx",
 );
 const workbenchRegistryPath = path.join(
   srcRoot,
-  "erp-workbench",
+  "features",
+  "workbench",
   "workbench-registry.ts",
 );
 const workbenchTypesPath = path.join(
   srcRoot,
-  "erp-workbench",
+  "features",
+  "workbench",
+  "types",
   "workbench-types.ts",
 );
 const workbenchInspectorPath = path.join(
   srcRoot,
-  "erp-workbench",
+  "features",
+  "workbench",
+  "components",
   "workbench-inspector.tsx",
 );
 
@@ -62,8 +69,7 @@ function isAllowedReactAriaBoundary(filePath) {
 
   return (
     relativePath === "src/components/ui/app-controls.tsx" ||
-    /^src\/components\/ui\/.+\.workbench\.tsx$/.test(relativePath) ||
-    relativePath.startsWith("src/erp-workbench/")
+    relativePath.startsWith("src/features/workbench/")
   );
 }
 
@@ -91,7 +97,9 @@ for (const requiredPath of [
   workbenchInspectorPath,
 ]) {
   if (!existsSync(requiredPath)) {
-    errors.push(`Required workbench file "${relative(requiredPath)}" is missing.`);
+    errors.push(
+      `Required workbench file "${relative(requiredPath)}" is missing.`,
+    );
   }
 }
 
@@ -112,7 +120,9 @@ for (const exportedControlName of [
   "AppCell",
 ]) {
   if (!appControls.includes(`export function ${exportedControlName}`)) {
-    errors.push(`Shared control "${exportedControlName}" must remain exported.`);
+    errors.push(
+      `Shared control "${exportedControlName}" must remain exported.`,
+    );
   }
 }
 
@@ -125,25 +135,38 @@ for (const racClass of ["rac-focus-ring", "rac-disabled", "rac-invalid"]) {
 }
 
 if (!appControls.includes("FieldError")) {
-  errors.push("Shared controls must use React Aria FieldError for field error semantics.");
+  errors.push(
+    "Shared controls must use React Aria FieldError for field error semantics.",
+  );
 }
 
-if (!appControls.includes("slot=\"description\"")) {
-  errors.push("Shared controls must use React Aria Text slot=\"description\" for field descriptions.");
+if (!appControls.includes('slot="description"')) {
+  errors.push(
+    'Shared controls must use React Aria Text slot="description" for field descriptions.',
+  );
 }
 
 for (const fieldName of ["AppTextField", "AppSelectField"]) {
-  if (!appControls.includes(`${fieldName}`) || !appControls.includes("ariaLabel")) {
-    errors.push(`${fieldName} must support the ariaLabel accessible-name escape hatch.`);
+  if (
+    !appControls.includes(`${fieldName}`) ||
+    !appControls.includes("ariaLabel")
+  ) {
+    errors.push(
+      `${fieldName} must support the ariaLabel accessible-name escape hatch.`,
+    );
   }
 }
 
 if (!appControls.includes("export function AppForm")) {
-  errors.push("Shared controls must export AppForm for approved form semantics.");
+  errors.push(
+    "Shared controls must export AppForm for approved form semantics.",
+  );
 }
 
 if (!appControls.includes("onPress")) {
-  errors.push("Shared buttons must preserve the React Aria onPress interaction model.");
+  errors.push(
+    "Shared buttons must preserve the React Aria onPress interaction model.",
+  );
 }
 
 const workbenchShell = read(workbenchShellPath);
@@ -154,7 +177,9 @@ for (const requiredSection of [
   "Contract Coverage",
 ]) {
   if (!workbenchShell.includes(requiredSection)) {
-    errors.push(`Workbench section "${requiredSection}" is missing from the route.`);
+    errors.push(
+      `Workbench section "${requiredSection}" is missing from the route.`,
+    );
   }
 }
 
@@ -172,7 +197,9 @@ for (const requiredField of [
   "render:",
 ]) {
   if (!workbenchRegistry.includes(requiredField)) {
-    errors.push(`Workbench registry is missing required field "${requiredField}".`);
+    errors.push(
+      `Workbench registry is missing required field "${requiredField}".`,
+    );
   }
 }
 
@@ -233,7 +260,9 @@ const blockedReactAriaImports = new Set([
   "Cell",
 ]);
 
-for (const filePath of srcFiles.filter((candidate) => /\.(ts|tsx)$/.test(candidate))) {
+for (const filePath of srcFiles.filter((candidate) =>
+  /\.(ts|tsx)$/.test(candidate),
+)) {
   if (isAllowedReactAriaBoundary(filePath)) {
     continue;
   }
@@ -248,7 +277,12 @@ for (const filePath of srcFiles.filter((candidate) => /\.(ts|tsx)$/.test(candida
       .split(",")
       .map((entry) => entry.replaceAll(/\s+/g, " ").trim())
       .filter(Boolean)
-      .map((entry) => entry.replace(/^type\s+/, "").split(/\s+as\s+/)[0]?.trim());
+      .map((entry) =>
+        entry
+          .replace(/^type\s+/, "")
+          .split(/\s+as\s+/)[0]
+          ?.trim(),
+      );
 
     const blockedNames = importedNames.filter((name) =>
       blockedReactAriaImports.has(name),
@@ -296,7 +330,9 @@ if (!checkScript.includes("pnpm format:check")) {
 }
 
 if (!checkScript.includes("pnpm check:workbench-contract")) {
-  errors.push('package.json "check" script must include "pnpm check:workbench-contract".');
+  errors.push(
+    'package.json "check" script must include "pnpm check:workbench-contract".',
+  );
 }
 
 if (!checkScript.includes("pnpm test")) {

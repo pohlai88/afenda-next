@@ -25,8 +25,8 @@ import {
 import {
   getProcurementApprovalStatusLabel,
   PROCUREMENT_APPROVAL_DEMO_ROWS,
-} from "@/erp-workbench/procurement-demo-data";
-import type { WorkbenchItem } from "@/erp-workbench/workbench-types";
+} from "@/features/workbench/data/procurement-demo-data";
+import type { WorkbenchItem } from "@/features/workbench/types/workbench-types";
 
 /* -------------------------------------------------------------------------- */
 /* Page shell                                                                 */

@@ -15,11 +15,11 @@ import {
   ProcurementApprovalSceneSurface,
   ReviewFilterBarPatternSurface,
   WorkbenchContractSummary,
-} from "@/components/ui/app-controls.workbench";
+} from "@/features/workbench/components/workbench-surfaces";
 import type {
   WorkbenchItem,
   WorkbenchItemCategory,
-} from "@/erp-workbench/workbench-types";
+} from "@/features/workbench/types/workbench-types";
 
 export const WORKBENCH_ITEMS: WorkbenchItem[] = [
   {
@@ -243,7 +243,7 @@ export const WORKBENCH_ITEMS: WorkbenchItem[] = [
     name: "ERP App Shell",
     category: "pattern",
     status: "approved",
-    sourcePath: "src/components/ui/app-controls.workbench.tsx",
+    sourcePath: "src/features/workbench/components/workbench-surfaces.tsx",
     ariaPrimitives: ["Button", "SearchField", "Select", "Table", "Dialog"],
     states: [
       "navigation-rail",
@@ -272,7 +272,7 @@ export const WORKBENCH_ITEMS: WorkbenchItem[] = [
     name: "Review Filter Bar",
     category: "pattern",
     status: "approved",
-    sourcePath: "src/components/ui/app-controls.workbench.tsx",
+    sourcePath: "src/features/workbench/components/workbench-surfaces.tsx",
     ariaPrimitives: ["SearchField", "Select", "Button"],
     states: ["default", "filtered", "clear-filters"],
     tokens: [
@@ -296,7 +296,7 @@ export const WORKBENCH_ITEMS: WorkbenchItem[] = [
     name: "Bulk Approval Toolbar",
     category: "pattern",
     status: "approved",
-    sourcePath: "src/components/ui/app-controls.workbench.tsx",
+    sourcePath: "src/features/workbench/components/workbench-surfaces.tsx",
     ariaPrimitives: ["Button", "DialogTrigger", "Dialog"],
     states: ["no-selection", "selected", "bulk-approve", "bulk-reject"],
     tokens: [
@@ -320,7 +320,7 @@ export const WORKBENCH_ITEMS: WorkbenchItem[] = [
     name: "Approval Dialog Pattern",
     category: "pattern",
     status: "approved",
-    sourcePath: "src/components/ui/app-controls.workbench.tsx",
+    sourcePath: "src/features/workbench/components/workbench-surfaces.tsx",
     ariaPrimitives: ["DialogTrigger", "Dialog", "TextField", "Button"],
     states: ["approve", "reject", "decision-note", "dismissable"],
     tokens: [
@@ -344,7 +344,7 @@ export const WORKBENCH_ITEMS: WorkbenchItem[] = [
     name: "Procurement Approval Scene",
     category: "scene",
     status: "approved",
-    sourcePath: "src/components/ui/app-controls.workbench.tsx",
+    sourcePath: "src/features/workbench/components/workbench-surfaces.tsx",
     ariaPrimitives: ["SearchField", "Select", "Table", "Dialog", "Button"],
     states: [
       "queue-filtering",
@@ -374,7 +374,7 @@ export const WORKBENCH_ITEMS: WorkbenchItem[] = [
     name: "Contract Coverage Table",
     category: "contract",
     status: "approved",
-    sourcePath: "src/components/ui/app-controls.workbench.tsx",
+    sourcePath: "src/features/workbench/components/workbench-surfaces.tsx",
     ariaPrimitives: ["Table", "Button"],
     states: ["approved-controls-only", "inspectable-rows"],
     tokens: ["--color-surface", "--color-border", "--color-success"],

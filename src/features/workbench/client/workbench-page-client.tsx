@@ -8,13 +8,13 @@ import {
   WorkbenchItemCard,
   WorkbenchSectionFilter,
   WorkbenchSection,
-} from "@/components/ui/app-controls.workbench";
-import { WorkbenchInspector } from "@/erp-workbench/workbench-inspector";
+} from "@/features/workbench/components/workbench-surfaces";
+import { WorkbenchInspector } from "@/features/workbench/components/workbench-inspector";
 import {
   APPROVED_PRIMITIVE_ITEMS,
   getWorkbenchItemsByCategory,
   WORKBENCH_ITEMS,
-} from "@/erp-workbench/workbench-registry";
+} from "@/features/workbench/workbench-registry";
 
 const sectionContent = {
   primitive: {
@@ -43,7 +43,7 @@ const sectionContent = {
   },
 } as const;
 
-export default function ErpWorkbenchPage() {
+export function WorkbenchPageClient() {
   const fallbackItem = WORKBENCH_ITEMS[0];
   if (!fallbackItem) {
     throw new Error("ERP Workbench requires at least one registered item.");

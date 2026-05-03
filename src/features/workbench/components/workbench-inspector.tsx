@@ -1,7 +1,7 @@
 "use client";
 
 import { AppPanel, AppStatus } from "@/components/ui/app-controls";
-import type { WorkbenchItem } from "@/erp-workbench/workbench-types";
+import type { WorkbenchItem } from "@/features/workbench/types/workbench-types";
 
 function statusTone(status: WorkbenchItem["status"]) {
   switch (status) {

@@ -2,14 +2,14 @@ import userEvent from "@testing-library/user-event";
 import { screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import ErpWorkbenchPage from "@/app/erp-workbench/page.workbench";
-import { WORKBENCH_ITEMS } from "@/erp-workbench/workbench-registry";
+import { WorkbenchPageClient } from "@/features/workbench/client/workbench-page-client";
+import { WORKBENCH_ITEMS } from "@/features/workbench/workbench-registry";
 import { renderWithProviders } from "@/test/render";
 
 describe("ERP Workbench", () => {
   it("renders the main sections and updates the inspector selection", async () => {
     const user = userEvent.setup();
-    renderWithProviders(<ErpWorkbenchPage />);
+    renderWithProviders(<WorkbenchPageClient />);
 
     expect(screen.getByRole("heading", { name: "ERP Workbench" })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Primitives" })).toBeTruthy();
@@ -33,7 +33,7 @@ describe("ERP Workbench", () => {
     ).toBeTruthy();
     expect(
       within(inspector).getByText(
-        "src/components/ui/app-controls.workbench.tsx",
+        "src/features/workbench/components/workbench-surfaces.tsx",
       ),
     ).toBeTruthy();
   }, 15000);
@@ -61,7 +61,7 @@ describe("ERP Workbench", () => {
 
   it("filters the single-route workbench by section", async () => {
     const user = userEvent.setup();
-    renderWithProviders(<ErpWorkbenchPage />);
+    renderWithProviders(<WorkbenchPageClient />);
 
     await user.click(screen.getByRole("button", { name: "Scenes" }));
 
@@ -75,7 +75,7 @@ describe("ERP Workbench", () => {
 
   it("shows ERP App Shell as a pattern and procurement approval as the hosted scene", async () => {
     const user = userEvent.setup();
-    renderWithProviders(<ErpWorkbenchPage />);
+    renderWithProviders(<WorkbenchPageClient />);
 
     await user.click(screen.getByRole("button", { name: "Patterns" }));
     expect(screen.getAllByText("ERP App Shell").length).toBeGreaterThan(0);
@@ -92,7 +92,7 @@ describe("ERP Workbench", () => {
 
   it("updates the bulk toolbar and detail panel when queue rows are selected", async () => {
     const user = userEvent.setup();
-    renderWithProviders(<ErpWorkbenchPage />);
+    renderWithProviders(<WorkbenchPageClient />);
 
     await user.click(screen.getByRole("button", { name: "Scenes" }));
 
@@ -109,7 +109,7 @@ describe("ERP Workbench", () => {
 
   it("opens approval dialogs from the procurement approval scene", async () => {
     const user = userEvent.setup();
-    renderWithProviders(<ErpWorkbenchPage />);
+    renderWithProviders(<WorkbenchPageClient />);
 
     await user.click(screen.getByRole("button", { name: "Scenes" }));
     await user.click(screen.getByRole("button", { name: "Approve Request" }));
