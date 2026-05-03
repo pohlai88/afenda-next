@@ -81,6 +81,15 @@ Validation requirements:
 - Use `pnpm check` when the change touches multiple boundaries or before a stabilization closeout.
 - If a check cannot run, state why and list residual risk.
 
+Documentation automation requirements:
+- Treat `docs/automation-contract.md` as the docs automation contract.
+- Run `pnpm docs:generate` when ADR files change, guideline docs change, generated docs indexes become stale, or core docs discovery changes.
+- README files inside declared docs/source automation margins are generated and must not be edited manually.
+- Root README prose belongs in `docs/source/root-readme.md`; root `README.md` is generated from that template.
+- Package README files and unconfigured module README files remain out of scope until a later ADR or explicit follow-up slice.
+- Use `AFENDA_DOCS_SNAPSHOT_DATE=YYYY-MM-DD pnpm docs:generate` only when an explicit dated snapshot is needed.
+- After docs automation changes, run `node --check scripts/repo.docs-index.generator.automation.mjs`, `node --check scripts/repo.docs-contract.check.automation.mjs`, `pnpm docs:generate`, `pnpm check:docs`, and `pnpm check:architecture`.
+
 Stop and ask before proceeding if:
 - The change requires destructive data operations.
 - The change requires overwriting unrelated user edits.

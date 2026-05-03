@@ -1,0 +1,91 @@
+# Afenda Next
+
+ERP-first Next.js 16 App Router workspace for Afenda.
+
+## Root Ownership
+
+The repository root is the project control plane. Keep it boring and explicit.
+
+Root files that should stay at the top level:
+
+- Package and workspace files: `package.json`, `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `.npmrc`.
+- Framework config: `next.config.ts`, `tsconfig.json`, `eslint.config.js`, `prettier.config.js`, `postcss.config.js`.
+- Test and tool config: `vitest.config.ts`, `vitest.setup.ts`, `playwright.config.ts`, `drizzle.config.ts`.
+- Editor and agent config: `.editorconfig`, `.vscode/`, `.cursor/`, `AGENTS.md`.
+- Environment contract: `.env.example`. Local `.env` files are ignored.
+
+Do not move framework config into a custom folder unless the tool supports that cleanly and the repo has a concrete reason. Hidden indirection makes maintenance harder than a visible root control plane.
+
+## Documentation
+
+- Auto-generated documentation index: [docs/README.md](docs/README.md)
+- Architecture: [docs/architecture.md](docs/architecture.md)
+- Architecture & Technical Context (ATC): [docs/atc.md](docs/atc.md)
+- Architecture Decision Records: [docs/adr](docs/adr)
+
+## Source Ownership
+
+Product source belongs under `src`:
+
+- `src/app` for App Router route ownership.
+- `src/client-runtime` for global browser runtime wiring.
+- `src/components` for shared UI primitives.
+- `src/features` for ERP workflow surfaces.
+- `src/server` for privileged server runtime.
+- `src/trpc` for tRPC boundaries.
+- `src/test-runtime` for shared Vitest and Testing Library runtime helpers.
+
+Browser runtime tests belong under `e2e`:
+
+- `*.runtime.spec.ts` for Playwright browser specs.
+- `*.runtime.ts` for Playwright runtime helpers and fixtures.
+
+Repository automation belongs under `scripts`:
+
+- `repo.<subject>.<artifact>.automation.mjs` for root-level repo maintenance and validation commands.
+- Scripts are not product runtime code and must not become feature logic, migrations, or one-off scratch files.
+
+See `.guideline/nextjs/annotation-and-naming.md` for the enforced anti-drift naming and annotation contract.
+
+## Generated Artifacts
+
+Generated artifacts are ignored and can be recreated:
+
+- `.artifacts`
+- `.next`
+- `.playwright-mcp`
+- `coverage`
+- `playwright-report`
+- `test-results`
+- `tsconfig.tsbuildinfo`
+- `.eslintcache`
+- `.prettiercache`
+
+Preview cleanup before removing anything:
+
+```bash
+pnpm clean:artifacts:dry-run
+```
+
+Remove generated artifacts:
+
+```bash
+pnpm clean:artifacts
+```
+
+This cleanup intentionally does not remove `node_modules` or `.env`.
+
+New configurable outputs should use `.artifacts/<tool>` instead of writing new root-level artifact folders. Keep legacy root artifact paths ignored because some tools and older local runs may still create them.
+
+## Main Commands
+
+```bash
+pnpm dev
+pnpm check
+pnpm build
+pnpm test
+pnpm check:architecture
+pnpm check:workbench-contract
+```
+
+Use `pnpm check` before closing structural work.

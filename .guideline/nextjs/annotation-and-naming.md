@@ -21,7 +21,7 @@ src/components
 src/features
 src/server
 src/styles
-src/test
+src/test-runtime
 src/trpc
 ```
 
@@ -62,10 +62,10 @@ Preferred file naming formula:
 Examples:
 
 ```txt
-app.controls.client.tsx
-erp-workbench.registry.workbench.ts
-erp-workbench.page.client.tsx
-erp-workbench.contract.shared.ts
+app.controls.primitive.client.tsx
+erp-workbench.catalog.registry.workbench.ts
+erp-workbench.page.surface.client.tsx
+erp-workbench.catalog.contract.shared.ts
 procurement.purchase-request.policy.server.ts
 procurement.approval-queue.table.client.tsx
 ```
@@ -127,9 +127,24 @@ import "server-only"      privileged server runtime boundary.
 .workbench.ts/.tsx        workbench-only visual contract or registry source.
 .fixture.ts               deterministic test/demo data.
 .test.ts/.test.tsx        test-only source.
+runtime                  Playwright browser runtime boundary under e2e.
+automation               Root repo automation boundary under scripts.
 ```
 
 Every non-route source file under `src` must include the five `@afenda-*` annotations near the top of the file. Official App Router convention files such as `page.tsx`, `layout.tsx`, and `route.ts` are exempt because the framework filename is the annotation.
+
+Every TypeScript file under `e2e` must also include the five `@afenda-*` annotations and use one of these explicit Playwright runtime filename shapes:
+
+```txt
+<owner>.<subject>.<artifact>.runtime.spec.ts
+<owner>.<subject>.<artifact>.runtime.ts
+```
+
+Every automation file under `scripts` must include the five `@afenda-*` annotations and use this filename shape:
+
+```txt
+repo.<subject>.<artifact>.automation.mjs
+```
 
 Description rules:
 
@@ -138,7 +153,7 @@ Description rules:
 Use one line only.
 Use 24-120 characters.
 Do not end with sentence punctuation.
-Mention the boundary word, such as client, server, shared, fixture, workbench, or test.
+Mention the boundary word, such as client, server, shared, fixture, workbench, test, runtime, or automation.
 Mention at least one subject or artifact token so the checker can catch obvious drift.
 ```
 
@@ -184,9 +199,26 @@ Workbench files may import approved UI primitives, workbench client surfaces, fi
 Test annotations:
 
 ```txt
-Test files and src/test helpers are test-only.
-Production source must not import @/test/**.
-Only files under __tests__ or src/test may import @/test/**.
+Test files and src/test-runtime helpers are test-only.
+Production source must not import @/test-runtime/**.
+Only files under __tests__ or src/test-runtime may import @/test-runtime/**.
+```
+
+Runtime annotations:
+
+```txt
+Runtime files live under e2e and execute through Playwright in a real browser.
+Runtime specs must end with .runtime.spec.ts.
+Runtime helpers must end with .runtime.ts.
+Runtime files must not be imported by production src code.
+```
+
+Automation annotations:
+
+```txt
+Automation files live under scripts and operate on repo structure, generated artifacts, or validation gates.
+Automation files must end with .automation.mjs.
+Automation files must not contain product runtime logic, ERP domain behavior, or feature implementation.
 ```
 
 Route files are the exception to boundary suffix naming. Keep official App Router convention files as `page.tsx`, `layout.tsx`, `route.ts`, and related framework names.
@@ -212,6 +244,8 @@ workbench files stay out of privileged runtime bindings
 non-route source files include @afenda owner, subject, artifact, boundary, and description headers
 @afenda-boundary must match the filename boundary suffix
 @afenda-description is required, length-limited, and checked against boundary and intent metadata
+e2e files use the runtime boundary and explicit Playwright runtime filenames
+scripts files use the automation boundary and explicit repo automation filenames
 ```
 
 Keep future enforcement changes focused. Do not mix naming hardening with feature work, domain migrations, or TypeScript strictness changes.

@@ -8,8 +8,8 @@ const baseURL = configuredBaseURL ?? defaultBaseURL;
 
 export default defineConfig({
   testDir: "./e2e",
-  testMatch: "**/*.spec.ts",
-  outputDir: "test-results/playwright",
+  testMatch: "**/*.runtime.spec.ts",
+  outputDir: ".artifacts/test-results/playwright",
   fullyParallel: true,
   forbidOnly: isCI,
   retries: isCI ? 2 : 0,
@@ -17,12 +17,21 @@ export default defineConfig({
   reporter: isCI
     ? [
         ["github"],
-        ["html", { open: "never", outputFolder: "playwright-report" }],
-        ["junit", { outputFile: "test-results/playwright/junit.xml" }],
+        [
+          "html",
+          { open: "never", outputFolder: ".artifacts/playwright-report" },
+        ],
+        [
+          "junit",
+          { outputFile: ".artifacts/test-results/playwright/junit.xml" },
+        ],
       ]
     : [
         ["list"],
-        ["html", { open: "never", outputFolder: "playwright-report" }],
+        [
+          "html",
+          { open: "never", outputFolder: ".artifacts/playwright-report" },
+        ],
       ],
   timeout: 30_000,
   expect: {
@@ -46,6 +55,8 @@ export default defineConfig({
             ...process.env,
             BETTER_AUTH_URL: process.env["BETTER_AUTH_URL"] ?? baseURL,
             NODE_ENV: "production",
+            // Local Playwright webServer only — do not set on real deployments.
+            AFENDA_E2E_SKIP_AUTH_GUARD: "true",
           },
           reuseExistingServer: !isCI,
           timeout: 120_000,

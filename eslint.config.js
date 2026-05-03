@@ -40,7 +40,7 @@ export default tseslint.config(
         {
           paths: [
             {
-              name: "@/trpc/trpc.server",
+              name: "@/trpc/trpc.server.hydration.server",
               message:
                 "Browser integration modules must not import the server tRPC boundary.",
             },
@@ -103,7 +103,7 @@ export default tseslint.config(
         {
           paths: [
             {
-              name: "@/trpc/trpc.react.client",
+              name: "@/trpc/trpc.react.provider.client",
               message:
                 "Server modules must not import the client tRPC boundary.",
             },
@@ -161,6 +161,7 @@ export default tseslint.config(
   },
   prettier,
   globalIgnores([
+    ".artifacts/**",
     ".next/**",
     "out/**",
     "build/**",

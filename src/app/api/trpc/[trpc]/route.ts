@@ -2,14 +2,17 @@ import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 import { type NextRequest } from "next/server";
 
 import { env } from "@/env";
-import { appRouter } from "@/server/api/server.api.root.server";
-import { createTRPCContext } from "@/server/api/server.api.trpc.server";
+import { appRouter } from "@/server/api/server-api.root.router.server";
+import { createTRPCContext } from "@/server/api/server-api.trpc.adapter.server";
 
 /**
- * This wraps the `createTRPCContext` helper and provides the required context for the tRPC API when
- * handling a HTTP request (e.g. when you make requests from Client Components).
+ * Creates the request-scoped tRPC context for the HTTP adapter surface.
+ *
+ * This route exists only for browser and external HTTP access to the reviewed
+ * tRPC API. Server Components should continue to call server-owned procedures
+ * directly through the RSC hydration helpers.
  */
-const createContext = async (req: NextRequest) => {
+const createRouteContext = async (req: NextRequest) => {
   return createTRPCContext({
     headers: req.headers,
   });
@@ -20,7 +23,7 @@ const handler = (req: NextRequest) =>
     endpoint: "/api/trpc",
     req,
     router: appRouter,
-    createContext: () => createContext(req),
+    createContext: () => createRouteContext(req),
     ...(env.NODE_ENV === "development"
       ? {
           onError: ({

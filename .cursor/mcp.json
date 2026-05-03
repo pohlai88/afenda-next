@@ -2,7 +2,17 @@
   "mcpServers": {
     "React Aria": {
       "command": "npx",
-      "args": ["@react-aria/mcp@latest"]
+      "args": [
+        "@react-aria/mcp@latest"
+      ]
+    },
+    "next-devtools": {
+      "command": "npx",
+      "args": ["-y", "next-devtools-mcp@latest"],
+      "env": {
+        "SystemRoot": "C:\\Windows",
+        "PROGRAMFILES": "C:\\Program Files"
+      }
     }
   }
 }

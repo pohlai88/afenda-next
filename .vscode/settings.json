@@ -1,0 +1,82 @@
+{
+  "breadcrumbs.enabled": true,
+  "css.validate": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "never"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.detectIndentation": false,
+  "editor.formatOnPaste": false,
+  "editor.formatOnSave": true,
+  "editor.formatOnType": false,
+  "editor.guides.bracketPairs": "active",
+  "editor.insertSpaces": true,
+  "editor.rulers": [
+    100
+  ],
+  "editor.tabSize": 2,
+  "editor.trimAutoWhitespace": true,
+  "eslint.codeActionsOnSave.mode": "problems",
+  "eslint.experimental.useFlatConfig": true,
+  "eslint.packageManager": "pnpm",
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "eslint.workingDirectories": [
+    {
+      "mode": "auto"
+    }
+  ],
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+  "files.eol": "\n",
+  "files.exclude": {
+    "**/.artifacts": true,
+    "**/.next": true,
+    "**/.turbo": true,
+    "**/coverage": true,
+    "**/node_modules": true,
+    "**/playwright-report": true,
+    "**/test-results": true
+  },
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "javascript.preferences.importModuleSpecifier": "non-relative",
+  "npm.packageManager": "pnpm",
+  "prettier.requireConfig": true,
+  "search.exclude": {
+    "**/.artifacts": true,
+    "**/.next": true,
+    "**/.turbo": true,
+    "**/coverage": true,
+    "**/node_modules": true,
+    "**/playwright-report": true,
+    "**/test-results": true,
+    "**/tsconfig.tsbuildinfo": true
+  },
+  "tailwindCSS.classAttributes": [
+    "class",
+    "className",
+    "classNames",
+    ".*ClassName",
+    ".*ClassNames"
+  ],
+  "tailwindCSS.experimental.classRegex": [
+    [
+      "cva\\(([^)]*)\\)",
+      "[\"'`]([^\"'`]*).*?[\"'`]"
+    ],
+    [
+      "cx\\(([^)]*)\\)",
+      "[\"'`]([^\"'`]*).*?[\"'`]"
+    ]
+  ],
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.updateImportsOnFileMove.enabled": "always"
+}

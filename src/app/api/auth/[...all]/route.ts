@@ -1,7 +1,10 @@
+import { auth } from "@/lib/auth";
 import { toNextJsHandler } from "better-auth/next-js";
 
-import { getAuth } from "@/server/better-auth/auth.server";
-
-const handler = (request: Request) => getAuth().handler(request);
-
-export const { GET, POST } = toNextJsHandler(handler);
+/**
+ * Better Auth HTTP adapter surface for sign-in, callback, and session flows.
+ *
+ * Route ownership stays transport-only here; auth policy and configuration
+ * remain in server-owned Better Auth modules.
+ */
+export const { GET, POST } = toNextJsHandler(auth);

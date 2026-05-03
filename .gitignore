@@ -10,6 +10,7 @@
 /playwright-report
 /test-results
 /.playwright-mcp
+/.artifacts/
 
 # database
 /prisma/db.sqlite
@@ -38,6 +39,8 @@ yarn-error.log*
 # do not commit any .env files to git, except for the .env.example file. https://create.t3.gg/en/usage/env-variables#using-environment-variables
 .env
 .env*.local
+# Managed local env (pnpm env:sync); may contain secrets — never commit.
+.env.config
 
 # vercel
 .vercel

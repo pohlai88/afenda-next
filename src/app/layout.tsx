@@ -3,8 +3,6 @@ import "@/styles/globals.css";
 import { type Metadata } from "next";
 import { Geist } from "next/font/google";
 
-import { ClientProviders } from "@/client-runtime/providers.client";
-
 export const metadata: Metadata = {
   title: "Afenda",
   description: "Afenda application dashboard",
@@ -23,9 +21,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html className={geist.variable} dir="ltr" lang={defaultLocale}>
-      <body className="antialiased">
-        <ClientProviders lang={defaultLocale}>{children}</ClientProviders>
-      </body>
+      <body className="antialiased">{children}</body>
     </html>
   );
 }

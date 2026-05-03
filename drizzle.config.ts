@@ -1,12 +1,12 @@
+import { loadEnvConfig } from "@next/env";
 import { type Config } from "drizzle-kit";
 
-import { env } from "@/env";
+loadEnvConfig(process.cwd());
 
 export default {
-  schema: "./src/server/db/db.schema.shared.ts",
+  schema: "./src/server/db/db.database.schema.shared.ts",
   dialect: "postgresql",
   dbCredentials: {
-    url: env.DATABASE_URL,
+    url: process.env["DATABASE_URL"] ?? "",
   },
-  tablesFilter: ["afenda-exp_*"],
 } satisfies Config;

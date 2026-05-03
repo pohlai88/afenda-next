@@ -1,0 +1,42 @@
+/**
+ * @afenda-owner afenda-home
+ * @afenda-subject preferences-panel
+ * @afenda-artifact interaction-test
+ * @afenda-boundary test
+ * @afenda-description Test coverage for the preferences panel interaction
+ */
+import userEvent from "@testing-library/user-event";
+import { screen, waitFor } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
+
+import { PreferencesPanel } from "../afenda-home.preferences-panel.dialog.client";
+import { HomeStateProvider } from "../afenda-home.state.provider.client";
+import { renderWithProviders } from "@/test-runtime/test-runtime.render.helper.test";
+
+describe("PreferencesPanel", () => {
+  it("opens a dialog, keeps focus inside it, and closes on escape", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(
+      <HomeStateProvider>
+        <PreferencesPanel />
+      </HomeStateProvider>,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Preferences" }));
+
+    const dialog = await screen.findByRole("dialog", {
+      name: "Composer preferences",
+    });
+
+    expect(dialog).toBeTruthy();
+    expect(dialog.contains(document.activeElement)).toBe(true);
+
+    await user.keyboard("{Escape}");
+
+    await waitFor(() => {
+      expect(
+        screen.queryByRole("dialog", { name: "Composer preferences" }),
+      ).toBeNull();
+    });
+  });
+});
