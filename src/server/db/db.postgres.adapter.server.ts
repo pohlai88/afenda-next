@@ -1,3 +1,5 @@
+import "server-only";
+
 /**
  * @afenda-owner db
  * @afenda-subject postgres

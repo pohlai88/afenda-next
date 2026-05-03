@@ -1,149 +1,211 @@
 @import "tailwindcss";
 @plugin "tailwindcss-react-aria-components";
 
+/*
+ * AFENDA GLOBALS
+ * Current runtime visual contract.
+ *
+ * Theme model:
+ * - Light:  html.light or html[data-theme="light"]
+ * - Dark:   html.dark or html[data-theme="dark"]
+ * - System: no forced class, falls back to prefers-color-scheme
+ *
+ * Raw --palette-* tokens are foundation primitives.
+ * Runtime UI should consume semantic --color-* / --text-* / --radius-* tokens.
+ * Legacy palette.css variables are retired.
+ */
+
+/*
+ * SIGNAL SYSTEM
+ *
+ * Signal is Afenda's machine-intelligence color system.
+ * It is not a generic "primary" color.
+ *
+ * Formula:
+ *   Signal = Intelligence + Verification + Motion + Authority
+ *
+ * Usage:
+ * - --palette-signal-* = machine intelligence / decision pressure
+ * - --palette-cyan-*   = verified state / live operational confirmation
+ * - --color-accent     = main signal action or active state
+ * - --color-verified   = resolved / verified / connected state
+ *
+ * Rules:
+ * - Use Signal sparingly.
+ * - Signal should guide attention, not decorate.
+ * - Violet-blue carries intelligence.
+ * - Cyan carries verification.
+ * - Carbon carries authority.
+ * - Amber is reserved for evidence / review / exception.
+ * - Red is reserved for danger only.
+ */
+
+/*
+ * AFENDA SIGNAL FORMULA
+ *
+ * 85% Carbon authority
+ * 10% Signal intelligence
+ * 4% Verified cyan
+ * 1% Evidence / exception
+ *
+ * The interface should feel mostly controlled and architectural.
+ * Color appears only when the machine is resolving, verifying, warning,
+ * or asking for judgment.
+ *
+ * Short ratio: 85 / 10 / 4 / 1 = Carbon / Signal / Verified / Evidence
+ */
+
+@custom-variant dark (&:where(.dark, .dark *, [data-theme="dark"], [data-theme="dark"] *));
+
 :root {
-  /* Raw ERP palette in OKLCH */
-  --palette-stone-980: oklch(0.17 0.006 106);
-  --palette-stone-950: oklch(0.2 0.007 106);
-  --palette-stone-900: oklch(0.24 0.008 106);
-  --palette-stone-875: oklch(0.27 0.009 106);
-  --palette-stone-850: oklch(0.3 0.01 106);
-  --palette-stone-800: oklch(0.35 0.011 106);
-  --palette-stone-750: oklch(0.41 0.012 106);
-  --palette-stone-700: oklch(0.48 0.012 106);
-  --palette-stone-600: oklch(0.58 0.011 106);
-  --palette-stone-500: oklch(0.68 0.009 106);
-  --palette-stone-400: oklch(0.77 0.007 106);
-  --palette-stone-300: oklch(0.84 0.006 106);
-  --palette-stone-200: oklch(0.9 0.004 106);
-  --palette-stone-100: oklch(0.95 0.003 106);
-  --palette-stone-050: oklch(0.98 0.002 106);
-  --palette-stone-025: oklch(0.992 0.001 106);
+  color-scheme: light;
 
-  --palette-teal-600: oklch(0.5 0.09 196);
-  --palette-teal-500: oklch(0.58 0.1 194);
-  --palette-teal-400: oklch(0.71 0.108 190);
-  --palette-teal-300: oklch(0.8 0.081 186);
-  --palette-teal-200: oklch(0.89 0.049 184);
+  /* ============================================================
+     RAW PALETTE — AFENDA LIGHT
+     ============================================================ */
 
-  --palette-blue-500: oklch(0.62 0.17 257);
-  --palette-blue-300: oklch(0.81 0.086 251);
+  --palette-carbon-990: oklch(0.12 0.01 260);
+  --palette-carbon-970: oklch(0.15 0.012 260);
+  --palette-carbon-940: oklch(0.19 0.014 260);
+  --palette-carbon-900: oklch(0.24 0.015 260);
+  --palette-carbon-850: oklch(0.31 0.016 260);
+  --palette-carbon-800: oklch(0.37 0.017 260);
+  --palette-carbon-700: oklch(0.47 0.016 260);
+  --palette-carbon-600: oklch(0.58 0.014 260);
+  --palette-carbon-500: oklch(0.68 0.012 260);
+  --palette-carbon-400: oklch(0.78 0.009 260);
+  --palette-carbon-300: oklch(0.86 0.007 260);
+  --palette-carbon-200: oklch(0.92 0.005 260);
+  --palette-carbon-100: oklch(0.96 0.004 260);
+  --palette-carbon-050: oklch(0.985 0.003 260);
+  --palette-carbon-025: oklch(0.995 0.002 260);
 
-  --palette-indigo-500: oklch(0.56 0.18 283);
-  --palette-indigo-300: oklch(0.77 0.097 286);
+  /* Machine intelligence */
+  --palette-signal-700: oklch(0.44 0.17 275); /* deep authority signal */
+  --palette-signal-600: oklch(0.51 0.19 272); /* primary light-mode accent */
+  --palette-signal-500: oklch(0.6 0.2 268); /* brand core */
+  --palette-signal-400: oklch(0.7 0.17 264); /* primary dark-mode accent */
+  --palette-signal-300: oklch(0.8 0.11 260); /* luminous highlight */
+  --palette-signal-200: oklch(0.9 0.055 260); /* soft tint */
 
-  --palette-green-500: oklch(0.72 0.168 152);
-  --palette-green-200: oklch(0.9 0.07 153);
+  /* Verification / resolved state */
+  --palette-cyan-600: oklch(0.56 0.12 205);
+  --palette-cyan-500: oklch(0.66 0.13 202);
+  --palette-cyan-400: oklch(0.76 0.11 198);
+  --palette-cyan-300: oklch(0.85 0.075 195);
+  --palette-cyan-200: oklch(0.92 0.045 192);
 
-  --palette-amber-500: oklch(0.8 0.16 78);
-  --palette-amber-200: oklch(0.93 0.065 84);
+  --palette-green-500: oklch(0.7 0.16 152);
+  --palette-green-300: oklch(0.86 0.09 153);
+  --palette-amber-500: oklch(0.78 0.15 82);
+  --palette-amber-300: oklch(0.9 0.08 86);
+  --palette-red-500: oklch(0.63 0.22 24);
+  --palette-red-300: oklch(0.84 0.1 22);
 
-  --palette-red-500: oklch(0.64 0.21 24);
-  --palette-red-200: oklch(0.91 0.05 22);
+  /* ============================================================
+     SEMANTIC TOKENS — LIGHT DEFAULT
+     ============================================================ */
 
-  --palette-rose-500: oklch(0.66 0.22 8);
-  --palette-rose-200: oklch(0.92 0.05 8);
-}
-
-@theme inline {
-  --font-sans:
-    var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-
-  /* Semantic application tokens */
-  --color-background: var(--palette-stone-980);
-  --color-foreground: var(--palette-stone-050);
-  --color-foreground-muted: color-mix(
-    in oklab,
-    var(--palette-stone-050) 66%,
-    transparent
-  );
+  --color-background: var(--palette-carbon-025);
+  --color-foreground: var(--palette-carbon-970);
   --color-foreground-subtle: color-mix(
     in oklab,
-    var(--palette-stone-050) 84%,
+    var(--palette-carbon-970) 82%,
+    transparent
+  );
+  --color-foreground-muted: color-mix(
+    in oklab,
+    var(--palette-carbon-970) 62%,
     transparent
   );
 
-  --color-surface: var(--palette-stone-900);
-  --color-surface-muted: var(--palette-stone-875);
-  --color-surface-raised: var(--palette-stone-800);
+  --color-surface: var(--palette-carbon-050);
+  --color-surface-muted: var(--palette-carbon-100);
+  --color-surface-raised: white;
 
   --color-field: color-mix(
     in oklab,
-    var(--palette-stone-050) 5.5%,
+    var(--palette-carbon-970) 3%,
     var(--color-surface)
   );
   --color-field-hover: color-mix(
     in oklab,
-    var(--palette-stone-050) 8.5%,
+    var(--palette-carbon-970) 5%,
     var(--color-surface)
   );
   --color-field-strong: color-mix(
     in oklab,
-    var(--palette-stone-050) 16%,
+    var(--palette-carbon-970) 9%,
     var(--color-surface)
   );
   --color-input: var(--color-field);
 
   --color-border: color-mix(
     in oklab,
-    var(--palette-stone-050) 10%,
+    var(--palette-carbon-970) 11%,
     transparent
   );
   --color-border-strong: color-mix(
     in oklab,
-    var(--palette-stone-050) 16%,
+    var(--palette-carbon-970) 18%,
     transparent
   );
 
-  --color-accent: var(--palette-teal-400);
-  --color-accent-strong: var(--palette-teal-300);
+  --color-accent: var(--palette-signal-600);
+  --color-accent-strong: var(--palette-signal-700);
   --color-accent-soft: color-mix(
     in oklab,
-    var(--palette-teal-400) 18%,
+    var(--palette-signal-500) 12%,
     transparent
   );
-  --color-accent-foreground: oklch(0.23 0.025 190);
+  --color-accent-foreground: white;
   --color-accent-ring: color-mix(
     in oklab,
-    var(--palette-teal-400) 32%,
+    var(--palette-signal-500) 34%,
     transparent
   );
-  --color-brand-gradient-from: var(--palette-teal-400);
-  --color-brand-gradient-to: var(--palette-indigo-500);
 
-  --color-info: var(--palette-blue-500);
-  --color-info-strong: var(--palette-blue-300);
+  --color-verified: var(--palette-cyan-600);
+  --color-verified-strong: var(--palette-cyan-500);
+  --color-verified-soft: color-mix(
+    in oklab,
+    var(--palette-cyan-500) 13%,
+    transparent
+  );
+  --color-verified-foreground: white;
+
+  --color-info: var(--palette-signal-600);
+  --color-info-strong: var(--palette-signal-500);
   --color-info-soft: color-mix(
     in oklab,
-    var(--palette-blue-500) 16%,
+    var(--palette-signal-500) 12%,
     transparent
   );
-  --color-info-foreground: var(--palette-stone-050);
+  --color-info-foreground: white;
 
   --color-success: var(--palette-green-500);
-  --color-success-strong: var(--palette-green-200);
+  --color-success-strong: var(--palette-green-300);
   --color-success-soft: color-mix(
     in oklab,
-    var(--palette-green-500) 16%,
+    var(--palette-green-500) 13%,
     transparent
   );
-  --color-success-foreground: oklch(0.24 0.03 150);
+  --color-success-foreground: oklch(0.22 0.035 150);
 
   --color-warning: var(--palette-amber-500);
-  --color-warning-strong: var(--palette-amber-200);
+  --color-warning-strong: var(--palette-amber-300);
   --color-warning-soft: color-mix(
     in oklab,
     var(--palette-amber-500) 16%,
     transparent
   );
-  --color-warning-foreground: oklch(0.26 0.03 82);
+  --color-warning-foreground: oklch(0.24 0.04 82);
 
   --color-danger: var(--palette-red-500);
-  --color-danger-strong: var(--palette-red-200);
+  --color-danger-strong: var(--palette-red-300);
   --color-danger-soft: color-mix(
     in oklab,
-    var(--palette-red-500) 16%,
+    var(--palette-red-500) 13%,
     transparent
   );
   --color-danger-ring: color-mix(
@@ -151,13 +213,21 @@
     var(--palette-red-500) 28%,
     transparent
   );
-  --color-danger-foreground: var(--palette-stone-050);
+  --color-danger-foreground: white;
 
-  --shadow-xs: 0 1px 2px rgb(0 0 0 / 0.18);
-  --shadow-sm: 0 2px 6px rgb(0 0 0 / 0.22);
-  --shadow-md: 0 10px 24px rgb(0 0 0 / 0.22);
-  --shadow-lg: 0 18px 40px rgb(0 0 0 / 0.26);
+  --color-brand-gradient-from: var(--palette-cyan-500);
+  --color-brand-gradient-to: var(--palette-signal-600);
 
+  --color-overlay: color-mix(in oklab, black 62%, transparent);
+
+  /* Optional chart tokens */
+  --color-chart-1: var(--palette-signal-600);
+  --color-chart-2: var(--palette-cyan-600);
+  --color-chart-3: var(--palette-green-500);
+  --color-chart-4: var(--palette-amber-500);
+  --color-chart-5: var(--palette-red-500);
+
+  /* Radius */
   --radius-sm: 0.5rem;
   --radius-md: 0.75rem;
   --radius-lg: 1rem;
@@ -191,7 +261,394 @@
   --control-padding-y-comfortable: 0.75rem;
   --control-padding-y-compact: 0.5rem;
 
-  --color-overlay: color-mix(in oklab, black 68%, transparent);
+  --shadow-xs: 0 1px 2px rgb(15 23 42 / 0.08);
+  --shadow-sm: 0 2px 8px rgb(15 23 42 / 0.1);
+  --shadow-md: 0 12px 28px rgb(15 23 42 / 0.12);
+  --shadow-lg: 0 22px 56px rgb(15 23 42 / 0.16);
+}
+
+/* Explicit light switch */
+.light,
+[data-theme="light"] {
+  color-scheme: light;
+}
+
+/* Explicit dark switch */
+.dark,
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --color-background: var(--palette-carbon-990);
+  --color-foreground: var(--palette-carbon-050);
+  --color-foreground-subtle: color-mix(
+    in oklab,
+    var(--palette-carbon-050) 84%,
+    transparent
+  );
+  --color-foreground-muted: color-mix(
+    in oklab,
+    var(--palette-carbon-050) 64%,
+    transparent
+  );
+
+  --color-surface: var(--palette-carbon-940);
+  --color-surface-muted: var(--palette-carbon-900);
+  --color-surface-raised: var(--palette-carbon-850);
+
+  --color-field: color-mix(
+    in oklab,
+    var(--palette-carbon-050) 5.5%,
+    var(--color-surface)
+  );
+  --color-field-hover: color-mix(
+    in oklab,
+    var(--palette-carbon-050) 8.5%,
+    var(--color-surface)
+  );
+  --color-field-strong: color-mix(
+    in oklab,
+    var(--palette-carbon-050) 16%,
+    var(--color-surface)
+  );
+  --color-input: var(--color-field);
+
+  --color-border: color-mix(
+    in oklab,
+    var(--palette-carbon-050) 10%,
+    transparent
+  );
+  --color-border-strong: color-mix(
+    in oklab,
+    var(--palette-carbon-050) 17%,
+    transparent
+  );
+
+  --color-accent: var(--palette-signal-400);
+  --color-accent-strong: var(--palette-signal-300);
+  --color-accent-soft: color-mix(
+    in oklab,
+    var(--palette-signal-400) 18%,
+    transparent
+  );
+  --color-accent-foreground: oklch(0.19 0.03 270);
+  --color-accent-ring: color-mix(
+    in oklab,
+    var(--palette-signal-400) 38%,
+    transparent
+  );
+
+  --color-verified: var(--palette-cyan-400);
+  --color-verified-strong: var(--palette-cyan-300);
+  --color-verified-soft: color-mix(
+    in oklab,
+    var(--palette-cyan-400) 17%,
+    transparent
+  );
+  --color-verified-foreground: oklch(0.18 0.03 200);
+
+  --color-info: var(--palette-signal-400);
+  --color-info-strong: var(--palette-signal-300);
+  --color-info-soft: color-mix(
+    in oklab,
+    var(--palette-signal-400) 18%,
+    transparent
+  );
+  --color-info-foreground: oklch(0.19 0.03 270);
+
+  --color-success: var(--palette-green-500);
+  --color-success-strong: var(--palette-green-300);
+  --color-success-soft: color-mix(
+    in oklab,
+    var(--palette-green-500) 17%,
+    transparent
+  );
+  --color-success-foreground: oklch(0.18 0.03 150);
+
+  --color-warning: var(--palette-amber-500);
+  --color-warning-strong: var(--palette-amber-300);
+  --color-warning-soft: color-mix(
+    in oklab,
+    var(--palette-amber-500) 18%,
+    transparent
+  );
+  --color-warning-foreground: oklch(0.22 0.04 82);
+
+  --color-danger: var(--palette-red-500);
+  --color-danger-strong: var(--palette-red-300);
+  --color-danger-soft: color-mix(
+    in oklab,
+    var(--palette-red-500) 18%,
+    transparent
+  );
+  --color-danger-ring: color-mix(
+    in oklab,
+    var(--palette-red-500) 32%,
+    transparent
+  );
+  --color-danger-foreground: white;
+
+  --color-brand-gradient-from: var(--palette-cyan-400);
+  --color-brand-gradient-to: var(--palette-signal-500);
+
+  --color-overlay: color-mix(in oklab, black 72%, transparent);
+
+  --color-chart-1: var(--palette-signal-400);
+  --color-chart-2: var(--palette-cyan-400);
+  --color-chart-3: var(--palette-green-500);
+  --color-chart-4: var(--palette-amber-500);
+  --color-chart-5: var(--palette-red-500);
+
+  --shadow-xs: 0 1px 2px rgb(0 0 0 / 0.22);
+  --shadow-sm: 0 2px 8px rgb(0 0 0 / 0.26);
+  --shadow-md: 0 12px 28px rgb(0 0 0 / 0.28);
+  --shadow-lg: 0 24px 60px rgb(0 0 0 / 0.36);
+}
+
+/* System mode fallback when no explicit .light/.dark or data-theme is set */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light):not(.dark):not([data-theme="light"]):not(
+      [data-theme="dark"]
+    ) {
+    color-scheme: dark;
+
+    --color-background: var(--palette-carbon-990);
+    --color-foreground: var(--palette-carbon-050);
+    --color-foreground-subtle: color-mix(
+      in oklab,
+      var(--palette-carbon-050) 84%,
+      transparent
+    );
+    --color-foreground-muted: color-mix(
+      in oklab,
+      var(--palette-carbon-050) 64%,
+      transparent
+    );
+
+    --color-surface: var(--palette-carbon-940);
+    --color-surface-muted: var(--palette-carbon-900);
+    --color-surface-raised: var(--palette-carbon-850);
+
+    --color-field: color-mix(
+      in oklab,
+      var(--palette-carbon-050) 5.5%,
+      var(--color-surface)
+    );
+    --color-field-hover: color-mix(
+      in oklab,
+      var(--palette-carbon-050) 8.5%,
+      var(--color-surface)
+    );
+    --color-field-strong: color-mix(
+      in oklab,
+      var(--palette-carbon-050) 16%,
+      var(--color-surface)
+    );
+    --color-input: var(--color-field);
+
+    --color-border: color-mix(
+      in oklab,
+      var(--palette-carbon-050) 10%,
+      transparent
+    );
+    --color-border-strong: color-mix(
+      in oklab,
+      var(--palette-carbon-050) 17%,
+      transparent
+    );
+
+    --color-accent: var(--palette-signal-400);
+    --color-accent-strong: var(--palette-signal-300);
+    --color-accent-soft: color-mix(
+      in oklab,
+      var(--palette-signal-400) 18%,
+      transparent
+    );
+    --color-accent-foreground: oklch(0.19 0.03 270);
+    --color-accent-ring: color-mix(
+      in oklab,
+      var(--palette-signal-400) 38%,
+      transparent
+    );
+
+    --color-verified: var(--palette-cyan-400);
+    --color-verified-strong: var(--palette-cyan-300);
+    --color-verified-soft: color-mix(
+      in oklab,
+      var(--palette-cyan-400) 17%,
+      transparent
+    );
+    --color-verified-foreground: oklch(0.18 0.03 200);
+
+    --color-info: var(--palette-signal-400);
+    --color-info-strong: var(--palette-signal-300);
+    --color-info-soft: color-mix(
+      in oklab,
+      var(--palette-signal-400) 18%,
+      transparent
+    );
+    --color-info-foreground: oklch(0.19 0.03 270);
+
+    --color-success: var(--palette-green-500);
+    --color-success-strong: var(--palette-green-300);
+    --color-success-soft: color-mix(
+      in oklab,
+      var(--palette-green-500) 17%,
+      transparent
+    );
+    --color-success-foreground: oklch(0.18 0.03 150);
+
+    --color-warning: var(--palette-amber-500);
+    --color-warning-strong: var(--palette-amber-300);
+    --color-warning-soft: color-mix(
+      in oklab,
+      var(--palette-amber-500) 18%,
+      transparent
+    );
+    --color-warning-foreground: oklch(0.22 0.04 82);
+
+    --color-danger: var(--palette-red-500);
+    --color-danger-strong: var(--palette-red-300);
+    --color-danger-soft: color-mix(
+      in oklab,
+      var(--palette-red-500) 18%,
+      transparent
+    );
+    --color-danger-ring: color-mix(
+      in oklab,
+      var(--palette-red-500) 32%,
+      transparent
+    );
+    --color-danger-foreground: white;
+
+    --color-brand-gradient-from: var(--palette-cyan-400);
+    --color-brand-gradient-to: var(--palette-signal-500);
+
+    --color-overlay: color-mix(in oklab, black 72%, transparent);
+
+    --color-chart-1: var(--palette-signal-400);
+    --color-chart-2: var(--palette-cyan-400);
+    --color-chart-3: var(--palette-green-500);
+    --color-chart-4: var(--palette-amber-500);
+    --color-chart-5: var(--palette-red-500);
+
+    --shadow-xs: 0 1px 2px rgb(0 0 0 / 0.22);
+    --shadow-sm: 0 2px 8px rgb(0 0 0 / 0.26);
+    --shadow-md: 0 12px 28px rgb(0 0 0 / 0.28);
+    --shadow-lg: 0 24px 60px rgb(0 0 0 / 0.36);
+  }
+}
+
+@theme inline {
+  --font-sans:
+    var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+  --color-background: var(--color-background);
+  --color-foreground: var(--color-foreground);
+  --color-foreground-muted: var(--color-foreground-muted);
+  --color-foreground-subtle: var(--color-foreground-subtle);
+
+  --color-surface: var(--color-surface);
+  --color-surface-muted: var(--color-surface-muted);
+  --color-surface-raised: var(--color-surface-raised);
+
+  --color-field: var(--color-field);
+  --color-field-hover: var(--color-field-hover);
+  --color-field-strong: var(--color-field-strong);
+  --color-input: var(--color-input);
+
+  --color-border: var(--color-border);
+  --color-border-strong: var(--color-border-strong);
+
+  --color-accent: var(--color-accent);
+  --color-accent-strong: var(--color-accent-strong);
+  --color-accent-soft: var(--color-accent-soft);
+  --color-accent-foreground: var(--color-accent-foreground);
+  --color-accent-ring: var(--color-accent-ring);
+
+  --color-verified: var(--color-verified);
+  --color-verified-strong: var(--color-verified-strong);
+  --color-verified-soft: var(--color-verified-soft);
+  --color-verified-foreground: var(--color-verified-foreground);
+
+  --color-info: var(--color-info);
+  --color-info-strong: var(--color-info-strong);
+  --color-info-soft: var(--color-info-soft);
+  --color-info-foreground: var(--color-info-foreground);
+
+  --color-success: var(--color-success);
+  --color-success-strong: var(--color-success-strong);
+  --color-success-soft: var(--color-success-soft);
+  --color-success-foreground: var(--color-success-foreground);
+
+  --color-warning: var(--color-warning);
+  --color-warning-strong: var(--color-warning-strong);
+  --color-warning-soft: var(--color-warning-soft);
+  --color-warning-foreground: var(--color-warning-foreground);
+
+  --color-danger: var(--color-danger);
+  --color-danger-strong: var(--color-danger-strong);
+  --color-danger-soft: var(--color-danger-soft);
+  --color-danger-ring: var(--color-danger-ring);
+  --color-danger-foreground: var(--color-danger-foreground);
+
+  --color-brand-gradient-from: var(--color-brand-gradient-from);
+  --color-brand-gradient-to: var(--color-brand-gradient-to);
+  --color-overlay: var(--color-overlay);
+
+  --color-chart-1: var(--color-chart-1);
+  --color-chart-2: var(--color-chart-2);
+  --color-chart-3: var(--color-chart-3);
+  --color-chart-4: var(--color-chart-4);
+  --color-chart-5: var(--color-chart-5);
+
+  /*
+   * Compatibility aliases for imported primitives only.
+   * Do not use these names in new Afenda-owned CSS.
+   */
+  --color-primary: var(--color-accent);
+  --color-primary-foreground: var(--color-accent-foreground);
+  --color-secondary: var(--color-verified);
+  --color-secondary-foreground: var(--color-verified-foreground);
+  --color-muted: var(--color-surface-muted);
+  --color-muted-foreground: var(--color-foreground-muted);
+  --color-card: var(--color-surface);
+  --color-card-foreground: var(--color-foreground);
+  --color-popover: var(--color-surface-raised);
+  --color-popover-foreground: var(--color-foreground);
+  --color-destructive: var(--color-danger);
+  --color-destructive-foreground: var(--color-danger-foreground);
+  --color-ring: var(--color-accent-ring);
+
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --radius-control: var(--radius-control);
+  --radius-panel: var(--radius-panel);
+
+  --text-display: var(--text-display);
+  --text-display--line-height: var(--text-display--line-height);
+  --text-section-title: var(--text-section-title);
+  --text-section-title--line-height: var(--text-section-title--line-height);
+  --text-panel-title: var(--text-panel-title);
+  --text-panel-title--line-height: var(--text-panel-title--line-height);
+  --text-body: var(--text-body);
+  --text-body--line-height: var(--text-body--line-height);
+  --text-body-sm: var(--text-body-sm);
+  --text-body-sm--line-height: var(--text-body-sm--line-height);
+  --text-label: var(--text-label);
+  --text-label--line-height: var(--text-label--line-height);
+  --text-meta: var(--text-meta);
+  --text-meta--line-height: var(--text-meta--line-height);
+
+  --tracking-tight: var(--tracking-tight);
+  --tracking-caps: var(--tracking-caps);
 }
 
 @layer base {
@@ -201,6 +658,7 @@
   }
 
   html {
+    min-height: 100%;
     font-family: var(--font-sans);
     background-color: var(--color-background);
     color: var(--color-foreground);
@@ -208,9 +666,23 @@
 
   body {
     min-height: 100vh;
-    background-color: var(--color-background);
+    margin: 0;
+    background:
+      radial-gradient(
+        circle at 20% 0%,
+        color-mix(in oklab, var(--color-accent) 8%, transparent),
+        transparent 32rem
+      ),
+      radial-gradient(
+        circle at 80% 10%,
+        color-mix(in oklab, var(--color-verified) 7%, transparent),
+        transparent 34rem
+      ),
+      var(--color-background);
     color: var(--color-foreground);
     text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   button,
@@ -218,6 +690,17 @@
   textarea,
   select {
     font: inherit;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  input:disabled,
+  textarea:disabled,
+  select:disabled {
+    cursor: not-allowed;
   }
 
   ::selection {
@@ -249,21 +732,21 @@
 @utility type-page-title {
   font-size: var(--text-display);
   line-height: var(--text-display--line-height);
-  font-weight: 600;
+  font-weight: 650;
   letter-spacing: var(--tracking-tight);
 }
 
 @utility type-section-title {
   font-size: var(--text-section-title);
   line-height: var(--text-section-title--line-height);
-  font-weight: 600;
+  font-weight: 650;
   letter-spacing: var(--tracking-tight);
 }
 
 @utility type-panel-title {
   font-size: var(--text-panel-title);
   line-height: var(--text-panel-title--line-height);
-  font-weight: 600;
+  font-weight: 650;
   letter-spacing: var(--tracking-tight);
 }
 
@@ -280,7 +763,7 @@
 @utility type-label {
   font-size: var(--text-label);
   line-height: var(--text-label--line-height);
-  font-weight: 500;
+  font-weight: 550;
 }
 
 @utility type-meta {
@@ -291,9 +774,82 @@
 @utility type-kicker {
   font-size: var(--text-meta);
   line-height: var(--text-meta--line-height);
-  font-weight: 600;
+  font-weight: 650;
   letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
+}
+
+@utility surface-panel {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-sm);
+}
+
+@utility surface-raised {
+  background-color: var(--color-surface-raised);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-md);
+}
+
+@utility field-control {
+  min-height: var(--control-height-comfortable);
+  padding-inline: var(--control-padding-x-comfortable);
+  padding-block: var(--control-padding-y-comfortable);
+  background-color: var(--color-field);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+}
+
+@utility field-control-compact {
+  min-height: var(--control-height-compact);
+  padding-inline: var(--control-padding-x-compact);
+  padding-block: var(--control-padding-y-compact);
+  background-color: var(--color-field);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+}
+
+@layer components {
+  .afenda-signal-panel {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .afenda-signal-panel[data-state="active"] {
+    border-color: color-mix(
+      in oklab,
+      var(--color-accent) 24%,
+      var(--color-border)
+    );
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--color-accent) 10%, transparent),
+      var(--shadow-md);
+  }
+
+  .afenda-signal-panel[data-state="verified"] {
+    border-color: color-mix(
+      in oklab,
+      var(--color-verified) 22%,
+      var(--color-border)
+    );
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--color-verified) 8%, transparent),
+      var(--shadow-md);
+  }
+
+  .afenda-signal-panel[data-state="evidence"] {
+    border-color: color-mix(
+      in oklab,
+      var(--color-warning) 22%,
+      var(--color-border)
+    );
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--color-warning) 8%, transparent),
+      var(--shadow-md);
+  }
 }
 
 @layer components {
@@ -306,6 +862,6 @@
   }
 
   .rac-invalid[data-invalid] {
-    @apply border-danger;
+    @apply border-danger ring-danger-ring;
   }
 }

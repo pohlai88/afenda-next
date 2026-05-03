@@ -16,7 +16,10 @@ Generated index for shared UI primitive source files.
 Source groups:
 
 - [\_\_tests\_\_/](./__tests__/)
+- [manifests/](./manifests/)
 
 Source files:
 
+- [app.approval-ledger.manifests.shared.ts](./app.approval-ledger.manifests.shared.ts)
+- [app.approval-ledger.schema.shared.ts](./app.approval-ledger.schema.shared.ts)
 - [app.controls.primitive.client.tsx](./app.controls.primitive.client.tsx)

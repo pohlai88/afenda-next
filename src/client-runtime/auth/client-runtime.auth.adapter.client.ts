@@ -13,16 +13,16 @@ import { createAuthClient } from "better-auth/react";
 
 import { env } from "@/env";
 
-const clientBaseURL = process.env["NEXT_PUBLIC_APP_URL"]?.replace(/\/$/u, "");
-
 const infraClientPlugins =
   env.NEXT_PUBLIC_BETTER_AUTH_INFRA === "1"
     ? ([dashClient(), sentinelClient()] as const as BetterAuthClientPlugin[])
     : [];
 
-/** Same origin when `NEXT_PUBLIC_APP_URL` is unset (dev default). */
+/** Auth requests stay same-origin so browser and server share one auth origin. */
 export const authClient = createAuthClient({
-  ...(clientBaseURL ? { baseURL: clientBaseURL } : {}),
+  fetchOptions: {
+    credentials: "include",
+  },
   ...(infraClientPlugins.length > 0 ? { plugins: infraClientPlugins } : {}),
 });
 

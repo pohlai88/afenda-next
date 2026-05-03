@@ -10,8 +10,13 @@ import "server-only";
 import { headers } from "next/headers";
 import { cache } from "react";
 
-import { getAuth } from "./auth.server.facade.server";
+import { getAuth } from "./auth.config.adapter.server";
 
 export const getSession = cache(async () =>
-  getAuth().api.getSession({ headers: await headers() }),
+  getAuth().api.getSession({
+    headers: await headers(),
+    query: {
+      disableCookieCache: true,
+    },
+  }),
 );

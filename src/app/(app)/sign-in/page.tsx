@@ -2,10 +2,9 @@ import { type Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { SignInSurface } from "./_components/sign-in.surface.client";
-import { safeInternalPath } from "@/lib/url.safe-internal-path.shared";
+import { SignInSurface } from "./_components/sign-in.route.surface.client";
 import { getSession } from "@/server/better-auth/auth.session.query.server";
-import { getEnabledOAuthProviderIds } from "@/server/better-auth/auth.oauth-providers.server";
+import { getEnabledOAuthProviderIds } from "@/server/better-auth/auth.oauth.providers.server";
 
 export const metadata: Metadata = {
   title: "Sign in",
@@ -51,4 +50,13 @@ export default async function SignInPage({
       </div>
     </main>
   );
+}
+
+function safeInternalPath(raw: string | undefined, fallback: string): string {
+  if (raw === undefined || raw === "") return fallback;
+
+  const decoded = decodeURIComponent(raw);
+  if (!decoded.startsWith("/") || decoded.startsWith("//")) return fallback;
+  if (decoded.includes("://")) return fallback;
+  return decoded;
 }

@@ -31,8 +31,6 @@ const guidelineDir = path.join(repoRoot, ".guideline");
 const guidelineNextjsDir = path.join(guidelineDir, "nextjs");
 const guidelineReactAriaDir = path.join(guidelineDir, "react-aria");
 const srcDir = path.join(repoRoot, "src");
-const featuresDir = path.join(srcDir, "features");
-const workbenchFeatureDir = path.join(featuresDir, "workbench");
 const componentsDir = path.join(srcDir, "components");
 const uiComponentsDir = path.join(componentsDir, "ui");
 
@@ -46,8 +44,6 @@ const guidelineReactAriaReadmePath = path.join(
   guidelineReactAriaDir,
   "README.md",
 );
-const featuresReadmePath = path.join(featuresDir, "README.md");
-const workbenchFeatureReadmePath = path.join(workbenchFeatureDir, "README.md");
 const componentsReadmePath = path.join(componentsDir, "README.md");
 const uiComponentsReadmePath = path.join(uiComponentsDir, "README.md");
 
@@ -71,8 +67,6 @@ const GENERATED_README_OUTPUTS = new Set([
   path.resolve(guidelineReadmePath),
   path.resolve(guidelineNextjsReadmePath),
   path.resolve(guidelineReactAriaReadmePath),
-  path.resolve(featuresReadmePath),
-  path.resolve(workbenchFeatureReadmePath),
   path.resolve(componentsReadmePath),
   path.resolve(uiComponentsReadmePath),
 ]);
@@ -120,20 +114,6 @@ const README_MATRIX = [
     outputPath: guidelineReactAriaReadmePath,
     title: "React Aria Guideline Index",
     purpose: "React Aria guidance for shared accessible UI.",
-  },
-  {
-    mode: "source-root",
-    sourceDir: featuresDir,
-    outputPath: featuresReadmePath,
-    title: "Feature Source Index",
-    purpose: "Generated index for ERP feature source margins.",
-  },
-  {
-    mode: "source-module",
-    sourceDir: workbenchFeatureDir,
-    outputPath: workbenchFeatureReadmePath,
-    title: "Workbench Feature Index",
-    purpose: "Generated index for workbench feature source files.",
   },
   {
     mode: "source-root",
@@ -194,7 +174,7 @@ function validateReadmeMatrix() {
   );
 
   if (actualOutputs.length !== GENERATED_README_OUTPUTS.size) {
-    throw new Error("README matrix must declare exactly ten D1/D2/D3 outputs.");
+    throw new Error("README matrix must declare exactly eight D1/D2/D3 outputs.");
   }
 
   for (const outputPath of actualOutputs) {
@@ -504,7 +484,6 @@ function writeRootReadme(config, entries) {
     "",
     "- [Project documentation index](docs/README.md)",
     "- [Guideline index](.guideline/README.md)",
-    "- [Feature source index](src/features/README.md)",
     "- [Component source index](src/components/README.md)",
     `- ADR records indexed: ${entries.length}`,
   ];
@@ -531,7 +510,6 @@ function writeDocsReadme(config, entries) {
     "- [automation-contract.md](./automation-contract.md)",
     "- [adr/](./adr)",
     "- [guideline index](../.guideline/README.md)",
-    "- [feature source index](../src/features/README.md)",
     "- [component source index](../src/components/README.md)",
     "",
     "## ADR Catalog",
@@ -606,11 +584,6 @@ function main() {
   const guidelineGroups = listGuidelineGroups();
   const nextjsGuidelines = listMarkdownFiles(guidelineNextjsDir);
   const reactAriaGuidelines = listMarkdownFiles(guidelineReactAriaDir);
-  const featureGroups = listChildDirectories(featuresDir);
-  const workbenchFeatureEntries = {
-    groups: listChildDirectories(workbenchFeatureDir),
-    files: listSourceFiles(workbenchFeatureDir),
-  };
   const componentGroups = listChildDirectories(componentsDir);
   const uiComponentEntries = {
     groups: listChildDirectories(uiComponentsDir),
@@ -629,11 +602,6 @@ function main() {
     reactAriaGuidelines,
   );
   writeDocsReadme(getReadmeConfig("docs"), adrEntries);
-  writeSourceRootIndex(getReadmeConfigBySource(featuresDir), featureGroups);
-  writeSourceModuleIndex(
-    getReadmeConfigBySource(workbenchFeatureDir),
-    workbenchFeatureEntries,
-  );
   writeSourceRootIndex(getReadmeConfigBySource(componentsDir), componentGroups);
   writeSourceModuleIndex(
     getReadmeConfigBySource(uiComponentsDir),
@@ -656,7 +624,7 @@ function main() {
   }
 
   console.log(
-    `Regenerated docs index with ${adrEntries.length} ADR record(s), ${nextjsGuidelines.length} Next.js guideline(s), ${reactAriaGuidelines.length} React Aria guideline(s), ${featureGroups.length} feature group(s), and ${componentGroups.length} component group(s).`,
+    `Regenerated docs index with ${adrEntries.length} ADR record(s), ${nextjsGuidelines.length} Next.js guideline(s), ${reactAriaGuidelines.length} React Aria guideline(s), and ${componentGroups.length} component group(s).`,
   );
 }
 

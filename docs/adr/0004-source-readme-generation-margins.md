@@ -11,7 +11,7 @@
 
 ADR 0003 established generated README ownership for documentation margins under `docs/` and `.guideline/`. Source-code folders now also need lightweight navigation indexes, but source README automation should not recursively scan the whole repository or compete with architecture-boundary enforcement.
 
-The current source-code margins with stable directory meaning are `src/features`, `src/features/workbench`, `src/components`, and `src/components/ui`.
+The current source-code margins with stable directory meaning are `src/components` and `src/components/ui`.
 
 ## Decision
 
@@ -19,8 +19,6 @@ Slice D2 declares source-code README generation for explicit source margins only
 
 Slice D2 declares these generated README outputs:
 
-- `src/features/README.md`
-- `src/features/workbench/README.md`
 - `src/components/README.md`
 - `src/components/ui/README.md`
 

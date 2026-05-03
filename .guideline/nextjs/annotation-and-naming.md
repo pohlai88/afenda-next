@@ -63,9 +63,9 @@ Examples:
 
 ```txt
 app.controls.primitive.client.tsx
-erp-workbench.catalog.registry.workbench.ts
-erp-workbench.page.surface.client.tsx
-erp-workbench.catalog.contract.shared.ts
+erp-runtime-workbench.route.surface.client.tsx
+erp-workbench.runtime.contract.shared.ts
+auth.oauth.provider.shared.ts
 procurement.purchase-request.policy.server.ts
 procurement.approval-queue.table.client.tsx
 ```

@@ -1,0 +1,97 @@
+{
+  "version": 1,
+  "components": [
+    {
+      "id": "app-button",
+      "manifest": "./manifests/app-button.approval-ledger.manifest.shared.ts"
+    },
+    {
+      "id": "app-form",
+      "manifest": "./manifests/app-form.approval-ledger.manifest.shared.ts"
+    },
+    {
+      "id": "app-text-field",
+      "manifest": "./manifests/app-text-field.approval-ledger.manifest.shared.ts"
+    },
+    {
+      "id": "app-search-field",
+      "manifest": "./manifests/app-search-field.approval-ledger.manifest.shared.ts"
+    },
+    {
+      "id": "app-switch-field",
+      "manifest": "./manifests/app-switch-field.approval-ledger.manifest.shared.ts"
+    },
+    {
+      "id": "app-dialog",
+      "manifest": "./manifests/app-dialog.approval-ledger.manifest.shared.ts"
+    },
+    {
+      "id": "app-select-field",
+      "manifest": "./manifests/app-select-field.approval-ledger.manifest.shared.ts"
+    },
+    {
+      "id": "app-table",
+      "manifest": "./manifests/app-table.approval-ledger.manifest.shared.ts"
+    },
+    {
+      "id": "app-table-header",
+      "manifest": "./manifests/app-table-header.approval-ledger.manifest.shared.ts"
+    },
+    {
+      "id": "app-column",
+      "manifest": "./manifests/app-column.approval-ledger.manifest.shared.ts"
+    },
+    {
+      "id": "app-table-body",
+      "manifest": "./manifests/app-table-body.approval-ledger.manifest.shared.ts"
+    },
+    {
+      "id": "app-row",
+      "manifest": "./manifests/app-row.approval-ledger.manifest.shared.ts"
+    },
+    {
+      "id": "app-cell",
+      "manifest": "./manifests/app-cell.approval-ledger.manifest.shared.ts"
+    },
+    {
+      "id": "app-tabs",
+      "manifest": "./manifests/app-tabs.approval-ledger.manifest.shared.ts"
+    },
+    {
+      "id": "app-tab-list",
+      "manifest": "./manifests/app-tab-list.approval-ledger.manifest.shared.ts"
+    },
+    {
+      "id": "app-tab",
+      "manifest": "./manifests/app-tab.approval-ledger.manifest.shared.ts"
+    },
+    {
+      "id": "app-tab-panels",
+      "manifest": "./manifests/app-tab-panels.approval-ledger.manifest.shared.ts"
+    },
+    {
+      "id": "app-tab-panel",
+      "manifest": "./manifests/app-tab-panel.approval-ledger.manifest.shared.ts"
+    },
+    {
+      "id": "app-grid-list",
+      "manifest": "./manifests/app-grid-list.approval-ledger.manifest.shared.ts"
+    },
+    {
+      "id": "app-grid-list-item",
+      "manifest": "./manifests/app-grid-list-item.approval-ledger.manifest.shared.ts"
+    },
+    {
+      "id": "app-panel",
+      "manifest": "./manifests/app-panel.approval-ledger.manifest.shared.ts"
+    },
+    {
+      "id": "app-status",
+      "manifest": "./manifests/app-status.approval-ledger.manifest.shared.ts"
+    },
+    {
+      "id": "app-toolbar",
+      "manifest": "./manifests/app-toolbar.approval-ledger.manifest.shared.ts"
+    }
+  ]
+}

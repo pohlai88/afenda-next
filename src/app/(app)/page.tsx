@@ -2,9 +2,9 @@ import { headers } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { getAuth } from "@/server/better-auth/auth.server.facade.server";
+import { getAuth } from "@/server/better-auth/auth.config.adapter.server";
 import { getSession } from "@/server/better-auth/auth.session.query.server";
-import { api, HydrateClient } from "@/trpc/trpc.rsc-hydration.server";
+import { api, HydrateClient } from "@/trpc/trpc.rsc.hydration.server";
 
 import { ComposerStatus } from "./_components/afenda-home.composer-status.status.client";
 import { PreferencesPanel } from "./_components/afenda-home.preferences-panel.dialog.client";

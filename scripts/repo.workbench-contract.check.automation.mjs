@@ -3,7 +3,7 @@
  * @afenda-subject workbench-contract
  * @afenda-artifact check
  * @afenda-boundary automation
- * @afenda-description Automation check for workbench contract coverage
+ * @afenda-description Automation check for the active ERP runtime workbench contract
  */
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
@@ -17,39 +17,64 @@ const appControlsPath = path.join(
   "ui",
   "app.controls.primitive.client.tsx",
 );
-const workbenchShellPath = path.join(
+const componentsIndexPath = path.join(
   srcRoot,
-  "features",
-  "workbench",
-  "client",
-  "erp-workbench.page.surface.client.tsx",
-);
-const workbenchComponentsPath = path.join(
-  srcRoot,
-  "features",
-  "workbench",
   "components",
-  "erp-workbench.surfaces.catalog.client.tsx",
+  "ui",
+  "components.json",
 );
-const workbenchRegistryPath = path.join(
+const manifestsApprovedPath = path.join(
   srcRoot,
-  "features",
-  "workbench",
-  "erp-workbench.catalog.registry.workbench.ts",
-);
-const workbenchTypesPath = path.join(
-  srcRoot,
-  "features",
-  "workbench",
-  "types",
-  "erp-workbench.catalog.contract.shared.ts",
-);
-const workbenchInspectorPath = path.join(
-  srcRoot,
-  "features",
-  "workbench",
   "components",
-  "erp-workbench.inspector.panel.client.tsx",
+  "ui",
+  "app.approval-ledger.manifests.shared.ts",
+);
+const workbenchRoutePath = path.join(
+  srcRoot,
+  "app",
+  "(app)",
+  "erp-workbench",
+  "page.tsx",
+);
+const workbenchSurfacePath = path.join(
+  srcRoot,
+  "app",
+  "(app)",
+  "erp-workbench",
+  "_components",
+  "erp-runtime-workbench.route.surface.client.tsx",
+);
+const workbenchScenesPath = path.join(
+  srcRoot,
+  "app",
+  "(app)",
+  "erp-workbench",
+  "_components",
+  "erp-workbench.runtime.scenes.client.tsx",
+);
+const workbenchContractPath = path.join(
+  srcRoot,
+  "app",
+  "(app)",
+  "erp-workbench",
+  "_components",
+  "erp-workbench.runtime.contract.shared.ts",
+);
+const workbenchDataPath = path.join(
+  srcRoot,
+  "app",
+  "(app)",
+  "erp-workbench",
+  "_components",
+  "erp-workbench.runtime.data.fixture.ts",
+);
+const workbenchProofBuilderPath = path.join(
+  srcRoot,
+  "app",
+  "(app)",
+  "erp-workbench",
+  "_components",
+  "erp-workbench.runtime.contract-proof.shared.ts",
 );
 
 function walk(dir) {
@@ -71,13 +96,63 @@ function relative(filePath) {
   return path.relative(repoRoot, filePath).replaceAll("\\", "/");
 }
 
-function isAllowedReactAriaBoundary(filePath) {
-  const relativePath = relative(filePath);
+function readJson(filePath) {
+  return JSON.parse(read(filePath));
+}
 
+function isAllowedReactAriaBoundary(filePath) {
   return (
-    relativePath === "src/components/ui/app.controls.primitive.client.tsx" ||
-    relativePath.startsWith("src/features/workbench/")
+    relative(filePath) === "src/components/ui/app.controls.primitive.client.tsx"
   );
+}
+
+function parseBoundaryExports(content) {
+  return [...content.matchAll(/export function (App[A-Z][A-Za-z0-9]+)/g)].map(
+    (match) => match[1],
+  );
+}
+
+function parseImportList(content, moduleName) {
+  const imports = [];
+  const matches = content.matchAll(
+    new RegExp(
+      `import\\s*{([\\s\\S]*?)}\\s*from\\s*["']${moduleName.replaceAll("/", "\\/")}["']`,
+      "g",
+    ),
+  );
+
+  for (const match of matches) {
+    imports.push(
+      ...match[1]
+        .split(",")
+        .map((entry) => entry.replaceAll(/\s+/g, " ").trim())
+        .filter(Boolean)
+        .map((entry) => entry.replace(/^type\s+/, "").split(/\s+as\s+/)[0]?.trim()),
+    );
+  }
+
+  return imports;
+}
+
+function parseManifestMetadata(filePath) {
+  const content = read(filePath);
+  const fields = {
+    id: content.match(/id:\s*"([^"]+)"/)?.[1],
+    exportName: content.match(/exportName:\s*"([^"]+)"/)?.[1],
+    status: content.match(/status:\s*"([^"]+)"/)?.[1],
+    demoState: content.match(/demoState:\s*"([^"]+)"/)?.[1],
+  };
+
+  return {
+    ...fields,
+    filePath,
+    content,
+    isValid:
+      fields.id !== undefined &&
+      fields.exportName !== undefined &&
+      fields.status !== undefined &&
+      fields.demoState !== undefined,
+  };
 }
 
 const srcFiles = walk(srcRoot).filter((filePath) =>
@@ -85,6 +160,7 @@ const srcFiles = walk(srcRoot).filter((filePath) =>
 );
 
 const errors = [];
+const warnings = [];
 
 for (const filePath of srcFiles) {
   if (filePath === globalsPath) continue;
@@ -97,39 +173,27 @@ for (const filePath of srcFiles) {
 }
 
 for (const requiredPath of [
-  workbenchShellPath,
-  workbenchComponentsPath,
-  workbenchRegistryPath,
-  workbenchTypesPath,
-  workbenchInspectorPath,
+  appControlsPath,
+  componentsIndexPath,
+  manifestsApprovedPath,
+  workbenchRoutePath,
+  workbenchSurfacePath,
+  workbenchScenesPath,
+  workbenchContractPath,
+  workbenchDataPath,
+  workbenchProofBuilderPath,
 ]) {
   if (!existsSync(requiredPath)) {
-    errors.push(
-      `Required workbench file "${relative(requiredPath)}" is missing.`,
-    );
+    errors.push(`Required workbench file "${relative(requiredPath)}" is missing.`);
   }
 }
 
 const appControls = read(appControlsPath);
-for (const exportedControlName of [
-  "AppButton",
-  "AppForm",
-  "AppTextField",
-  "AppSearchField",
-  "AppSwitchField",
-  "AppSelectField",
-  "AppDialog",
-  "AppTable",
-  "AppTableHeader",
-  "AppColumn",
-  "AppTableBody",
-  "AppRow",
-  "AppCell",
-]) {
+const boundaryExports = parseBoundaryExports(appControls);
+
+for (const exportedControlName of boundaryExports) {
   if (!appControls.includes(`export function ${exportedControlName}`)) {
-    errors.push(
-      `Shared control "${exportedControlName}" must remain exported.`,
-    );
+    errors.push(`Shared control "${exportedControlName}" must remain exported.`);
   }
 }
 
@@ -154,10 +218,7 @@ if (!appControls.includes('slot="description"')) {
 }
 
 for (const fieldName of ["AppTextField", "AppSelectField"]) {
-  if (
-    !appControls.includes(`${fieldName}`) ||
-    !appControls.includes("ariaLabel")
-  ) {
+  if (!appControls.includes(`${fieldName}`) || !appControls.includes("ariaLabel")) {
     errors.push(
       `${fieldName} must support the ariaLabel accessible-name escape hatch.`,
     );
@@ -165,76 +226,210 @@ for (const fieldName of ["AppTextField", "AppSelectField"]) {
 }
 
 if (!appControls.includes("export function AppForm")) {
-  errors.push(
-    "Shared controls must export AppForm for approved form semantics.",
-  );
+  errors.push("Shared controls must export AppForm for approved form semantics.");
 }
 
 if (!appControls.includes("onPress")) {
-  errors.push(
-    "Shared buttons must preserve the React Aria onPress interaction model.",
-  );
+  errors.push("Shared buttons must preserve the React Aria onPress interaction model.");
 }
 
-const workbenchShell = read(workbenchShellPath);
-for (const requiredSection of [
-  "Primitives",
-  "Patterns",
-  "Scenes",
-  "Contract Coverage",
-]) {
-  if (!workbenchShell.includes(requiredSection)) {
+let indexedComponents = [];
+if (!existsSync(componentsIndexPath)) {
+  errors.push(`Shared UI inventory "${relative(componentsIndexPath)}" is missing.`);
+} else {
+  try {
+    const parsedIndex = readJson(componentsIndexPath);
+    indexedComponents = Array.isArray(parsedIndex.components)
+      ? parsedIndex.components
+      : [];
+
+    if (parsedIndex.version !== 1) {
+      errors.push(`Shared UI inventory "${relative(componentsIndexPath)}" must use version 1.`);
+    }
+  } catch (error) {
     errors.push(
-      `Workbench section "${requiredSection}" is missing from the route.`,
+      `Shared UI inventory "${relative(componentsIndexPath)}" failed to parse: ${String(error)}.`,
     );
   }
 }
 
-const workbenchRegistry = read(workbenchRegistryPath);
-for (const requiredField of [
-  "name:",
-  "category:",
-  "status:",
-  "sourcePath:",
-  "ariaPrimitives:",
-  "states:",
-  "tokens:",
-  "useWhen:",
-  "doNotUseWhen:",
-  "render:",
-]) {
-  if (!workbenchRegistry.includes(requiredField)) {
+const manifestEntries = [];
+const seenIndexIds = new Set();
+
+for (const component of indexedComponents) {
+  if (typeof component?.id !== "string" || typeof component?.manifest !== "string") {
     errors.push(
-      `Workbench registry is missing required field "${requiredField}".`,
+      `Shared UI inventory entry must include string id and manifest fields in "${relative(componentsIndexPath)}".`,
+    );
+    continue;
+  }
+
+  if (seenIndexIds.has(component.id)) {
+    errors.push(`Shared UI inventory contains duplicate id "${component.id}".`);
+    continue;
+  }
+
+  seenIndexIds.add(component.id);
+
+  const manifestPath = path.resolve(path.dirname(componentsIndexPath), component.manifest);
+  if (!existsSync(manifestPath)) {
+    errors.push(
+      `Shared UI inventory entry "${component.id}" points to missing manifest "${component.manifest}".`,
+    );
+    continue;
+  }
+
+  const manifestMetadata = parseManifestMetadata(manifestPath);
+  if (!manifestMetadata.isValid) {
+    errors.push(`Manifest "${relative(manifestPath)}" is missing required ledger fields.`);
+    continue;
+  }
+
+  if (manifestMetadata.id !== component.id) {
+    errors.push(
+      `Shared UI inventory id "${component.id}" does not match manifest id "${manifestMetadata.id}" in "${relative(manifestPath)}".`,
+    );
+  }
+
+  manifestEntries.push({
+    component,
+    manifestPath,
+    manifestMetadata,
+  });
+}
+
+const manifestExports = new Set(
+  manifestEntries.map((entry) => entry.manifestMetadata.exportName),
+);
+
+for (const entry of manifestEntries) {
+  if (!boundaryExports.includes(entry.manifestMetadata.exportName)) {
+    errors.push(
+      `Manifest "${relative(entry.manifestPath)}" references missing shared export "${entry.manifestMetadata.exportName}".`,
     );
   }
 }
 
-for (const requiredWorkbenchItem of [
-  "AppSearchField",
-  "AppDialog",
-  "AppTable",
-  "ERP App Shell",
-  "Procurement Approval Scene",
-]) {
-  if (!workbenchRegistry.includes(requiredWorkbenchItem)) {
+for (const exportedControlName of boundaryExports) {
+  if (!manifestExports.has(exportedControlName)) {
     errors.push(
-      `Workbench registry must include "${requiredWorkbenchItem}" in Phase 2.`,
+      `Shared control "${exportedControlName}" must have an approval manifest and inventory entry.`,
     );
   }
 }
 
-const workbenchInspector = read(workbenchInspectorPath);
-for (const requiredLabel of [
-  "Component Inspector",
-  "What is this?",
+const manifestsApproved = existsSync(manifestsApprovedPath)
+  ? read(manifestsApprovedPath)
+  : "";
+
+for (const entry of manifestEntries) {
+  const manifestModulePath = entry.component.manifest.replace(/\.ts$/, "");
+  const isWired = manifestsApproved.includes(manifestModulePath);
+
+  if (entry.manifestMetadata.status === "approved" && !isWired) {
+    errors.push(
+      `Approved manifest "${entry.manifestMetadata.exportName}" is missing Contracts proof wiring in "${relative(manifestsApprovedPath)}".`,
+    );
+  }
+
+  if (entry.manifestMetadata.demoState === "available" && !isWired) {
+    warnings.push(
+      `Available manifest "${entry.manifestMetadata.exportName}" is not wired into "${relative(manifestsApprovedPath)}".`,
+    );
+  }
+}
+
+const workbenchRoute = read(workbenchRoutePath);
+for (const requiredPhrase of [
+  "getSession",
+  "redirect(",
+  'callbackUrl: "/erp-workbench"',
+  "getErpRuntimeWorkbenchData()",
+]) {
+  if (!workbenchRoute.includes(requiredPhrase)) {
+    errors.push(`Workbench route is missing "${requiredPhrase}".`);
+  }
+}
+
+const workbenchSurface = read(workbenchSurfacePath);
+for (const requiredPhrase of [
+  "ERP Runtime Workbench modes",
+  "Afenda preview environment",
+  "Overview",
+  "Contracts",
+  "Methods",
+  "Procurement",
+  "contractProofItems",
+]) {
+  if (!workbenchSurface.includes(requiredPhrase)) {
+    errors.push(`Workbench surface is missing "${requiredPhrase}".`);
+  }
+}
+
+const workbenchScenes = read(workbenchScenesPath);
+for (const requiredPhrase of [
+  "Runtime overview",
+  "Shared UI approval ledger",
+  "Operator method preview",
+  "Procurement preview",
+  "Current context",
+  "Selected request",
+  "Approve Request",
+  "Reject Request",
+  "Approval ledger details",
+  "Accessibility notes",
   "Use when",
-  "Do not use when",
-  "React Aria",
-  "Source",
+  "Avoid when",
 ]) {
-  if (!workbenchInspector.includes(requiredLabel)) {
-    errors.push(`Workbench inspector is missing "${requiredLabel}".`);
+  if (!workbenchScenes.includes(requiredPhrase)) {
+    errors.push(`Workbench scenes are missing "${requiredPhrase}".`);
+  }
+}
+
+const workbenchContract = read(workbenchContractPath);
+for (const requiredType of [
+  "WorkbenchModeId",
+  "WorkbenchPreviewItem",
+  "WorkbenchContractProofItem",
+  "WorkbenchProcurementRow",
+  "ErpRuntimeWorkbenchData",
+]) {
+  if (!workbenchContract.includes(`export type ${requiredType}`)) {
+    errors.push(`Workbench contract is missing "${requiredType}".`);
+  }
+}
+
+const workbenchData = read(workbenchDataPath);
+for (const requiredPhrase of [
+  "ERP Runtime Workbench",
+  "buildContractsWorkbenchPreviewItems",
+  "buildContractsWorkbenchProofItems",
+  "contractProofItems",
+  "app-tabs",
+  "Ledger entries",
+  "Queue review method",
+  "Inspector method",
+  "Evidence method",
+  "Decision method",
+  "pending-review-lane",
+  "policy-hold-lane",
+  "full-queue-lane",
+]) {
+  if (!workbenchData.includes(requiredPhrase)) {
+    errors.push(`Workbench data fixture is missing "${requiredPhrase}".`);
+  }
+}
+
+const workbenchProofBuilder = read(workbenchProofBuilderPath);
+for (const requiredPhrase of [
+  "sharedUiComponentManifests",
+  "buildContractsWorkbenchPreviewItems",
+  "buildContractsWorkbenchProofItems",
+  'modeId: "contracts"',
+  "Approved component",
+]) {
+  if (!workbenchProofBuilder.includes(requiredPhrase)) {
+    errors.push(`Workbench proof builder is missing "${requiredPhrase}".`);
   }
 }
 
@@ -245,27 +440,17 @@ for (const filePath of srcFiles) {
     content.includes("UI preview") ||
     content.includes("Preview index") ||
     content.includes(".preview.tsx") ||
-    content.includes("preview-contract")
+    content.includes("preview-contract") ||
+    content.includes("src/features/workbench") ||
+    content.includes("erp-workbench.page.surface.client") ||
+    content.includes("erp-workbench.catalog.registry.workbench") ||
+    content.includes("erp-workbench.inspector.panel.client")
   ) {
     errors.push(
       `Legacy preview naming remains in ${relative(filePath)} and must be retired.`,
     );
   }
 }
-
-const blockedReactAriaImports = new Set([
-  "Dialog",
-  "DialogTrigger",
-  "Modal",
-  "ModalOverlay",
-  "SearchField",
-  "Table",
-  "TableHeader",
-  "Column",
-  "TableBody",
-  "Row",
-  "Cell",
-]);
 
 for (const filePath of srcFiles.filter((candidate) =>
   /\.(ts|tsx)$/.test(candidate),
@@ -275,29 +460,39 @@ for (const filePath of srcFiles.filter((candidate) =>
   }
 
   const content = read(filePath);
-  const importMatches = content.matchAll(
-    /import\s*{([\s\S]*?)}\s*from\s*"react-aria-components"/g,
-  );
 
-  for (const match of importMatches) {
-    const importedNames = match[1]
-      .split(",")
-      .map((entry) => entry.replaceAll(/\s+/g, " ").trim())
-      .filter(Boolean)
-      .map((entry) =>
-        entry
-          .replace(/^type\s+/, "")
-          .split(/\s+as\s+/)[0]
-          ?.trim(),
-      );
-
-    const blockedNames = importedNames.filter((name) =>
-      blockedReactAriaImports.has(name),
+  if (content.includes('from "react-aria-components"')) {
+    const importedNames = parseImportList(content, "react-aria-components");
+    warnings.push(
+      `${relative(filePath)} imports react-aria-components directly outside the shared boundary: ${importedNames.join(", ") || "unknown symbols"}.`,
     );
+  }
+}
 
-    if (blockedNames.length > 0) {
-      errors.push(
-        `${relative(filePath)} imports blocked React Aria primitives directly: ${blockedNames.join(", ")}.`,
+for (const filePath of srcFiles.filter((candidate) =>
+  /\.(ts|tsx)$/.test(candidate),
+)) {
+  if (
+    filePath === appControlsPath ||
+    filePath.includes("__tests__") ||
+    filePath.includes("test-runtime") ||
+    filePath.includes(`${path.sep}manifests${path.sep}`) ||
+    filePath === manifestsApprovedPath
+  ) {
+    continue;
+  }
+
+  const content = read(filePath);
+  const importedSymbols = [
+    ...parseImportList(content, "@/components/ui/app.controls.primitive.client"),
+    ...parseImportList(content, "./app.controls.primitive.client"),
+    ...parseImportList(content, "../app.controls.primitive.client"),
+  ].filter((name) => name?.startsWith("App"));
+
+  for (const importedSymbol of importedSymbols) {
+    if (!manifestExports.has(importedSymbol)) {
+      warnings.push(
+        `${relative(filePath)} imports unledgered shared control "${importedSymbol}".`,
       );
     }
   }
@@ -313,11 +508,12 @@ if (existsSync(activeBaselinePath)) {
   const baselineContent = read(activeBaselinePath);
   for (const requiredPhrase of [
     "Next.js App Router",
-    "I18nProvider",
+    "ClientI18nProvider",
     "React Aria MCP",
     "PortalProvider",
     "CSP nonce",
     "Locale routing",
+    "/erp-workbench",
   ]) {
     if (!baselineContent.includes(requiredPhrase)) {
       errors.push(
@@ -378,6 +574,14 @@ if (errors.length > 0) {
     console.error(`- ${error}`);
   }
   process.exit(1);
+}
+
+if (warnings.length > 0) {
+  console.warn("Workbench contract warnings:\n");
+  for (const warning of warnings) {
+    console.warn(`- ${warning}`);
+  }
+  console.warn("");
 }
 
 console.log("Workbench contract check passed.");

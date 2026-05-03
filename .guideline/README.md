@@ -15,6 +15,7 @@ Repository guidance and working standards.
 
 Guideline groups:
 
+- [better-auth/](./better-auth/)
 - [nextjs/](./nextjs/)
 - [react-aria/](./react-aria/)
 

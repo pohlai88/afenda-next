@@ -50,8 +50,6 @@ Manual source docs include:
 
 | Source                   | Output                             | Purpose                   |
 | ------------------------ | ---------------------------------- | ------------------------- |
-| `src/features`           | `src/features/README.md`           | Feature source index      |
-| `src/features/workbench` | `src/features/workbench/README.md` | Workbench feature index   |
 | `src/components`         | `src/components/README.md`         | Shared component index    |
 | `src/components/ui`      | `src/components/ui/README.md`      | Shared UI primitive index |
 

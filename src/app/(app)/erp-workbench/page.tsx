@@ -7,9 +7,7 @@ import { getErpRuntimeWorkbenchData } from "./_components/erp-workbench.runtime.
 
 export default async function ErpWorkbenchPage() {
   const session = await getSession();
-  const skipAuthGuard =
-    process.env["AFENDA_E2E_SKIP_AUTH_GUARD"] === "true";
-  if (!session && !skipAuthGuard) {
+  if (!session) {
     redirect(
       `/sign-in?${new URLSearchParams({
         callbackUrl: "/erp-workbench",

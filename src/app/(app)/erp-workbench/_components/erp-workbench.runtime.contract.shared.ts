@@ -5,6 +5,11 @@
  * @afenda-boundary shared
  * @afenda-description Shared serializable contract types for the ERP Runtime Workbench route
  */
+import type {
+  ApprovedComponentCategory,
+  ApprovedComponentStatus,
+} from "@/components/ui/app.approval-ledger.schema.shared";
+
 export type WorkbenchStatusTone =
   | "neutral"
   | "info"
@@ -64,6 +69,24 @@ export type WorkbenchEvidenceField = {
   value: string;
 };
 
+export type WorkbenchContractProofItem = {
+  id: string;
+  exportName: string;
+  status: ApprovedComponentStatus;
+  category: ApprovedComponentCategory;
+  sourcePath: string;
+  reactAriaPrimitives: string[];
+  variants: string[];
+  constraints: string[];
+  a11yNotes: string[];
+  usage?: {
+    useWhen: string[];
+    avoidWhen: string[];
+  };
+  demoState: "available" | "planned";
+  demoLabel: string;
+};
+
 export type WorkbenchProcurementRow = {
   id: string;
   requestId: string;
@@ -86,5 +109,6 @@ export type ErpRuntimeWorkbenchData = {
   statusStrip: WorkbenchStatusItem[];
   overviewCards: WorkbenchOverviewCard[];
   previewItems: WorkbenchPreviewItem[];
+  contractProofItems: WorkbenchContractProofItem[];
   procurementRows: WorkbenchProcurementRow[];
 };

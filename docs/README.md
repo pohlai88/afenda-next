@@ -24,7 +24,6 @@ Repository: `C:\JackProject\afenda-next`
 - [automation-contract.md](./automation-contract.md)
 - [adr/](./adr)
 - [guideline index](../.guideline/README.md)
-- [feature source index](../src/features/README.md)
 - [component source index](../src/components/README.md)
 
 ## ADR Catalog
@@ -36,6 +35,7 @@ Repository: `C:\JackProject\afenda-next`
 - [0005-root-readme-generation-template.md](./adr/0005-root-readme-generation-template.md) — ADR 0005: Root README Generation Template
 - [0006-adr-atc-structural-validation.md](./adr/0006-adr-atc-structural-validation.md) — ADR 0006: ADR and ATC Structural Validation
 - [0007-no-package-readme-generation-for-single-repo-app.md](./adr/0007-no-package-readme-generation-for-single-repo-app.md) — ADR 0007: No Package README Generation for Single-Repo App
+- [0008-shared-ui-approval-ledger-doctrine.md](./adr/0008-shared-ui-approval-ledger-doctrine.md) — ADR 0008: Shared UI Approval Ledger Doctrine
 
 ## Maintenance
 

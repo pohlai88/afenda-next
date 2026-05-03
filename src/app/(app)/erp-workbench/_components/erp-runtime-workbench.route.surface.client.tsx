@@ -76,6 +76,9 @@ export function ErpRuntimeWorkbench({
 
   const selectedMode =
     workbench.modes.find((mode) => mode.id === selectedModeId) ?? initialMode;
+  const contractProofItemById = Object.fromEntries(
+    workbench.contractProofItems.map((item) => [item.id, item]),
+  );
   const modeItems = workbench.previewItems.filter(
     (item) => item.modeId === selectedMode.id,
   );
@@ -182,6 +185,12 @@ export function ErpRuntimeWorkbench({
                 return null;
               }
 
+              const panelSelectedContractProofItem =
+                mode.id === "contracts"
+                  ? (contractProofItemById[panelSelectedItemId] ??
+                    contractProofItemById[panelSelectedItem.id])
+                  : undefined;
+
               return (
                 <AppTabPanel id={mode.id} key={mode.id}>
                   <div className="grid gap-4 xl:grid-cols-[18rem_minmax(0,1fr)_22rem]">
@@ -269,6 +278,9 @@ export function ErpRuntimeWorkbench({
                       {mode.id === "contracts" ? (
                         <WorkbenchContractsScene
                           selectedItem={panelSelectedItem}
+                          selectedContractProofItem={
+                            panelSelectedContractProofItem!
+                          }
                         />
                       ) : null}
                       {mode.id === "methods" ? (
@@ -293,6 +305,12 @@ export function ErpRuntimeWorkbench({
                       <WorkbenchInspectorRail
                         modeId={mode.id}
                         selectedItem={panelSelectedItem}
+                        {...(panelSelectedContractProofItem !== undefined
+                          ? {
+                              selectedContractProofItem:
+                                panelSelectedContractProofItem,
+                            }
+                          : {})}
                         {...(mode.id === "procurement" &&
                         selectedProcurementRow !== undefined
                           ? { selectedRow: selectedProcurementRow }

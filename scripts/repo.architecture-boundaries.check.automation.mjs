@@ -17,7 +17,7 @@ const serverRoot = path.join(srcRoot, "server");
 const trpcServerPath = path.join(
   srcRoot,
   "trpc",
-  "trpc.server.hydration.server.ts",
+  "trpc.rsc.hydration.server.ts",
 );
 
 const sourceFilePattern = /\.(ts|tsx|js|jsx)$/;
@@ -31,7 +31,7 @@ const allowedSrcDirectories = new Set([
   "test-runtime",
   "trpc",
 ]);
-const allowedSrcRootFiles = new Set(["env.js"]);
+const allowedSrcRootFiles = new Set(["env.js", "proxy.ts"]);
 const allowedPrivateRouteFolders = new Set([
   "_actions",
   "_components",
@@ -214,8 +214,11 @@ function hasServerOnlyImport(content) {
 function requiresServerOnly(filePath, content) {
   const relativePath = relative(filePath);
   if (serverOnlyExemptions.has(relativePath)) return false;
+  if (relativePath.endsWith(".shared.ts") || relativePath.endsWith(".shared.tsx")) {
+    return false;
+  }
 
-  if (relativePath === "src/trpc/trpc.server.hydration.server.ts") return true;
+  if (relativePath === "src/trpc/trpc.rsc.hydration.server.ts") return true;
   if (relativePath.startsWith("src/server/api/")) return true;
   if (relativePath.startsWith("src/server/better-auth/")) return true;
   if (relativePath === "src/server/db/db.postgres.adapter.server.ts") return true;
@@ -577,8 +580,8 @@ function findRuntimeNeutralityMarkers(content) {
   if (hasServerOnlyImport(content)) markers.push('import "server-only"');
   if (content.includes("@/server/")) markers.push("@/server/**");
   if (content.includes("@/client-runtime/")) markers.push("@/client-runtime/**");
-  if (content.includes("@/trpc/trpc.server.hydration.server")) {
-    markers.push("@/trpc/trpc.server.hydration.server");
+  if (content.includes("@/trpc/trpc.rsc.hydration.server")) {
+    markers.push("@/trpc/trpc.rsc.hydration.server");
   }
   if (content.includes("@/trpc/trpc.react.provider.client")) {
     markers.push("@/trpc/trpc.react.provider.client");

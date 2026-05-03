@@ -23,6 +23,7 @@ import {
   AppToolbar,
 } from "@/components/ui/app.controls.primitive.client";
 import type {
+  WorkbenchContractProofItem,
   ProcurementStatusFilter,
   WorkbenchModeId,
   WorkbenchOverviewCard,
@@ -105,8 +106,10 @@ export function WorkbenchOverviewScene({
 
 export function WorkbenchContractsScene({
   selectedItem,
+  selectedContractProofItem,
 }: {
   selectedItem: WorkbenchPreviewItem;
+  selectedContractProofItem: WorkbenchContractProofItem;
 }) {
   return (
     <div className="space-y-4">
@@ -114,40 +117,82 @@ export function WorkbenchContractsScene({
         <div className="space-y-1">
           <p className="type-kicker text-accent-strong">Contracts</p>
           <h2 className="type-section-title text-foreground">
-            Shared control contract
+            Shared UI approval ledger
           </h2>
           <p className="type-body-sm text-foreground-muted">
             {selectedItem.summary}
           </p>
         </div>
-        <AppTable aria-label="Contract details">
+        <AppTable aria-label="Approval ledger details">
           <AppTableHeader>
             <AppColumn isRowHeader>Signal</AppColumn>
             <AppColumn>Value</AppColumn>
           </AppTableHeader>
           <AppTableBody>
-            <AppRow id="contract-source">
-              <AppCell>Source path</AppCell>
+            <AppRow id="contract-export">
+              <AppCell>Export</AppCell>
+              <AppCell>{selectedContractProofItem.exportName}</AppCell>
+            </AppRow>
+            <AppRow id="contract-status">
+              <AppCell>Status</AppCell>
               <AppCell>
-                {selectedItem.sourcePath ?? "Route-local preview"}
+                <AppStatus
+                  tone={toneForLedgerStatus(selectedContractProofItem.status)}
+                >
+                  {selectedContractProofItem.status}
+                </AppStatus>
               </AppCell>
             </AppRow>
-            <AppRow id="contract-aria">
-              <AppCell>React Aria primitives</AppCell>
-              <AppCell>{selectedItem.ariaPrimitives.join(", ")}</AppCell>
+            <AppRow id="contract-category">
+              <AppCell>Category</AppCell>
+              <AppCell>{selectedContractProofItem.category}</AppCell>
             </AppRow>
-            <AppRow id="contract-states">
-              <AppCell>Approved states</AppCell>
-              <AppCell>{selectedItem.states.join(", ")}</AppCell>
+            <AppRow id="contract-source">
+              <AppCell>Source path</AppCell>
+              <AppCell>{selectedContractProofItem.sourcePath}</AppCell>
+            </AppRow>
+            <AppRow id="contract-demo-state">
+              <AppCell>Demo state</AppCell>
+              <AppCell>
+                {selectedContractProofItem.demoState} -{" "}
+                {selectedContractProofItem.demoLabel}
+              </AppCell>
             </AppRow>
           </AppTableBody>
         </AppTable>
       </AppPanel>
-      <AppPanel density="compact">
-        <p className="type-body-sm text-foreground-muted">
-          {selectedItem.evidencePoints[1]}
-        </p>
-      </AppPanel>
+      <div className="grid gap-4 xl:grid-cols-2">
+        <ContractList
+          emptyState="No named variants recorded."
+          items={selectedContractProofItem.variants}
+          title="Variants"
+        />
+        <ContractList
+          emptyState="No React Aria primitives recorded."
+          items={selectedContractProofItem.reactAriaPrimitives}
+          title="React Aria primitives"
+        />
+        <ContractList
+          emptyState="No constraints recorded."
+          items={selectedContractProofItem.constraints}
+          title="Constraints"
+        />
+        <ContractList
+          emptyState="No accessibility notes recorded."
+          items={selectedContractProofItem.a11yNotes}
+          title="Accessibility notes"
+        />
+        <ContractList
+          emptyState="No preferred usage guidance recorded."
+          items={selectedContractProofItem.usage?.useWhen ?? []}
+          title="Use when"
+        />
+        <ContractList
+          emptyState="No avoidance guidance recorded."
+          items={selectedContractProofItem.usage?.avoidWhen ?? []}
+          title="Avoid when"
+        />
+      </div>
     </div>
   );
 }
@@ -309,12 +354,17 @@ export function WorkbenchProcurementScene({
 export function WorkbenchInspectorRail({
   modeId,
   selectedItem,
+  selectedContractProofItem,
   selectedRow,
 }: {
   modeId: WorkbenchModeId;
   selectedItem: WorkbenchPreviewItem;
+  selectedContractProofItem?: WorkbenchContractProofItem;
   selectedRow?: WorkbenchProcurementRow;
 }) {
+  const isContractsMode =
+    modeId === "contracts" && selectedContractProofItem !== undefined;
+
   return (
     <div className="space-y-4">
       <AppPanel
@@ -342,20 +392,73 @@ export function WorkbenchInspectorRail({
             {selectedItem.badgeLabel}
           </AppStatus>
           <AppStatus tone="info">{modeId}</AppStatus>
+          {isContractsMode ? (
+            <AppStatus
+              tone={toneForLedgerStatus(selectedContractProofItem.status)}
+            >
+              {selectedContractProofItem.category}
+            </AppStatus>
+          ) : null}
         </div>
-        <InspectorList items={selectedItem.ariaPrimitives} title="React Aria" />
-        <InspectorList items={selectedItem.states} title="Approved states" />
-        <InspectorList
-          items={selectedItem.decisionHints}
-          title="Decision hints"
-        />
-        {selectedItem.sourcePath ? (
-          <InspectorBlock
-            body={selectedItem.sourcePath}
-            monospace
-            title="Source path"
-          />
-        ) : null}
+        {isContractsMode ? (
+          <>
+            <InspectorBlock
+              body={`${selectedContractProofItem.demoState} - ${selectedContractProofItem.demoLabel}`}
+              title="Demo state"
+            />
+            <InspectorList
+              items={selectedContractProofItem.reactAriaPrimitives}
+              title="React Aria"
+            />
+            <InspectorList
+              items={selectedContractProofItem.variants}
+              title="Variants"
+            />
+            <InspectorList
+              items={selectedContractProofItem.constraints}
+              title="Constraints"
+            />
+            <InspectorList
+              items={selectedContractProofItem.a11yNotes}
+              title="Accessibility notes"
+            />
+            <InspectorList
+              items={selectedContractProofItem.usage?.useWhen ?? []}
+              title="Use when"
+            />
+            <InspectorList
+              items={selectedContractProofItem.usage?.avoidWhen ?? []}
+              title="Avoid when"
+            />
+            <InspectorBlock
+              body={selectedContractProofItem.sourcePath}
+              monospace
+              title="Source path"
+            />
+          </>
+        ) : (
+          <>
+            <InspectorList
+              items={selectedItem.ariaPrimitives}
+              title="React Aria"
+            />
+            <InspectorList
+              items={selectedItem.states}
+              title="Approved states"
+            />
+            <InspectorList
+              items={selectedItem.decisionHints}
+              title="Decision hints"
+            />
+            {selectedItem.sourcePath ? (
+              <InspectorBlock
+                body={selectedItem.sourcePath}
+                monospace
+                title="Source path"
+              />
+            ) : null}
+          </>
+        )}
       </AppPanel>
 
       {selectedRow ? (
@@ -409,6 +512,46 @@ export function WorkbenchInspectorRail({
   );
 }
 
+function toneForLedgerStatus(
+  status: WorkbenchContractProofItem["status"],
+): "warning" | "success" | "danger" {
+  switch (status) {
+    case "approved":
+      return "success";
+    case "deprecated":
+      return "danger";
+    case "draft":
+      return "warning";
+  }
+}
+
+function ContractList({
+  emptyState,
+  items,
+  title,
+}: {
+  emptyState: string;
+  items: string[];
+  title: string;
+}) {
+  return (
+    <AppPanel className="space-y-2" density="compact">
+      <p className="type-label text-foreground">{title}</p>
+      {items.length > 0 ? (
+        <ul className="space-y-2">
+          {items.map((item) => (
+            <li className="type-body-sm text-foreground-muted" key={item}>
+              {item}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="type-body-sm text-foreground-muted">{emptyState}</p>
+      )}
+    </AppPanel>
+  );
+}
+
 function InspectorBlock({
   body,
   monospace = false,
@@ -441,13 +584,19 @@ function InspectorList({ items, title }: { items: string[]; title: string }) {
     <div className="space-y-2">
       <p className="type-label text-foreground">{title}</p>
       <div className="border-border bg-surface rounded-(--radius-control) border p-3">
-        <ul className="space-y-2">
-          {items.map((item) => (
-            <li className="type-body-sm text-foreground-muted" key={item}>
-              {item}
-            </li>
-          ))}
-        </ul>
+        {items.length > 0 ? (
+          <ul className="space-y-2">
+            {items.map((item) => (
+              <li className="type-body-sm text-foreground-muted" key={item}>
+                {item}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="type-body-sm text-foreground-muted">
+            No recorded items.
+          </p>
+        )}
       </div>
     </div>
   );

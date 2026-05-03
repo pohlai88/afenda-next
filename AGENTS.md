@@ -1,4 +1,27 @@
-# Agent Instructions for afenda-next
+# Afenda Engineering Agent Instructions
+
+## Non-Negotiable Decision Filter
+
+Before making a recommendation or change, ask:
+
+1. Does this help an ERP operator complete work faster or more safely?
+2. Does this preserve domain correctness and traceability?
+3. Does this follow the App Router server-first model cleanly?
+4. Is this simple enough to satisfy KISS?
+5. If I am abstracting, is the duplication real enough to justify DRY?
+6. Will the next contributor understand why this exists?
+
+If the answer is no, revise the approach.
+
+## Operating Doctrine
+
+- Afenda is ERP product code, not demo code and not generic SaaS scaffolding.
+- Operators matter: optimize dense workflows for safety, throughput, and traceability.
+- Default to App Router server-first patterns and narrow client islands.
+- Apply KISS before DRY; abstract only when reuse is real, stable, and helpful.
+- Shared UI is governed by approved primitives and patterns.
+- `globals.css` is the runtime visual authority.
+- Traceability beats cleverness.
 
 ## Overview
 
@@ -23,6 +46,8 @@ All guidance in this repo must be filtered through three constraints:
 If generic SaaS advice conflicts with ERP needs, prefer ERP needs.
 If abstract architecture conflicts with momentum and clarity, prefer the simpler design that remains legible.
 If a pattern conflicts with App Router server-first guidance, prefer the App Router pattern unless there is a concrete repo reason not to.
+
+Do not over-engineer this file. Keep it as a repo constitution: non-negotiable doctrine first, operational defaults second, tooling references last.
 
 ## Core Engineering Principles
 
@@ -70,6 +95,7 @@ If a pattern conflicts with App Router server-first guidance, prefer the App Rou
 - Prefer Server Actions for in-app form submissions and internal ERP mutations when they fit the interaction cleanly.
 - Use Route Handlers for webhooks, external API surfaces, streaming, or upload flows.
 - If the existing repo surface already uses tRPC for a workflow, extend the established pattern instead of mixing abstractions casually.
+- Do not introduce tRPC, Server Actions, or Route Handlers based on preference alone; choose based on route ownership, transport boundary, and existing repo pattern.
 - Do not add an extra HTTP hop between server-rendered routes and server-only logic without a concrete reason.
 
 ### Caching and Revalidation
@@ -144,49 +170,38 @@ If a pattern conflicts with App Router server-first guidance, prefer the App Rou
 - Avoid large ad hoc style strings repeated across the app when a real reusable primitive is emerging.
 - When component variants become real across multiple ERP primitives, standardize them deliberately instead of improvising per file.
 
-## Codex MCP Workflow
+## Approved UI Registry
 
-- For **Codex**, configure MCP servers in the global Codex config at `~/.codex/config.toml` or by using `codex mcp add ...`. Do **not** assume `.cursor/mcp.json` configures Codex.
-- After adding or changing a Codex MCP server, verify the config with `codex mcp list` when possible.
-- Codex does **not** reliably hot-load newly added MCP servers into an already running desktop session or existing thread. After MCP config changes, restart Codex Desktop and start a new thread before assuming the tools are available.
-- Keep MCP server names short and descriptive so Codex can select them more reliably.
-- If an MCP tool is not visible in the current session, do not pretend it is available. State that the server may be configured correctly but not yet loaded by the current Codex session.
-- Prefer the MCP that matches the task directly:
+Shared UI primitives and reusable product patterns must be registered before broad product use.
+
+- React Aria Components remain behind the approved UI boundary.
+- Product code should consume `App*` primitives and approved patterns instead of importing React Aria directly.
+- The ERP Runtime Workbench demonstrates approved primitives, patterns, states, and constraints.
+- Feature-local JSX is allowed when it is not a shared primitive or reusable pattern.
+- Do not create a shadcn/Radix clone; the registry is a governance ledger, not a component marketplace.
+
+## Visual System Authority
+
+`globals.css` is the runtime visual authority.
+
+- Legacy palette files are reference only unless explicitly reactivated.
+- Raw `--palette-*` tokens are foundation colors.
+- Product UI should consume semantic `--color-*`, `--text-*`, `--radius-*`, and utility tokens.
+- Do not reintroduce competing token vocabularies such as `primary`, `secondary`, `card`, `muted`, or `destructive` in Afenda-owned CSS unless they are compatibility aliases for imported primitives.
+- Signal color is used to guide attention, not decorate.
+
+## MCP Usage
+
+Use the MCP that matches the task directly:
+
 - `vercel` for Vercel projects, deployments, domains, docs, and platform operations exposed through the official Vercel MCP.
 - `next-devtools` for Next.js diagnostics, docs, route inspection, dev-server state, and runtime error analysis.
 - `playwright` for browser automation and page inspection.
 - `chrome-devtools` for Chrome debugging, network inspection, performance analysis, and live browser control through DevTools.
 - `react-aria` for React Aria docs and component guidance.
 - `context7` for current library and framework documentation.
-- When starting work on this Next.js project, call the `init` tool from `next-devtools` first when that MCP is available. Use it to establish Next.js context before relying on ad hoc framework knowledge.
-- When adding repo guidance about MCP, distinguish clearly between:
-- **Codex global config:** `~/.codex/config.toml`
-- **Cursor project/local config:** `.cursor/mcp.json`
-- Example Codex MCP entry:
-- On this Windows setup, prefer the same direct `npx.cmd` pattern used by other working local MCP servers instead of mixing launch styles unless a server proves it requires something different.
-- Do not force remote MCP servers into a local `npx` shape when the upstream server is meant to be connected by URL.
-- Example Codex MCP entries:
 
-```toml
-[mcp_servers.vercel]
-url = "https://mcp.vercel.com"
-
-[mcp_servers.next-devtools]
-command = "C:\\Program Files\\nodejs\\npx.cmd"
-args = ["-y", "next-devtools-mcp@latest"]
-env = { SystemRoot="C:\\Windows", PROGRAMFILES="C:\\Program Files" }
-startup_timeout_ms = 120000
-
-[mcp_servers.playwright]
-command = "C:\\Program Files\\nodejs\\npx.cmd"
-args = ["-y", "@playwright/mcp@latest"]
-startup_timeout_ms = 120000
-
-[mcp_servers.chrome-devtools]
-command = "C:\\Program Files\\nodejs\\npx.cmd"
-args = ["-y", "chrome-devtools-mcp@latest"]
-startup_timeout_ms = 120000
-```
+Detailed Codex/Cursor setup, Windows `npx.cmd` examples, and hot-loading notes live in `docs/development/mcp.md`.
 
 ## Data and Domain Rules
 
@@ -253,19 +268,6 @@ pnpm db:studio
 pnpm format:check
 pnpm format:write
 ```
-
-## Decision Filter
-
-Before making a recommendation, ask:
-
-1. Does this help an ERP operator complete work faster or more safely?
-2. Does this preserve domain correctness and traceability?
-3. Does this follow the App Router server-first model cleanly?
-4. Is this simple enough to satisfy KISS?
-5. If I am abstracting, is the duplication real enough to justify DRY?
-6. Will the next contributor understand why this exists?
-
-If the answer is no, revise the approach.
 
 ## Source Guidance
 

@@ -107,6 +107,5 @@ Root repository README generated from the manual source template.
 
 - [Project documentation index](docs/README.md)
 - [Guideline index](.guideline/README.md)
-- [Feature source index](src/features/README.md)
 - [Component source index](src/components/README.md)
-- ADR records indexed: 7
+- ADR records indexed: 8

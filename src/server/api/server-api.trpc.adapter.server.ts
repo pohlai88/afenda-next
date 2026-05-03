@@ -11,7 +11,7 @@ import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
-import { getAuth } from "@/server/better-auth/auth.server.facade.server";
+import { getAuth } from "@/server/better-auth/auth.config.adapter.server";
 import { getDb } from "@/server/db/db.postgres.adapter.server";
 
 /**
@@ -25,6 +25,9 @@ import { getDb } from "@/server/db/db.postgres.adapter.server";
 export const createTRPCContext = async (opts: { headers: Headers }) => {
   const session = await getAuth().api.getSession({
     headers: opts.headers,
+    query: {
+      disableCookieCache: true,
+    },
   });
   return {
     db: getDb(),

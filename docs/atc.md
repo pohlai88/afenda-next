@@ -1,7 +1,7 @@
 # ATC — Architecture & Technical Context (Afenda Next)
 
-> ATC Snapshot: `2026-05-03`  
-> Scope: App Router baseline + UI control contract + runtime boundaries
+> ATC Snapshot: `2026-05-04`  
+> Scope: App Router baseline + shared UI approval ledger + runtime boundaries
 
 This ATC captures the non-negotiable context that keeps the repo in a stable state while still allowing fast ERP slicing.
 
@@ -19,12 +19,12 @@ This ATC captures the non-negotiable context that keeps the repo in a stable sta
 2. Feature and domain UI are kept out of `src/client-runtime` unless global bootstrap scope justifies placement.
 3. Server-only runtime modules do not cross into client module graphs.
 4. Workbench files (`*.workbench.ts*`) are visual contract surfaces and must not import privileged runtime.
-5. Shared UI primitives must be rendered from `src/components/ui` and covered by shared control tests.
+5. Shared UI primitives must be rendered from `src/components/ui`, ledgered in the approval manifests, and covered by shared control tests.
 6. Raw palette tokens are only defined in CSS globals and applied through semantic aliases.
 7. Test/runtime imports are one-way:
    - `@/test-runtime/**` is test-only usage.
    - Production source must not import test runtime helpers.
-8. The workbench contract includes `Primitives`, `Patterns`, `Scenes`, and `Contract` categories.
+8. `src/components/ui/components.json` is CI inventory only; runtime proof data comes from direct manifest imports.
 
 ## C) Architecture Acceptance
 
@@ -34,6 +34,7 @@ This ATC captures the non-negotiable context that keeps the repo in a stable sta
 - **Workbench contract check**
   - `pnpm check:workbench-contract` must pass.
   - `app.controls.primitive.client.tsx` retains required exports and React Aria error/description semantics.
+  - Every shared `App*` export remains ledgered in `src/components/ui/manifests`.
 - **Type/runtime strictness**
   - `pnpm typecheck` clean.
   - tRPC boundary and Better Auth contracts compile without schema drift.
@@ -45,7 +46,7 @@ This ATC captures the non-negotiable context that keeps the repo in a stable sta
 
 - **In scope**
   - Shared control surface
-  - Workbench catalog + contract registry
+  - Shared UI approval ledger + Contracts proof surface
   - tRPC health/read path (`hello`, `getLatest`, authorization checks)
   - Better Auth session plumbing
   - Design token and style baseline
@@ -53,6 +54,11 @@ This ATC captures the non-negotiable context that keeps the repo in a stable sta
   - Procurement backend domain schema expansion
   - Finance posting/audit ledger implementation
   - Automated workflow approval engine
+  - Runtime registry engine
+  - Marketplace-style component catalog
+  - Ledger authoring UI
+  - Variant compiler
+  - Public registry API
 
 ## E) Release/Verification Checklist
 

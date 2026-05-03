@@ -54,9 +54,11 @@ export default defineConfig({
           env: {
             ...process.env,
             BETTER_AUTH_URL: process.env["BETTER_AUTH_URL"] ?? baseURL,
+            BETTER_AUTH_API_KEY: "",
+            BETTER_AUTH_API_URL: "",
+            BETTER_AUTH_KV_URL: "",
             NODE_ENV: "production",
-            // Local Playwright webServer only — do not set on real deployments.
-            AFENDA_E2E_SKIP_AUTH_GUARD: "true",
+            NEXT_PUBLIC_BETTER_AUTH_INFRA: "0",
           },
           reuseExistingServer: !isCI,
           timeout: 120_000,

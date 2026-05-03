@@ -22,5 +22,6 @@ Records:
 - [0005-root-readme-generation-template.md](./0005-root-readme-generation-template.md) — ADR 0005: Root README Generation Template
 - [0006-adr-atc-structural-validation.md](./0006-adr-atc-structural-validation.md) — ADR 0006: ADR and ATC Structural Validation
 - [0007-no-package-readme-generation-for-single-repo-app.md](./0007-no-package-readme-generation-for-single-repo-app.md) — ADR 0007: No Package README Generation for Single-Repo App
+- [0008-shared-ui-approval-ledger-doctrine.md](./0008-shared-ui-approval-ledger-doctrine.md) — ADR 0008: Shared UI Approval Ledger Doctrine
 
 - [Documentation home](../README.md)

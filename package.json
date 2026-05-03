@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "next build",
-    "env:sync": "node ./scripts/env-sync.mjs",
+    "env:sync": "node ./scripts/repo.env.sync.automation.mjs",
     "docs:generate": "node scripts/repo.docs-index.generator.automation.mjs",
     "check": "eslint . && pnpm typecheck && pnpm format:check && pnpm check:architecture && pnpm check:docs && pnpm check:workbench-contract && pnpm test",
     "check:architecture": "node scripts/repo.architecture-boundaries.check.automation.mjs",
@@ -34,8 +34,8 @@
     "typecheck": "next typegen && tsc --noEmit",
     "check:e2e": "pnpm test && pnpm test:coverage && pnpm test:e2e",
     "auth": "auth",
-    "auth:init": "pnpm dlx auth@latest init --config ./src/lib/auth.ts",
-    "auth:info": "auth info --config ./src/lib/auth.ts",
+    "auth:init": "pnpm dlx auth@latest init --config ./src/server/better-auth/auth.config.adapter.server.ts",
+    "auth:info": "auth info --config ./src/server/better-auth/auth.config.adapter.server.ts",
     "auth:mcp": "auth mcp --manual"
   },
   "dependencies": {

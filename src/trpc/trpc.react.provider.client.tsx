@@ -2,7 +2,7 @@
 
 /**
  * @afenda-owner trpc
- * @afenda-subject react-client
+ * @afenda-subject react
  * @afenda-artifact provider
  * @afenda-boundary client
  * @afenda-description Client tRPC React provider and typed hook bridge for browser runtime

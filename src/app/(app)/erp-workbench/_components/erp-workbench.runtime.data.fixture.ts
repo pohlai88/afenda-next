@@ -13,6 +13,10 @@ import type {
   WorkbenchProcurementRow,
   WorkbenchStatusItem,
 } from "./erp-workbench.runtime.contract.shared";
+import {
+  buildContractsWorkbenchPreviewItems,
+  buildContractsWorkbenchProofItems,
+} from "./erp-workbench.runtime.contract-proof.shared";
 
 const modes: WorkbenchMode[] = [
   {
@@ -26,9 +30,9 @@ const modes: WorkbenchMode[] = [
   {
     id: "contracts",
     label: "Contracts",
-    description: "Inspect the shared UI contracts and approved states.",
-    selectorLabel: "Contract items",
-    defaultItemId: "app-tabs-contract",
+    description: "Inspect the shared UI approval ledger and proof state.",
+    selectorLabel: "Ledger entries",
+    defaultItemId: "app-tabs",
   },
   {
     id: "methods",
@@ -47,6 +51,12 @@ const modes: WorkbenchMode[] = [
     defaultItemId: "pending-review-lane",
   },
 ];
+
+const contractProofItems = buildContractsWorkbenchProofItems();
+const contractPreviewItems = buildContractsWorkbenchPreviewItems();
+const approvedContractCount = contractProofItems.filter(
+  (item) => item.status === "approved",
+).length;
 
 const statusStrip: WorkbenchStatusItem[] = [
   {
@@ -81,9 +91,9 @@ const overviewCards: WorkbenchOverviewCard[] = [
   {
     id: "shared-controls",
     label: "Shared controls",
-    value: "Tabs, GridList, Toolbar, Table",
+    value: `${approvedContractCount} approved / ${contractProofItems.length} ledgered`,
     detail:
-      "The workbench proves navigation, selection, filtering, and queue density with one control vocabulary.",
+      "Contracts mode derives approval proof from the shared manifest ledger instead of a hand-authored registry.",
     tone: "success",
   },
   {
@@ -157,90 +167,7 @@ const previewItems: WorkbenchPreviewItem[] = [
       "Carry selected record context into the decision copy.",
     ],
   },
-  {
-    id: "app-tabs-contract",
-    modeId: "contracts",
-    name: "AppTabs",
-    subtitle: "Mode navigation contract",
-    summary:
-      "Mode switching should remain keyboard-accessible and visually compact so workbench views behave like a real operator surface.",
-    badgeLabel: "Approved",
-    badgeTone: "success",
-    sourcePath: "src/components/ui/app.controls.primitive.client.tsx",
-    ariaPrimitives: ["Tabs", "TabList", "Tab", "TabPanel"],
-    states: ["selected", "unselected", "focus visible"],
-    evidencePoints: [
-      "Mode labels describe product semantics rather than implementation jargon.",
-      "Tabs remain part of the shared primitive layer, not route-local one-offs.",
-    ],
-    decisionHints: [
-      "Use tabs for mode changes, not for hidden state mutation.",
-      "Keep tab counts small while the route is still fixture-only.",
-    ],
-  },
-  {
-    id: "app-grid-list-contract",
-    modeId: "contracts",
-    name: "AppGridList",
-    subtitle: "Selector rail contract",
-    summary:
-      "Selector rails should use a shared selection primitive so contract items, methods, and lanes behave consistently.",
-    badgeLabel: "Approved",
-    badgeTone: "success",
-    sourcePath: "src/components/ui/app.controls.primitive.client.tsx",
-    ariaPrimitives: ["GridList", "GridListItem"],
-    states: ["single selection", "focus ring", "selected card"],
-    evidencePoints: [
-      "Selector items keep summary and badge state visible in a compact rail.",
-      "Selection remains local UI state and does not cross the route boundary.",
-    ],
-    decisionHints: [
-      "Use selector rails for context switching, not navigation to other routes.",
-      "Keep selector content concise enough for repeated scanning.",
-    ],
-  },
-  {
-    id: "app-toolbar-contract",
-    modeId: "contracts",
-    name: "AppToolbar",
-    subtitle: "Filter and action contract",
-    summary:
-      "Filter bars and action clusters should share keyboard-aware toolbar semantics instead of ad hoc flex rows.",
-    badgeLabel: "Approved",
-    badgeTone: "success",
-    sourcePath: "src/components/ui/app.controls.primitive.client.tsx",
-    ariaPrimitives: ["Toolbar", "SearchField", "Select", "Button"],
-    states: ["named toolbar", "filter cluster", "action cluster"],
-    evidencePoints: [
-      "Toolbar children stay aligned across compact ERP surfaces.",
-      "Action groups remain explicit instead of collapsing into generic cards.",
-    ],
-    decisionHints: [
-      "Keep filter density high but labels explicit.",
-      "Do not use toolbar for content containers that are not actions or controls.",
-    ],
-  },
-  {
-    id: "app-table-contract",
-    modeId: "contracts",
-    name: "AppTable",
-    subtitle: "Queue table contract",
-    summary:
-      "Dense review queues must support keyboard navigation, row selection, and stable headers without escalating to a grid framework.",
-    badgeLabel: "Approved",
-    badgeTone: "success",
-    sourcePath: "src/components/ui/app.controls.primitive.client.tsx",
-    ariaPrimitives: ["Table", "TableHeader", "Row", "Cell"],
-    states: ["row selection", "sortable headers", "empty state"],
-    evidencePoints: [
-      "Queue tables expose identity and status in one scan line.",
-      "Selection state drives the evidence and decision rail.",
-    ],
-    decisionHints: [
-      "Avoid spreadsheet ambitions in this primitive layer.",
-      "Keep selection and sorting behavior visible, not implicit.",
-    ],
-  },
+  ...contractPreviewItems,
   {
     id: "queue-review-method",
     modeId: "methods",
@@ -251,7 +178,7 @@ const previewItems: WorkbenchPreviewItem[] = [
     badgeLabel: "Method",
     badgeTone: "info",
     sourcePath:
-      "src/app/(app)/erp-workbench/_lib/erp-workbench.client-scenes.tsx",
+      "src/app/(app)/erp-workbench/_components/erp-workbench.runtime.scenes.client.tsx",
     ariaPrimitives: ["Toolbar", "Table", "Dialog"],
     states: ["queue filtered", "record selected", "dialog opened"],
     evidencePoints: [
@@ -273,7 +200,7 @@ const previewItems: WorkbenchPreviewItem[] = [
     badgeLabel: "Method",
     badgeTone: "info",
     sourcePath:
-      "src/app/(app)/erp-workbench/_components/erp-runtime-workbench.client.tsx",
+      "src/app/(app)/erp-workbench/_components/erp-runtime-workbench.route.surface.client.tsx",
     ariaPrimitives: ["AppPanel", "AppStatus"],
     states: ["selected item", "selected record", "source path"],
     evidencePoints: [
@@ -295,7 +222,7 @@ const previewItems: WorkbenchPreviewItem[] = [
     badgeLabel: "Method",
     badgeTone: "info",
     sourcePath:
-      "src/app/(app)/erp-workbench/_lib/erp-workbench.client-scenes.tsx",
+      "src/app/(app)/erp-workbench/_components/erp-workbench.runtime.scenes.client.tsx",
     ariaPrimitives: ["AppPanel", "AppStatus", "Dialog"],
     states: ["evidence fields", "decision note", "owner visible"],
     evidencePoints: [
@@ -317,7 +244,7 @@ const previewItems: WorkbenchPreviewItem[] = [
     badgeLabel: "Method",
     badgeTone: "info",
     sourcePath:
-      "src/app/(app)/erp-workbench/_lib/erp-workbench.client-scenes.tsx",
+      "src/app/(app)/erp-workbench/_components/erp-workbench.runtime.scenes.client.tsx",
     ariaPrimitives: ["DialogTrigger", "Dialog", "Button"],
     states: ["approve", "reject", "dismiss"],
     evidencePoints: [
@@ -461,6 +388,7 @@ export function getErpRuntimeWorkbenchData(): ErpRuntimeWorkbenchData {
     statusStrip,
     overviewCards,
     previewItems,
+    contractProofItems,
     procurementRows,
   };
 }

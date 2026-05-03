@@ -25,10 +25,13 @@ describe("ERP Runtime Workbench client island", () => {
 
     await user.click(screen.getByRole("tab", { name: "Contracts" }));
     expect(
-      screen.getByRole("heading", { name: "Shared control contract" }),
+      screen.getByRole("heading", { name: "Shared UI approval ledger" }),
     ).toBeInTheDocument();
     const contractsInspector = screen.getByLabelText("Workbench inspector");
     expect(within(contractsInspector).getByText("AppTabs")).toBeInTheDocument();
+    expect(
+      screen.getByRole("grid", { name: "Approval ledger details" }),
+    ).toBeInTheDocument();
 
     await user.click(screen.getByText("AppTable"));
     expect(
@@ -37,10 +40,10 @@ describe("ERP Runtime Workbench client island", () => {
       ),
     ).toBeInTheDocument();
     expect(
-      within(screen.getByLabelText("Workbench inspector")).getByText(
-        "Queue table contract",
-      ),
-    ).toBeInTheDocument();
+      within(screen.getByLabelText("Workbench inspector")).getAllByText(
+        "Keep the primitive dense and legible instead of turning it into a spreadsheet engine.",
+      ).length,
+    ).toBeGreaterThan(0);
   });
 
   it("updates procurement selection and opens decision dialogs", async () => {
