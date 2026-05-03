@@ -1,7 +1,10 @@
 import "server-only";
 
-import { postRouter } from "@/server/api/routers/post";
-import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
+import { postRouter } from "@/server/api/routers/server.api.post.router.server";
+import {
+  createCallerFactory,
+  createTRPCRouter,
+} from "@/server/api/server.api.trpc.server";
 
 /**
  * This is the primary router for your server.

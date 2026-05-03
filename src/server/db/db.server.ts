@@ -4,7 +4,7 @@ import { drizzle, type PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 
 import { env } from "@/env";
-import * as schema from "./schema";
+import * as schema from "./db.schema.shared";
 
 type Database = PostgresJsDatabase<typeof schema>;
 

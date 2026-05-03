@@ -5,8 +5,8 @@ import {
   AppDialog,
   AppSelectField,
   AppSwitchField,
-} from "@/components/ui/app-controls";
-import { useAppState } from "@/state/app-state";
+} from "@/components/ui/app.controls.client";
+import { useAppState } from "@/client-runtime/state/app-state.client";
 
 export function PreferencesPanel() {
   const {

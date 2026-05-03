@@ -2,8 +2,8 @@
 
 import { I18nProvider } from "react-aria-components/I18nProvider";
 
-import { AppStateProvider } from "@/state/app-state";
-import { TRPCReactProvider } from "@/trpc/react";
+import { AppStateProvider } from "@/client-runtime/state/app-state.client";
+import { TRPCReactProvider } from "@/trpc/trpc.react.client";
 
 export function ClientProviders({
   children,

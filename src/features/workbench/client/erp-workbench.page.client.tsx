@@ -8,13 +8,13 @@ import {
   WorkbenchItemCard,
   WorkbenchSectionFilter,
   WorkbenchSection,
-} from "@/features/workbench/components/workbench-surfaces";
-import { WorkbenchInspector } from "@/features/workbench/components/workbench-inspector";
+} from "@/features/workbench/components/erp-workbench.surfaces.client";
+import { WorkbenchInspector } from "@/features/workbench/components/erp-workbench.inspector.client";
 import {
   APPROVED_PRIMITIVE_ITEMS,
   getWorkbenchItemsByCategory,
   WORKBENCH_ITEMS,
-} from "@/features/workbench/workbench-registry";
+} from "@/features/workbench/erp-workbench.registry.workbench";
 
 const sectionContent = {
   primitive: {

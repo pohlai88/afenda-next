@@ -13,7 +13,7 @@ Full prompt:
 ```text
 You are working in C:\JackProject\afenda-next.
 
-Follow AGENTS.md and .guideline/nextjs/nextjs-best-practices.md as the working contract.
+Follow AGENTS.md, .guideline/nextjs/nextjs-best-practices.md, and .guideline/nextjs/annotation-and-naming.md as the working contract.
 
 Project context:
 - ERP-first product code, not demo code.

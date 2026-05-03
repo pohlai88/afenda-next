@@ -1,8 +1,8 @@
 "use client";
 
-import { AppButton, AppTextField } from "@/components/ui/app-controls";
-import { useAppState } from "@/state/app-state";
-import { api } from "@/trpc/react";
+import { AppButton, AppTextField } from "@/components/ui/app.controls.client";
+import { useAppState } from "@/client-runtime/state/app-state.client";
+import { api } from "@/trpc/trpc.react.client";
 
 export function LatestPost() {
   const [latestPost] = api.post.getLatest.useSuspenseQuery();

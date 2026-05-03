@@ -2,12 +2,12 @@ import { headers } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { ComposerStatus } from "@/app/_components/composer-status";
-import { PreferencesPanel } from "@/app/_components/preferences-panel";
-import { LatestPost } from "@/app/_components/post";
-import { getAuth } from "@/server/better-auth";
-import { getSession } from "@/server/better-auth/server";
-import { api, HydrateClient } from "@/trpc/server";
+import { ComposerStatus } from "@/app/_components/afenda-home.composer-status.client";
+import { LatestPost } from "@/app/_components/afenda-home.latest-post.client";
+import { PreferencesPanel } from "@/app/_components/afenda-home.preferences-panel.client";
+import { getAuth } from "@/server/better-auth/auth.server";
+import { getSession } from "@/server/better-auth/auth.session.server";
+import { api, HydrateClient } from "@/trpc/trpc.server";
 
 export default async function Home() {
   const hello = await api.post.hello({ text: "from tRPC" });

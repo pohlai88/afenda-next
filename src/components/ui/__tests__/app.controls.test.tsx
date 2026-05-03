@@ -17,8 +17,8 @@ import {
   AppTableBody,
   AppTableHeader,
   AppTextField,
-} from "@/components/ui/app-controls";
-import { renderWithProviders, setupUser } from "@/test/render";
+} from "@/components/ui/app.controls.client";
+import { renderWithProviders, setupUser } from "@/test/test.render.shared";
 
 describe("shared React Aria controls", () => {
   beforeEach(() => {

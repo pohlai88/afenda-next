@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "build": "next build",
-    "check": "eslint . && pnpm typecheck && pnpm format:check && pnpm check:workbench-contract && pnpm test",
+    "check": "eslint . && pnpm typecheck && pnpm format:check && pnpm check:architecture && pnpm check:workbench-contract && pnpm test",
+    "check:architecture": "node scripts/check-architecture-boundaries.mjs",
     "check:workbench-contract": "node scripts/check-workbench-contract.mjs",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",

@@ -8,41 +8,41 @@ const appControlsPath = path.join(
   srcRoot,
   "components",
   "ui",
-  "app-controls.tsx",
+  "app.controls.client.tsx",
 );
 const workbenchShellPath = path.join(
   srcRoot,
   "features",
   "workbench",
   "client",
-  "workbench-page-client.tsx",
+  "erp-workbench.page.client.tsx",
 );
 const workbenchComponentsPath = path.join(
   srcRoot,
   "features",
   "workbench",
   "components",
-  "workbench-surfaces.tsx",
+  "erp-workbench.surfaces.client.tsx",
 );
 const workbenchRegistryPath = path.join(
   srcRoot,
   "features",
   "workbench",
-  "workbench-registry.ts",
+  "erp-workbench.registry.workbench.ts",
 );
 const workbenchTypesPath = path.join(
   srcRoot,
   "features",
   "workbench",
   "types",
-  "workbench-types.ts",
+  "erp-workbench.contract.shared.ts",
 );
 const workbenchInspectorPath = path.join(
   srcRoot,
   "features",
   "workbench",
   "components",
-  "workbench-inspector.tsx",
+  "erp-workbench.inspector.client.tsx",
 );
 
 function walk(dir) {
@@ -68,7 +68,7 @@ function isAllowedReactAriaBoundary(filePath) {
   const relativePath = relative(filePath);
 
   return (
-    relativePath === "src/components/ui/app-controls.tsx" ||
+    relativePath === "src/components/ui/app.controls.client.tsx" ||
     relativePath.startsWith("src/features/workbench/")
   );
 }
@@ -129,7 +129,7 @@ for (const exportedControlName of [
 for (const racClass of ["rac-focus-ring", "rac-disabled", "rac-invalid"]) {
   if (!appControls.includes(racClass)) {
     errors.push(
-      `React Aria Tailwind plugin hook "${racClass}" is not used in app-controls.tsx.`,
+      `React Aria Tailwind plugin hook "${racClass}" is not used in app.controls.client.tsx.`,
     );
   }
 }

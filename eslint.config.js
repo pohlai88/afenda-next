@@ -10,6 +10,121 @@ export default tseslint.config(
   ...nextVitals,
   ...nextTs,
   {
+    files: ["src/components/ui/**/*.{ts,tsx}"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: [
+                "@/app/**",
+                "@/client-runtime/**",
+                "@/features/**",
+                "@/server/**",
+                "@/trpc/**",
+              ],
+              message:
+                "Shared UI primitives must stay framework- and domain-agnostic. Move app, client-runtime, feature, server, or tRPC dependencies outside src/components/ui.",
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ["src/client-runtime/**/*.{ts,tsx}"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          paths: [
+            {
+              name: "@/trpc/trpc.server",
+              message:
+                "Browser integration modules must not import the server tRPC boundary.",
+            },
+          ],
+          patterns: [
+            {
+              group: ["@/app/**", "@/features/**", "@/server/**"],
+              message:
+                "src/client-runtime is global browser runtime integration only. Keep route UI, ERP feature UI, and server runtime dependencies outside this boundary.",
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ["src/features/**/*.{ts,tsx}"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          paths: [
+            {
+              name: "@/server/db",
+              message:
+                "Feature modules must not import persistence directly. Route data access through server-owned boundaries.",
+            },
+            {
+              name: "@/server/better-auth",
+              message:
+                "Feature modules must not import auth runtime infrastructure directly. Route auth through server-owned boundaries.",
+            },
+            {
+              name: "@/server/api",
+              message:
+                "Feature modules must not import server API internals directly. Route calls through approved app/server boundaries.",
+            },
+          ],
+          patterns: [
+            {
+              group: [
+                "@/app/**",
+                "@/server/db/**",
+                "@/server/better-auth/**",
+                "@/server/api/**",
+              ],
+              message:
+                "Feature modules must not depend on App Router files or direct server runtime infrastructure.",
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ["src/server/**/*.{ts,tsx}"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          paths: [
+            {
+              name: "@/trpc/trpc.react.client",
+              message:
+                "Server modules must not import the client tRPC boundary.",
+            },
+          ],
+          patterns: [
+            {
+              group: [
+                "@/app/**",
+                "@/client-runtime/**",
+                "@/components/**",
+                "@/features/**/client/**",
+              ],
+              message:
+                "Server modules must not depend on App Router UI, browser integration, shared client UI, or client-marked feature modules.",
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
     files: ["**/*.ts", "**/*.tsx"],
     plugins: {
       drizzle,

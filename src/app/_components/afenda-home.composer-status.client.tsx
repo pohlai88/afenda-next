@@ -1,6 +1,6 @@
 "use client";
 
-import { useAppState } from "@/state/app-state";
+import { useAppState } from "@/client-runtime/state/app-state.client";
 
 export function ComposerStatus() {
   const {

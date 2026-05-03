@@ -4,7 +4,7 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 
 import { env } from "@/env";
-import { getDb } from "@/server/db";
+import { getDb } from "@/server/db/db.server";
 
 function createAuth() {
   const github =

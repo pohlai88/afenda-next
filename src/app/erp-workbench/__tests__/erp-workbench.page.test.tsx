@@ -2,9 +2,9 @@ import userEvent from "@testing-library/user-event";
 import { screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import { WorkbenchPageClient } from "@/features/workbench/client/workbench-page-client";
-import { WORKBENCH_ITEMS } from "@/features/workbench/workbench-registry";
-import { renderWithProviders } from "@/test/render";
+import { WorkbenchPageClient } from "@/features/workbench/client/erp-workbench.page.client";
+import { WORKBENCH_ITEMS } from "@/features/workbench/erp-workbench.registry.workbench";
+import { renderWithProviders } from "@/test/test.render.shared";
 
 describe("ERP Workbench", () => {
   it("renders the main sections and updates the inspector selection", async () => {
@@ -33,7 +33,7 @@ describe("ERP Workbench", () => {
     ).toBeTruthy();
     expect(
       within(inspector).getByText(
-        "src/features/workbench/components/workbench-surfaces.tsx",
+        "src/features/workbench/components/erp-workbench.surfaces.client.tsx",
       ),
     ).toBeTruthy();
   }, 15000);

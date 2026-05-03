@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 import { I18nProvider } from "react-aria-components/I18nProvider";
 
-import { AppStateProvider } from "@/state/app-state";
+import { AppStateProvider } from "@/client-runtime/state/app-state.client";
 
 export function renderWithProviders(
   ui: React.ReactElement,

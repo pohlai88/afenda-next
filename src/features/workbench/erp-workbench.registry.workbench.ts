@@ -15,11 +15,11 @@ import {
   ProcurementApprovalSceneSurface,
   ReviewFilterBarPatternSurface,
   WorkbenchContractSummary,
-} from "@/features/workbench/components/workbench-surfaces";
+} from "@/features/workbench/components/erp-workbench.surfaces.client";
 import type {
   WorkbenchItem,
   WorkbenchItemCategory,
-} from "@/features/workbench/types/workbench-types";
+} from "@/features/workbench/types/erp-workbench.contract.shared";
 
 export const WORKBENCH_ITEMS: WorkbenchItem[] = [
   {
@@ -27,7 +27,7 @@ export const WORKBENCH_ITEMS: WorkbenchItem[] = [
     name: "AppButton",
     category: "primitive",
     status: "approved",
-    sourcePath: "src/components/ui/app-controls.tsx",
+    sourcePath: "src/components/ui/app.controls.client.tsx",
     ariaPrimitives: ["Button"],
     states: ["default", "disabled", "loading", "primary", "secondary"],
     tokens: [
@@ -51,7 +51,7 @@ export const WORKBENCH_ITEMS: WorkbenchItem[] = [
     name: "AppTextField",
     category: "primitive",
     status: "approved",
-    sourcePath: "src/components/ui/app-controls.tsx",
+    sourcePath: "src/components/ui/app.controls.client.tsx",
     ariaPrimitives: ["TextField", "Label", "Input", "Text", "FieldError"],
     states: ["default", "disabled", "invalid", "required", "aria-label"],
     tokens: [
@@ -75,7 +75,7 @@ export const WORKBENCH_ITEMS: WorkbenchItem[] = [
     name: "AppSearchField",
     category: "primitive",
     status: "approved",
-    sourcePath: "src/components/ui/app-controls.tsx",
+    sourcePath: "src/components/ui/app.controls.client.tsx",
     ariaPrimitives: ["SearchField", "Label", "Input", "Button", "Text"],
     states: ["default", "disabled", "clear-action", "aria-label"],
     tokens: [
@@ -99,7 +99,7 @@ export const WORKBENCH_ITEMS: WorkbenchItem[] = [
     name: "AppSwitchField",
     category: "primitive",
     status: "approved",
-    sourcePath: "src/components/ui/app-controls.tsx",
+    sourcePath: "src/components/ui/app.controls.client.tsx",
     ariaPrimitives: ["Switch", "Text"],
     states: ["selected", "unselected", "disabled"],
     tokens: [
@@ -123,7 +123,7 @@ export const WORKBENCH_ITEMS: WorkbenchItem[] = [
     name: "AppSelectField",
     category: "primitive",
     status: "approved",
-    sourcePath: "src/components/ui/app-controls.tsx",
+    sourcePath: "src/components/ui/app.controls.client.tsx",
     ariaPrimitives: [
       "Select",
       "Label",
@@ -163,7 +163,7 @@ export const WORKBENCH_ITEMS: WorkbenchItem[] = [
     name: "AppForm",
     category: "primitive",
     status: "approved",
-    sourcePath: "src/components/ui/app-controls.tsx",
+    sourcePath: "src/components/ui/app.controls.client.tsx",
     ariaPrimitives: ["Form"],
     states: ["semantic-submit", "validation", "field-composition"],
     tokens: ["--color-surface", "--color-border", "--radius-panel"],
@@ -182,7 +182,7 @@ export const WORKBENCH_ITEMS: WorkbenchItem[] = [
     name: "AppDialog",
     category: "primitive",
     status: "approved",
-    sourcePath: "src/components/ui/app-controls.tsx",
+    sourcePath: "src/components/ui/app.controls.client.tsx",
     ariaPrimitives: ["DialogTrigger", "ModalOverlay", "Modal", "Dialog"],
     states: ["open", "dismissable", "escape-close", "action-footer"],
     tokens: [
@@ -206,7 +206,7 @@ export const WORKBENCH_ITEMS: WorkbenchItem[] = [
     name: "AppTable",
     category: "primitive",
     status: "approved",
-    sourcePath: "src/components/ui/app-controls.tsx",
+    sourcePath: "src/components/ui/app.controls.client.tsx",
     ariaPrimitives: [
       "Table",
       "TableHeader",
@@ -243,7 +243,8 @@ export const WORKBENCH_ITEMS: WorkbenchItem[] = [
     name: "ERP App Shell",
     category: "pattern",
     status: "approved",
-    sourcePath: "src/features/workbench/components/workbench-surfaces.tsx",
+    sourcePath:
+      "src/features/workbench/components/erp-workbench.surfaces.client.tsx",
     ariaPrimitives: ["Button", "SearchField", "Select", "Table", "Dialog"],
     states: [
       "navigation-rail",
@@ -272,7 +273,8 @@ export const WORKBENCH_ITEMS: WorkbenchItem[] = [
     name: "Review Filter Bar",
     category: "pattern",
     status: "approved",
-    sourcePath: "src/features/workbench/components/workbench-surfaces.tsx",
+    sourcePath:
+      "src/features/workbench/components/erp-workbench.surfaces.client.tsx",
     ariaPrimitives: ["SearchField", "Select", "Button"],
     states: ["default", "filtered", "clear-filters"],
     tokens: [
@@ -296,7 +298,8 @@ export const WORKBENCH_ITEMS: WorkbenchItem[] = [
     name: "Bulk Approval Toolbar",
     category: "pattern",
     status: "approved",
-    sourcePath: "src/features/workbench/components/workbench-surfaces.tsx",
+    sourcePath:
+      "src/features/workbench/components/erp-workbench.surfaces.client.tsx",
     ariaPrimitives: ["Button", "DialogTrigger", "Dialog"],
     states: ["no-selection", "selected", "bulk-approve", "bulk-reject"],
     tokens: [
@@ -320,7 +323,8 @@ export const WORKBENCH_ITEMS: WorkbenchItem[] = [
     name: "Approval Dialog Pattern",
     category: "pattern",
     status: "approved",
-    sourcePath: "src/features/workbench/components/workbench-surfaces.tsx",
+    sourcePath:
+      "src/features/workbench/components/erp-workbench.surfaces.client.tsx",
     ariaPrimitives: ["DialogTrigger", "Dialog", "TextField", "Button"],
     states: ["approve", "reject", "decision-note", "dismissable"],
     tokens: [
@@ -344,7 +348,8 @@ export const WORKBENCH_ITEMS: WorkbenchItem[] = [
     name: "Procurement Approval Scene",
     category: "scene",
     status: "approved",
-    sourcePath: "src/features/workbench/components/workbench-surfaces.tsx",
+    sourcePath:
+      "src/features/workbench/components/erp-workbench.surfaces.client.tsx",
     ariaPrimitives: ["SearchField", "Select", "Table", "Dialog", "Button"],
     states: [
       "queue-filtering",
@@ -374,7 +379,8 @@ export const WORKBENCH_ITEMS: WorkbenchItem[] = [
     name: "Contract Coverage Table",
     category: "contract",
     status: "approved",
-    sourcePath: "src/features/workbench/components/workbench-surfaces.tsx",
+    sourcePath:
+      "src/features/workbench/components/erp-workbench.surfaces.client.tsx",
     ariaPrimitives: ["Table", "Button"],
     states: ["approved-controls-only", "inspectable-rows"],
     tokens: ["--color-surface", "--color-border", "--color-success"],

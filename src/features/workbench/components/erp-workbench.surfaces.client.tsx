@@ -21,12 +21,12 @@ import {
   AppTableHeader,
   AppTextField,
   AppToolbar,
-} from "@/components/ui/app-controls";
+} from "@/components/ui/app.controls.client";
 import {
   getProcurementApprovalStatusLabel,
   PROCUREMENT_APPROVAL_DEMO_ROWS,
-} from "@/features/workbench/data/procurement-demo-data";
-import type { WorkbenchItem } from "@/features/workbench/types/workbench-types";
+} from "@/features/workbench/data/erp-workbench.procurement-approval.fixture";
+import type { WorkbenchItem } from "@/features/workbench/types/erp-workbench.contract.shared";
 
 /* -------------------------------------------------------------------------- */
 /* Page shell                                                                 */
