@@ -9,6 +9,9 @@ export const env = createEnv({
    * server surfaces before the app boots into an invalid state.
    */
   server: {
+    AUTH_FROM_EMAIL: z.string().email().optional(),
+    AUTH_REPLY_TO_EMAIL: z.string().email().optional(),
+    BETTER_AUTH_ADMIN_USER_IDS: z.string().optional(),
     BETTER_AUTH_API_KEY: z.string().optional(),
     BETTER_AUTH_API_URL: z.string().url().optional(),
     BETTER_AUTH_KV_URL: z.string().url().optional(),
@@ -28,6 +31,7 @@ export const env = createEnv({
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
+    RESEND_API_KEY: z.string().optional(),
   },
 
   /**
@@ -47,6 +51,9 @@ export const env = createEnv({
    * Explicit runtime env mapping for Next.js server and browser execution.
    */
   runtimeEnv: {
+    AUTH_FROM_EMAIL: process.env["AUTH_FROM_EMAIL"],
+    AUTH_REPLY_TO_EMAIL: process.env["AUTH_REPLY_TO_EMAIL"],
+    BETTER_AUTH_ADMIN_USER_IDS: process.env["BETTER_AUTH_ADMIN_USER_IDS"],
     BETTER_AUTH_API_KEY: process.env["BETTER_AUTH_API_KEY"],
     BETTER_AUTH_API_URL: process.env["BETTER_AUTH_API_URL"],
     BETTER_AUTH_KV_URL: process.env["BETTER_AUTH_KV_URL"],
@@ -69,6 +76,7 @@ export const env = createEnv({
       process.env["BETTER_AUTH_LINKEDIN_CLIENT_SECRET"],
     DATABASE_URL: process.env["DATABASE_URL"],
     NODE_ENV: process.env.NODE_ENV,
+    RESEND_API_KEY: process.env["RESEND_API_KEY"],
   },
   /**
    * Allow deferred env validation for build pipelines that assemble artifacts

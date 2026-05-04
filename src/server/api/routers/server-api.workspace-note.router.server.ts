@@ -5,29 +5,31 @@ import "server-only";
  * @afenda-subject workspace-note
  * @afenda-artifact router
  * @afenda-boundary server
- * @afenda-description Server router for workspace note reads and writes on the home route
+ * @afenda-description Server router for tenant-scoped workspace note reads and writes
  */
 import { z } from "zod";
 
 import {
   createTRPCRouter,
-  protectedProcedure,
+  tenantPermissionProcedure,
 } from "@/server/api/server-api.trpc.adapter.server";
 import { workspaceNotes } from "@/server/db/db.database.schema.shared";
 
 export const workspaceNoteRouter = createTRPCRouter({
-  create: protectedProcedure
+  create: tenantPermissionProcedure("workspace_note:create")
     .input(
       z.object({
         name: z.string().trim().min(1).max(120),
+        tenantSlug: z.string().trim().min(1),
       }),
     )
     .mutation(async ({ ctx, input }) => {
       const [workspaceNote] = await ctx.db
         .insert(workspaceNotes)
         .values({
-          name: input.name,
           createdById: ctx.session.user.id,
+          name: input.name,
+          tenantId: ctx.tenant.id,
         })
         .returning({
           id: workspaceNotes.id,
@@ -37,17 +39,24 @@ export const workspaceNoteRouter = createTRPCRouter({
       return workspaceNote;
     }),
 
-  getLatest: protectedProcedure.query(async ({ ctx }) => {
-    const workspaceNote = await ctx.db.query.workspaceNotes.findFirst({
-      columns: {
-        id: true,
-        name: true,
-        createdAt: true,
-        createdById: true,
-      },
-      orderBy: (workspaceNotes, { desc }) => [desc(workspaceNotes.createdAt)],
-    });
+  getLatest: tenantPermissionProcedure("workspace_note:read")
+    .input(
+      z.object({
+        tenantSlug: z.string().trim().min(1),
+      }),
+    )
+    .query(async ({ ctx }) => {
+      const workspaceNote = await ctx.db.query.workspaceNotes.findFirst({
+        columns: {
+          createdAt: true,
+          createdById: true,
+          id: true,
+          name: true,
+        },
+        orderBy: (fields, { desc }) => [desc(fields.createdAt)],
+        where: (fields, { eq }) => eq(fields.tenantId, ctx.tenant.id),
+      });
 
-    return workspaceNote ?? null;
-  }),
+      return workspaceNote ?? null;
+    }),
 });

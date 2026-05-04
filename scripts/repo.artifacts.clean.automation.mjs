@@ -21,6 +21,9 @@ const artifactPaths = [
   "playwright-report",
   "test-results",
   "tsconfig.tsbuildinfo",
+  /* Root build outputs (e.g. pnpm build:css → dist/output.css, next export → out) */
+  "dist",
+  "out",
 ];
 
 function resolveInsideRepo(relativePath) {
@@ -56,6 +59,12 @@ for (const { relativePath, target } of existingArtifacts) {
     continue;
   }
 
-  rmSync(target, { recursive: true, force: true });
+  /* maxRetries helps Windows when dev servers / Turbopack briefly lock cache entries */
+  rmSync(target, {
+    recursive: true,
+    force: true,
+    maxRetries: 5,
+    retryDelay: 150,
+  });
   console.log(`Removed ${relativePath}`);
 }

@@ -6,6 +6,11 @@
       "sourceType": "github",
       "skillPath": "skills/neon-postgres/SKILL.md",
       "computedHash": "391693eee67001639ab65474df185da3ea5cf9ee4b99badecfd64561113edbb4"
+    },
+    "react-aria": {
+      "source": "react-aria.adobe.com",
+      "sourceType": "well-known",
+      "computedHash": "1a62e5b866622b7ec49678be485ff18fdb26896cc8c3aa294490a7286d759903"
     }
   }
 }

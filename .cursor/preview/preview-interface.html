@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interface Lab - Surface Architecture</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Minimal inline scrollbar for the Nav & Panel */
+        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #27272a; border-radius: 2px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
+
+        /* Smooth transitions */
+        .nav-transition { transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        .panel-transition { transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        
+        /* Hide text when nav is collapsed */
+        .nav-collapsed .nav-text { opacity: 0; pointer-events: none; position: absolute; }
+        .nav-expanded .nav-text { opacity: 1; position: relative; transition: opacity 0.2s 0.1s; }
+    </style>
+</head>
+<body class="bg-black text-zinc-300 font-sans h-screen w-screen overflow-hidden flex selection:bg-zinc-100 selection:text-black relative">
+
+    <nav id="leftNav" class="nav-transition w-14 border-r border-zinc-900 bg-black flex flex-col z-40 relative nav-collapsed h-full">
+        
+        <div class="h-16 flex items-center px-4 border-b border-zinc-900">
+            <button onclick="toggleNav()" class="text-zinc-500 hover:text-zinc-100 transition-colors flex items-center gap-3">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path></svg>
+                <span class="nav-text text-xs font-bold tracking-widest whitespace-nowrap">AFENDA LAB</span>
+            </button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto custom-scroll py-4 flex flex-col gap-6">
+            
+            <div class="flex flex-col">
+                <span class="nav-text text-[9px] font-mono text-zinc-600 uppercase tracking-widest px-5 mb-2">Configuration</span>
+                <a href="#" class="px-4 py-2 flex items-center gap-4 text-zinc-500 hover:text-zinc-100 hover:bg-zinc-900 transition-colors">
+                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    <span class="nav-text text-xs whitespace-nowrap">Lab Settings</span>
+                </a>
+            </div>
+
+            <div class="flex flex-col">
+                <span class="nav-text text-[9px] font-mono text-zinc-600 uppercase tracking-widest px-5 mb-2">Registry</span>
+                <a href="#" class="px-4 py-2 flex items-center gap-4 text-zinc-500 hover:text-zinc-100 hover:bg-zinc-900 transition-colors">
+                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6z"></path></svg>
+                    <span class="nav-text text-xs whitespace-nowrap">Primitives</span>
+                </a>
+                <a href="#" class="px-4 py-2 flex items-center gap-4 text-emerald-500 bg-emerald-950/10 border-r-2 border-emerald-500 transition-colors">
+                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    <span class="nav-text text-xs whitespace-nowrap">ERP Patterns</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-1 relative flex items-center justify-center bg-black overflow-hidden">
+        
+        <div class="absolute top-6 left-1/2 -translate-x-1/2 z-20 w-[400px] max-w-full px-4">
+            <div class="bg-zinc-900/50 backdrop-blur-md border border-zinc-800 rounded-lg px-4 py-2.5 flex items-center gap-3 text-zinc-500 shadow-2xl opacity-60 hover:opacity-100 transition-opacity cursor-text">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                <span class="text-xs font-mono">Search registry...</span>
+                <div class="ml-auto flex gap-1">
+                    <kbd class="bg-zinc-800 border border-zinc-700 rounded px-1.5 py-0.5 text-[10px] text-zinc-400 font-sans">⌘</kbd>
+                    <kbd class="bg-zinc-800 border border-zinc-700 rounded px-1.5 py-0.5 text-[10px] text-zinc-400 font-sans">K</kbd>
+                </div>
+            </div>
+        </div>
+
+        <div class="relative z-10 w-full max-w-sm px-4 transform transition-all">
+            <div class="bg-[#09090b] border border-zinc-800 rounded-lg p-6 font-sans shadow-[0_0_80px_rgba(16,185,129,0.05)] ring-1 ring-white/5">
+                <div class="flex justify-between items-start mb-4">
+                    <h3 class="text-zinc-100 font-medium text-sm flex items-center gap-2">
+                        ApprovalDialog 
+                        <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
+                    </h3>
+                </div>
+                <p class="text-[13px] text-zinc-400 mb-8 leading-relaxed">
+                    Confirm approval for <span class="font-mono text-zinc-300 bg-zinc-800/50 px-1 py-0.5 rounded border border-zinc-800">PO-2026-89</span>?
+                </p>
+                <div class="flex justify-end gap-2">
+                    <button class="px-3 py-1.5 text-[13px] text-zinc-400 bg-zinc-900 rounded font-medium">Cancel</button>
+                    <button class="px-3 py-1.5 text-[13px] bg-zinc-100 text-black font-semibold rounded shadow-sm">Approve PO</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-1.5 p-1.5 bg-zinc-900/80 backdrop-blur border border-zinc-800 rounded-full shadow-2xl">
+            
+            <button class="group hover:bg-zinc-800 rounded-full pl-2 pr-3 py-1.5 flex items-center gap-2 transition-all">
+                <kbd class="bg-black border border-zinc-700 text-zinc-300 rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-sans">C</kbd>
+                <span class="text-[10px] font-mono text-zinc-500 group-hover:text-zinc-300 uppercase tracking-widest hidden sm:block">Code</span>
+            </button>
+
+            <button class="group hover:bg-zinc-800 rounded-full pl-2 pr-3 py-1.5 flex items-center gap-2 transition-all">
+                <kbd class="bg-black border border-zinc-700 text-zinc-300 rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-sans">M</kbd>
+                <span class="text-[10px] font-mono text-zinc-500 group-hover:text-zinc-300 uppercase tracking-widest hidden sm:block">Manifest</span>
+            </button>
+
+            <button class="group hover:bg-zinc-800 rounded-full pl-2 pr-3 py-1.5 flex items-center gap-2 transition-all">
+                <kbd class="bg-black border border-zinc-700 text-zinc-300 rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-sans">V</kbd>
+                <span class="text-[10px] font-mono text-zinc-500 group-hover:text-zinc-300 uppercase tracking-widest hidden sm:block">Variants</span>
+            </button>
+
+            <div class="w-px h-4 bg-zinc-800 my-auto mx-1"></div> <button class="group hover:bg-amber-950/30 rounded-full pl-2 pr-3 py-1.5 flex items-center gap-2 transition-all">
+                <kbd class="bg-black border border-amber-900/50 text-amber-400 rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-sans">A</kbd>
+                <span class="text-[10px] font-mono text-amber-500/70 group-hover:text-amber-400 uppercase tracking-widest hidden sm:block">AI Help</span>
+            </button>
+
+            <button class="group hover:bg-zinc-800 rounded-full pl-2 pr-3 py-1.5 flex items-center gap-2 transition-all">
+                <kbd class="bg-black border border-zinc-700 text-zinc-300 rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-sans">E</kbd>
+                <span class="text-[10px] font-mono text-zinc-500 group-hover:text-zinc-300 uppercase tracking-widest hidden sm:block">Export</span>
+            </button>
+
+        </div>
+    </main>
+
+    <button onclick="toggleDevTools()" class="fixed bottom-6 right-6 z-50 w-12 h-12 bg-zinc-900 border border-zinc-700 hover:border-emerald-500 rounded-full flex items-center justify-center shadow-2xl transition-all group overflow-hidden">
+        <svg class="w-5 h-5 text-zinc-400 group-hover:text-emerald-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+    </button>
+
+    <div id="devToolsPanel" class="fixed bottom-0 left-0 w-full h-[75vh] bg-zinc-950/95 backdrop-blur-xl border-t border-zinc-800 z-40 translate-y-full panel-transition flex flex-col shadow-[0_-20px_50px_rgba(0,0,0,0.5)]">
+        
+        <div class="h-12 border-b border-zinc-800 flex items-center justify-between px-6 bg-zinc-900/50">
+            <div class="flex items-center gap-6 text-[11px] font-mono uppercase tracking-widest">
+                <span class="text-emerald-400 flex items-center gap-2"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span> Schema Explorer</span>
+                <span class="text-zinc-500 hover:text-zinc-300 cursor-pointer">Manifest.json</span>
+                <span class="text-zinc-500 hover:text-zinc-300 cursor-pointer">Accessibility Tree</span>
+            </div>
+            <button onclick="toggleDevTools()" class="text-zinc-500 hover:text-white font-mono text-xs">Close (Esc)</button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto custom-scroll p-6 grid grid-cols-2 gap-8">
+            <div>
+                <h4 class="text-[10px] font-mono text-zinc-500 mb-3 uppercase tracking-widest">Zod Schema Definition</h4>
+                <pre class="bg-black border border-zinc-800 p-4 rounded-lg text-xs font-mono text-zinc-400 overflow-x-auto"><code>export const ApprovalDialogSchema = z.object({
+  decisionId: z.string().min(1),
+  role: z.enum(['operator', 'manager', 'finance']),
+  requireSignature: z.boolean().default(false),
+  metadata: z.record(z.unknown()).optional(),
+});
+
+// Enforces exact match against ERP policy engine
+export type TApproval = z.infer&lt;typeof ApprovalDialogSchema&gt;;</code></pre>
+            </div>
+            
+            <div>
+                <h4 class="text-[10px] font-mono text-zinc-500 mb-3 uppercase tracking-widest">Manifest & Lineage</h4>
+                <pre class="bg-black border border-zinc-800 p-4 rounded-lg text-xs font-mono text-zinc-400 overflow-x-auto"><code>{
+  "specimen_id": "erp_pattern_409b",
+  "version": "2.1.4",
+  "dependencies": {
+    "@radix-ui/react-dialog": "^1.0.4",
+    "framer-motion": "^10.16.4"
+  },
+  "consumers": [
+    "pages/finance/procurement",
+    "pages/auditor/queue"
+  ]
+}</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleNav() {
+            const nav = document.getElementById('leftNav');
+            if (nav.classList.contains('nav-collapsed')) {
+                nav.classList.remove('nav-collapsed', 'w-14');
+                nav.classList.add('nav-expanded', 'w-64');
+            } else {
+                nav.classList.add('nav-collapsed', 'w-14');
+                nav.classList.remove('nav-expanded', 'w-64');
+            }
+        }
+
+        let isDevToolsOpen = false;
+        function toggleDevTools() {
+            const panel = document.getElementById('devToolsPanel');
+            isDevToolsOpen = !isDevToolsOpen;
+            if (isDevToolsOpen) {
+                panel.classList.remove('translate-y-full');
+                panel.classList.add('translate-y-0');
+            } else {
+                panel.classList.add('translate-y-full');
+                panel.classList.remove('translate-y-0');
+            }
+        }
+
+        // Close devtools on Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && isDevToolsOpen) toggleDevTools();
+        });
+    </script>
+</body>
+</html>

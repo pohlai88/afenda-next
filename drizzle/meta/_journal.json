@@ -8,6 +8,48 @@
       "when": 1777823022156,
       "tag": "0000_curved_satana",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1777837996698,
+      "tag": "0001_even_hellfire_club",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1777841366253,
+      "tag": "0002_abnormal_veda",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1777884672350,
+      "tag": "0003_salty_living_lightning",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1777909860000,
+      "tag": "0004_tough_starbolt",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1777913460000,
+      "tag": "0005_tenant_first_convergence",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1777917060000,
+      "tag": "0006_remove_deprecated_organizations",
+      "breakpoints": true
     }
   ]
 }

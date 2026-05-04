@@ -22,6 +22,7 @@ Do not move framework config into a custom folder unless the tool supports that 
 - Architecture: [docs/architecture.md](docs/architecture.md)
 - Architecture & Technical Context (ATC): [docs/atc.md](docs/atc.md)
 - Architecture Decision Records: [docs/adr](docs/adr)
+- Tailwind CSS v4 (browser floor, CLI artifact, checks): [docs/development/tailwind-css.md](docs/development/tailwind-css.md)
 
 ## Source Ownership
 
@@ -60,6 +61,10 @@ Generated artifacts are ignored and can be recreated:
 - `tsconfig.tsbuildinfo`
 - `.eslintcache`
 - `.prettiercache`
+- `dist` (optional Tailwind CLI output from `pnpm run build:css`; gitignored)
+- `out` (optional `next export` output; gitignored)
+
+`pnpm clean:artifacts` removes the paths above when they exist at the repo root.
 
 Preview cleanup before removing anything:
 
@@ -85,7 +90,8 @@ pnpm check
 pnpm build
 pnpm test
 pnpm check:architecture
-pnpm check:workbench-contract
+pnpm check:ui-governance
+pnpm check:css-artifact
 ```
 
-Use `pnpm check` before closing structural work.
+Use `pnpm check` before closing structural work. Use `pnpm check:css-artifact` when validating the optional Tailwind CLI build (for example in CI after changing `src/styles/globals.css`).

@@ -25,6 +25,9 @@ next-env.d.ts
 # production
 /build
 
+# optional Tailwind CLI artifact (`pnpm run build:css`)
+/dist/
+
 # misc
 .DS_Store
 *.pem

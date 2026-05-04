@@ -21,5 +21,15 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/erp-workbench/:path*"],
+  matcher: [
+    "/account/identity/:path*",
+    "/account/no-tenants",
+    "/account/security/:path*",
+    "/account/select-tenant",
+    "/account/step-up/:path*",
+    "/account/workspace/:path*",
+    "/admin/:path*",
+    "/auth/post-login",
+    "/t/:path*",
+  ],
 };

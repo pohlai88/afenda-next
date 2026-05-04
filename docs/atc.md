@@ -1,7 +1,7 @@
 # ATC — Architecture & Technical Context (Afenda Next)
 
 > ATC Snapshot: `2026-05-04`  
-> Scope: App Router baseline + shared UI approval ledger + runtime boundaries
+> Scope: App Router baseline + shared UI manifests + runtime boundaries
 
 This ATC captures the non-negotiable context that keeps the repo in a stable state while still allowing fast ERP slicing.
 
@@ -19,22 +19,28 @@ This ATC captures the non-negotiable context that keeps the repo in a stable sta
 2. Feature and domain UI are kept out of `src/client-runtime` unless global bootstrap scope justifies placement.
 3. Server-only runtime modules do not cross into client module graphs.
 4. Workbench files (`*.workbench.ts*`) are visual contract surfaces and must not import privileged runtime.
-5. Shared UI primitives must be rendered from `src/components/ui`, ledgered in the approval manifests, and covered by shared control tests.
-6. Raw palette tokens are only defined in CSS globals and applied through semantic aliases.
-7. Test/runtime imports are one-way:
+5. Shared UI primitives must be rendered from `src/components`, with governed `App*` primitives housed under `src/components/ui-governance`, described in manifests, and covered by shared control tests.
+6. The canonical governed shared UI tree is `src/components/ui-governance/app-*/` plus approved root metadata files. Do not introduce nested `use-client` or `use-server` directory taxonomies inside `src/components/ui-governance`.
+7. Shared React Aria wrappers remain `.client.tsx` leaves. `use server` is reserved for ERP mutation boundaries, not shared UI primitives.
+8. Raw palette tokens are only defined in CSS globals and applied through semantic aliases.
+9. Test/runtime imports are one-way:
    - `@/test-runtime/**` is test-only usage.
    - Production source must not import test runtime helpers.
-8. `src/components/ui/components.json` is CI inventory only; runtime proof data comes from direct manifest imports.
+10. Governed shared UI manifests are imported in `src/components/ui-governance/governance.ui.registry.shared.ts` and discovered under `src/components/ui-governance/app-*` by automation (no parallel JSON inventory).
 
 ## C) Architecture Acceptance
 
 - **Route boundary check**
   - `pnpm check:architecture` must pass.
   - Route-private folders remain constrained to `_components`, `_actions`, `_queries`.
-- **Workbench contract check**
-  - `pnpm check:workbench-contract` must pass.
-  - `app.controls.primitive.client.tsx` retains required exports and React Aria error/description semantics.
-  - Every shared `App*` export remains ledgered in `src/components/ui/manifests`.
+- **UI governance check**
+  - `pnpm check:ui-governance` must pass.
+  - The canonical `src/components/ui-governance/app-*/` boundary retains the explicit three-file contract: `.control.primitive.client.tsx`, `.contract.primitive.shared.ts`, and `.ui.manifest.shared.ts`.
+  - Every shared `App*` export remains declared in a co-located manifest under `src/components/ui-governance/app-*/`.
+- **Execution model**
+  - ERP routes and reads stay server-first.
+  - Shared `App*` controls stay client leaves.
+  - ERP writes use `use server` actions in route-local `_actions/*` or approved server modules.
 - **Type/runtime strictness**
   - `pnpm typecheck` clean.
   - tRPC boundary and Better Auth contracts compile without schema drift.
@@ -46,7 +52,7 @@ This ATC captures the non-negotiable context that keeps the repo in a stable sta
 
 - **In scope**
   - Shared control surface
-  - Shared UI approval ledger + Contracts proof surface
+  - Shared UI manifests + Contracts proof surface
   - tRPC health/read path (`hello`, `getLatest`, authorization checks)
   - Better Auth session plumbing
   - Design token and style baseline

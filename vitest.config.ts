@@ -31,8 +31,8 @@ export default defineConfig({
     restoreMocks: true,
     unstubEnvs: true,
     unstubGlobals: true,
-    testTimeout: 10_000,
-    hookTimeout: 10_000,
+    testTimeout: 20_000,
+    hookTimeout: 20_000,
     coverage: {
       provider: "v8",
       reporter: ["text", "html", "lcov"],

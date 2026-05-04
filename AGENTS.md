@@ -178,7 +178,7 @@ Shared UI primitives and reusable product patterns must be registered before bro
 - Product code should consume `App*` primitives and approved patterns instead of importing React Aria directly.
 - The ERP Runtime Workbench demonstrates approved primitives, patterns, states, and constraints.
 - Feature-local JSX is allowed when it is not a shared primitive or reusable pattern.
-- Do not create a shadcn/Radix clone; the registry is a governance ledger, not a component marketplace.
+- Do not create a shadcn/Radix clone; the registry is a governance registry, not a component marketplace.
 
 ## Visual System Authority
 
@@ -199,7 +199,7 @@ Use the MCP that matches the task directly:
 - `playwright` for browser automation and page inspection.
 - `chrome-devtools` for Chrome debugging, network inspection, performance analysis, and live browser control through DevTools.
 - `react-aria` for React Aria docs and component guidance.
-- `context7` for current library and framework documentation.
+- `context7` for current library and framework documentation. For **Tailwind CSS v4** (deterministic builds, `@source` / `@source inline`, CLI vs PostCSS, browser requirements, `@apply` in CSS modules), query library **`/tailwindlabs/tailwindcss.com`** via Context7 instead of relying on memory alone; pair with `docs/development/tailwind-css.md` and `pnpm run check:css-artifact` when verifying compiled CSS.
 
 Detailed Codex/Cursor setup, Windows `npx.cmd` examples, and hot-loading notes live in `docs/development/mcp.md`.
 

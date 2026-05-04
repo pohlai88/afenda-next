@@ -28,14 +28,17 @@ Repository: `C:\JackProject\afenda-next`
 
 ## ADR Catalog
 
-- [0001-workbench-ui-contract-first.md](./adr/0001-workbench-ui-contract-first.md) — ADR 0001: Workbench as UI Contract Boundary First
+- [0001-workbench-ui-contract-first.md](./adr/0001-workbench-ui-contract-first.md) — ADR 0001: Workbench as UI Contract Boundary First (Deprecated)
 - [0002-better-auth-url-canonical-origin.md](./adr/0002-better-auth-url-canonical-origin.md) — ADR 0002: BETTER_AUTH_URL as Canonical Public Auth Origin
 - [0003-docs-readme-generation-margins.md](./adr/0003-docs-readme-generation-margins.md) — ADR 0003: Documentation README Generation Margins
 - [0004-source-readme-generation-margins.md](./adr/0004-source-readme-generation-margins.md) — ADR 0004: Source README Generation Margins
 - [0005-root-readme-generation-template.md](./adr/0005-root-readme-generation-template.md) — ADR 0005: Root README Generation Template
 - [0006-adr-atc-structural-validation.md](./adr/0006-adr-atc-structural-validation.md) — ADR 0006: ADR and ATC Structural Validation
 - [0007-no-package-readme-generation-for-single-repo-app.md](./adr/0007-no-package-readme-generation-for-single-repo-app.md) — ADR 0007: No Package README Generation for Single-Repo App
-- [0008-shared-ui-approval-ledger-doctrine.md](./adr/0008-shared-ui-approval-ledger-doctrine.md) — ADR 0008: Shared UI Approval Ledger Doctrine
+- [0008-shared-ui-manifest-doctrine.md](./adr/0008-shared-ui-manifest-doctrine.md) — ADR 0008: Shared UI Manifest Doctrine
+- [0009-server-first-erp-ui-and-server-actions.md](./adr/0009-server-first-erp-ui-and-server-actions.md) — ADR 0009: Server-First ERP UI with Client React Aria Leaves and Server Actions
+- [0010-single-ui-system-migration.md](./adr/0010-single-ui-system-migration.md) — ADR 0010: Canonical Shared UI Primitive Contract
+- [0011-afenda-marketing-landing-business-truth.md](./adr/0011-afenda-marketing-landing-business-truth.md) — ADR 0011: Afenda Marketing Landing — Business Truth Engine
 
 ## Maintenance
 

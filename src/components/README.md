@@ -15,4 +15,5 @@ Generated index for shared component source margins.
 
 Source groups:
 
-- [ui/](./ui/)
+- [ui-blocks/](./ui-blocks/)
+- [ui-governance/](./ui-governance/)

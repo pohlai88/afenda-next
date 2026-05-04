@@ -51,7 +51,7 @@ Manual source docs include:
 | Source                   | Output                             | Purpose                   |
 | ------------------------ | ---------------------------------- | ------------------------- |
 | `src/components`         | `src/components/README.md`         | Shared component index    |
-| `src/components/ui`      | `src/components/ui/README.md`      | Shared UI primitive index |
+| `src/components/ui-governance`      | `src/components/ui-governance/README.md`      | Shared UI primitive index |
 
 D2 source indexes are non-recursive. Source root indexes list immediate child source groups. Source module indexes list immediate child source groups and immediate source files.
 
@@ -92,3 +92,4 @@ pnpm check:architecture
 pnpm check:docs
 git diff --check
 ```
+

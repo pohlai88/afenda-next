@@ -40,6 +40,9 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@mock": [
+        ".mock/index.ts"
       ]
     }
   },

@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Afenda · Specimen surface</title>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        background: #000;
+        color: rgba(255, 255, 255, 0.85);
+        font: 13px/1.45 system-ui, -apple-system, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      body[data-workbench="open"] {
+        overflow: hidden;
+      }
+
+      kbd {
+        font: 11px ui-monospace, "Cascadia Code", monospace;
+        padding: 2px 6px;
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 0.5);
+      }
+
+      .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      /* —— Shell —— */
+      .shell {
+        display: flex;
+        height: 100%;
+        min-height: 100dvh;
+      }
+
+      /* Collapsible rail */
+      .rail {
+        flex-shrink: 0;
+        width: 48px;
+        background: #080808;
+        border-right: 1px solid rgba(255, 255, 255, 0.06);
+        display: flex;
+        flex-direction: column;
+        transition: width 0.2s ease;
+        overflow: hidden;
+      }
+
+      .rail[data-expanded="true"] {
+        width: 220px;
+      }
+
+      .rail-head {
+        flex-shrink: 0;
+        padding: 10px 8px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      }
+
+      .rail-toggle {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 8px;
+        border: none;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.05);
+        color: rgba(255, 255, 255, 0.75);
+        cursor: pointer;
+      }
+
+      .rail[data-expanded="true"] .rail-toggle {
+        justify-content: flex-start;
+      }
+
+      .rail-toggle:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+      }
+
+      .rail-toggle .hint {
+        display: none;
+        margin-left: auto;
+        font-size: 10px;
+        color: rgba(255, 255, 255, 0.35);
+      }
+
+      .rail[data-expanded="true"] .rail-toggle .hint {
+        display: block;
+      }
+
+      .rail-scroll {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+        scrollbar-gutter: stable;
+        padding: 8px 6px 16px;
+      }
+
+      .rail-scroll::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .rail-scroll::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.12);
+        border-radius: 99px;
+      }
+
+      .rail-cat {
+        margin-bottom: 14px;
+      }
+
+      .rail-cat h3 {
+        margin: 0 0 4px 6px;
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.28);
+      }
+
+      .rail-cat nav {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+      }
+
+      .rail[data-expanded="false"] .rail-cat h3,
+      .rail[data-expanded="false"] .rail-scroll {
+        opacity: 0;
+        pointer-events: none;
+        width: 0;
+        height: 0;
+        overflow: hidden;
+        padding: 0;
+      }
+
+      .rail[data-expanded="false"] .rail-scroll {
+        display: none;
+      }
+
+      .rail-nav-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        padding: 8px 10px;
+        border: none;
+        border-radius: 6px;
+        background: transparent;
+        color: rgba(255, 255, 255, 0.5);
+        font: inherit;
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .rail-nav-btn:hover {
+        background: rgba(255, 255, 255, 0.06);
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .rail-nav-btn[aria-current="true"] {
+        background: rgba(255, 255, 255, 0.09);
+        color: #fff;
+      }
+
+      .rail-nav-btn .ico {
+        width: 18px;
+        text-align: center;
+        opacity: 0.65;
+        flex-shrink: 0;
+      }
+
+      /* Column: top bar + main */
+      .col {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+      }
+
+      .topbar {
+        flex-shrink: 0;
+        height: 52px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 16px;
+        pointer-events: none;
+      }
+
+      .topbar > * {
+        pointer-events: auto;
+      }
+
+      /* Floating CMDK trigger (TanStack-ish pill) */
+      .cmdk-launch {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 14px 8px 12px;
+        margin-top: 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(12, 12, 12, 0.85);
+        backdrop-filter: blur(12px);
+        box-shadow: 0 8px 40px rgba(0, 0, 0, 0.45);
+        color: rgba(255, 255, 255, 0.4);
+        font: inherit;
+        cursor: pointer;
+        max-width: min(360px, 92vw);
+      }
+
+      .cmdk-launch:hover {
+        border-color: rgba(255, 255, 255, 0.18);
+        color: rgba(255, 255, 255, 0.65);
+      }
+
+      .cmdk-launch svg {
+        flex-shrink: 0;
+        opacity: 0.5;
+      }
+
+      .cmdk-launch span {
+        flex: 1;
+        text-align: left;
+        font-size: 13px;
+      }
+
+      .workspace {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+      }
+
+      .workspace[data-empty="true"] .panel-host {
+        display: none;
+      }
+
+      .workspace[data-empty="false"] .idle-hint {
+        display: none;
+      }
+
+      .idle-hint {
+        text-align: center;
+        color: rgba(255, 255, 255, 0.2);
+        font-size: 12px;
+        max-width: 280px;
+        line-height: 1.55;
+      }
+
+      .panel-host {
+        width: 100%;
+        max-width: 560px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.02);
+        padding: 20px 22px;
+      }
+
+      .panel-host h2 {
+        margin: 0 0 12px;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.35);
+      }
+
+      .panel-host pre {
+        margin: 0;
+        font: 11px/1.55 ui-monospace, monospace;
+        color: rgba(255, 255, 255, 0.6);
+        white-space: pre-wrap;
+      }
+
+      /* Workbench overlay (schema + manifest) */
+      .workbench {
+        position: fixed;
+        inset: 0;
+        z-index: 60;
+        background: rgba(0, 0, 0, 0.92);
+        display: none;
+        flex-direction: column;
+        padding: 0;
+      }
+
+      body[data-workbench="open"] .workbench {
+        display: flex;
+      }
+
+      .workbench-head {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        background: #0a0a0a;
+      }
+
+      .workbench-head strong {
+        font-size: 13px;
+        letter-spacing: 0.02em;
+      }
+
+      .workbench-tabs {
+        display: flex;
+        gap: 4px;
+      }
+
+      .workbench-tabs button {
+        padding: 6px 12px;
+        border: none;
+        border-radius: 6px;
+        background: transparent;
+        color: rgba(255, 255, 255, 0.45);
+        font: inherit;
+        cursor: pointer;
+      }
+
+      .workbench-tabs button[aria-selected="true"] {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+      }
+
+      .workbench-body {
+        flex: 1;
+        min-height: 0;
+        padding: 16px;
+        display: grid;
+        gap: 12px;
+      }
+
+      .workbench-body textarea {
+        width: 100%;
+        height: 100%;
+        min-height: 200px;
+        resize: vertical;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        background: #050505;
+        color: rgba(255, 255, 255, 0.75);
+        font: 12px/1.5 ui-monospace, monospace;
+        padding: 12px;
+      }
+
+      .workbench-foot {
+        flex-shrink: 0;
+        padding: 12px 16px;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        background: #0a0a0a;
+      }
+
+      .btn {
+        padding: 8px 14px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.06);
+        color: #fff;
+        font: inherit;
+        cursor: pointer;
+      }
+
+      .btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .btn-primary {
+        border-color: rgba(100, 160, 255, 0.5);
+        background: rgba(60, 120, 220, 0.25);
+      }
+
+      /* CMDK dialog */
+      .cmdk-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 45;
+        background: rgba(0, 0, 0, 0.5);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.15s ease;
+      }
+
+      .cmdk-backdrop[data-open="true"] {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .cmdk {
+        position: fixed;
+        left: 50%;
+        top: 72px;
+        transform: translateX(-50%) translateY(-6px);
+        z-index: 50;
+        width: min(440px, calc(100vw - 24px));
+        background: #0c0c0c;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 12px;
+        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.75);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.15s ease, transform 0.15s ease;
+        overflow: hidden;
+      }
+
+      .cmdk[data-open="true"] {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateX(-50%) translateY(0);
+      }
+
+      .cmdk input {
+        width: 100%;
+        border: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        background: transparent;
+        color: #fff;
+        font: 15px/1.3 system-ui, sans-serif;
+        padding: 14px 16px;
+        outline: none;
+      }
+
+      .cmdk-list {
+        max-height: min(340px, 52vh);
+        overflow: auto;
+        padding: 6px;
+      }
+
+      .cmdk-item {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 12px;
+        border: none;
+        border-radius: 8px;
+        background: transparent;
+        color: inherit;
+        font: inherit;
+        text-align: left;
+        cursor: pointer;
+        color: rgba(255, 255, 255, 0.78);
+      }
+
+      .cmdk-item:hover,
+      .cmdk-item[data-active="true"] {
+        background: rgba(255, 255, 255, 0.07);
+        color: #fff;
+      }
+
+      .cmdk-item small {
+        color: rgba(255, 255, 255, 0.28);
+        font-size: 11px;
+      }
+
+      .cmdk-foot {
+        padding: 8px 12px;
+        font-size: 10px;
+        color: rgba(255, 255, 255, 0.22);
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+      }
+
+      /* Afenda floating brand */
+      .afenda-fab {
+        position: fixed;
+        left: 20px;
+        bottom: 20px;
+        z-index: 35;
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(10, 10, 10, 0.92);
+        backdrop-filter: blur(10px);
+        color: #fff;
+        cursor: pointer;
+        display: grid;
+        place-items: center;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+      }
+
+      .afenda-fab:hover {
+        border-color: rgba(255, 255, 255, 0.22);
+        transform: scale(1.03);
+      }
+
+      /* Action dock */
+      .dock-wrap {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        z-index: 35;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 8px;
+      }
+
+      .dock-menu {
+        display: none;
+        flex-direction: column;
+        gap: 2px;
+        padding: 6px;
+        min-width: 220px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(14, 14, 14, 0.95);
+        backdrop-filter: blur(12px);
+        box-shadow: 0 16px 48px rgba(0, 0, 0, 0.55);
+      }
+
+      .dock-wrap[data-open="true"] .dock-menu {
+        display: flex;
+      }
+
+      .dock-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        width: 100%;
+        padding: 10px 12px;
+        border: none;
+        border-radius: 8px;
+        background: transparent;
+        color: rgba(255, 255, 255, 0.85);
+        font: inherit;
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .dock-item:hover {
+        background: rgba(255, 255, 255, 0.07);
+      }
+
+      .dock-item kbd {
+        flex-shrink: 0;
+      }
+
+      .dock-trigger {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 16px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(12, 12, 12, 0.92);
+        backdrop-filter: blur(10px);
+        color: #fff;
+        font: inherit;
+        cursor: pointer;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+      }
+
+      .dock-trigger:hover {
+        border-color: rgba(255, 255, 255, 0.22);
+      }
+
+      .toast {
+        position: fixed;
+        bottom: 88px;
+        left: 50%;
+        transform: translateX(-50%) translateY(12px);
+        padding: 10px 16px;
+        border-radius: 8px;
+        background: rgba(30, 30, 30, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.85);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease, transform 0.2s ease;
+        z-index: 100;
+        max-width: 90vw;
+      }
+
+      .toast[data-show="true"] {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    </style>
+  </head>
+  <body data-workbench="closed">
+    <div class="shell">
+      <aside class="rail" id="rail" data-expanded="false" aria-label="Primary navigation">
+        <div class="rail-head">
+          <button type="button" class="rail-toggle" id="railToggle" aria-expanded="false" title="Toggle sidebar (⌘B)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M4 6h16M4 12h10M4 18h16" />
+            </svg>
+            <span class="hint" id="railKbdHint"></span>
+          </button>
+        </div>
+        <div class="rail-scroll" id="railScroll">
+          <div class="rail-cat">
+            <h3>Config</h3>
+            <nav aria-label="Config">
+              <button type="button" class="rail-nav-btn" data-view="env">
+                <span class="ico">◇</span><span>Environment</span>
+              </button>
+              <button type="button" class="rail-nav-btn" data-view="flags">
+                <span class="ico">◈</span><span>Feature flags</span>
+              </button>
+            </nav>
+          </div>
+          <div class="rail-cat">
+            <h3>Workspace</h3>
+            <nav aria-label="Workspace">
+              <button type="button" class="rail-nav-btn" data-view="specimen">
+                <span class="ico">▣</span><span>Specimen</span>
+              </button>
+              <button type="button" class="rail-nav-btn" data-view="tokens">
+                <span class="ico">◎</span><span>Tokens</span>
+              </button>
+              <button type="button" class="rail-nav-btn" data-view="qc">
+                <span class="ico">✓</span><span>QC</span>
+              </button>
+            </nav>
+          </div>
+          <div class="rail-cat">
+            <h3>Ship</h3>
+            <nav aria-label="Ship">
+              <button type="button" class="rail-nav-btn" data-view="export">
+                <span class="ico">↗</span><span>Export bundle</span>
+              </button>
+              <button type="button" class="rail-nav-btn" data-view="ci">
+                <span class="ico">⟡</span><span>CI status</span>
+              </button>
+            </nav>
+          </div>
+        </div>
+      </aside>
+
+      <div class="col">
+        <header class="topbar">
+          <button type="button" class="cmdk-launch" id="cmdkLaunch" title="Command palette">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="7" />
+              <path d="M21 21l-4.35-4.35" />
+            </svg>
+            <span>Search commands, routes, specimens…</span>
+            <kbd id="cmdkKbdLaunch"></kbd>
+          </button>
+        </header>
+
+        <main class="workspace" id="workspace" data-empty="true">
+          <p class="idle-hint">
+            Surface definition: rail <kbd id="hintB"></kbd> · palette <kbd id="hintK"></kbd> · actions <kbd id="hintDot"></kbd> · workbench <kbd id="hintW"></kbd>
+          </p>
+          <div class="panel-host" id="panelHost" hidden></div>
+        </main>
+      </div>
+    </div>
+
+    <div class="cmdk-backdrop" id="cmdkBackdrop" data-open="false"></div>
+    <div class="cmdk" id="cmdk" data-open="false" role="dialog" aria-modal="true" aria-labelledby="cmdkTitle">
+      <h2 id="cmdkTitle" class="visually-hidden">Command palette</h2>
+      <input type="search" id="cmdkInput" autocomplete="off" spellcheck="false" placeholder="Type to filter…" aria-label="Filter commands" />
+      <div class="cmdk-list" id="cmdkList" role="listbox"></div>
+      <div class="cmdk-foot">↑↓ select · ↵ run · esc close</div>
+    </div>
+
+    <button type="button" class="afenda-fab" id="afendaFab" title="Afenda workbench — schema & manifest (⌘⇧W)" aria-label="Open Afenda workbench">
+      <svg width="22" height="22" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <rect x="2" y="2" width="28" height="28" rx="8" stroke="currentColor" stroke-width="1.5" opacity="0.35" />
+        <path d="M8 22 L16 8 L24 22 M11 18 h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
+
+    <div class="dock-wrap" id="dockWrap" data-open="false">
+      <div class="dock-menu" id="dockMenu" role="menu" aria-label="Quick actions">
+        <button type="button" class="dock-item" data-action="copy-code" role="menuitem">
+          Copy code <kbd id="dk-c"></kbd>
+        </button>
+        <button type="button" class="dock-item" data-action="copy-manifest" role="menuitem">
+          Copy manifest / schema <kbd id="dk-m"></kbd>
+        </button>
+        <button type="button" class="dock-item" data-action="variants" role="menuitem">
+          Variants <kbd id="dk-v"></kbd>
+        </button>
+        <button type="button" class="dock-item" data-action="ai" role="menuitem">
+          AI help (LLM) <kbd id="dk-h"></kbd>
+        </button>
+        <button type="button" class="dock-item" data-action="png" role="menuitem">
+          Export PNG <kbd id="dk-p"></kbd>
+        </button>
+        <button type="button" class="dock-item" data-action="pdf" role="menuitem">
+          Export PDF <kbd id="dk-d"></kbd>
+        </button>
+      </div>
+      <button type="button" class="dock-trigger" id="dockTrigger" aria-expanded="false" aria-haspopup="true">
+        Actions <kbd id="dockTriggerKbd"></kbd>
+      </button>
+    </div>
+
+    <div class="workbench" id="workbench" aria-hidden="true">
+      <div class="workbench-head">
+        <strong>Afenda workbench</strong>
+        <div class="workbench-tabs" role="tablist">
+          <button type="button" role="tab" aria-selected="true" data-tab="schema">Schema</button>
+          <button type="button" role="tab" aria-selected="false" data-tab="manifest">Manifest</button>
+        </div>
+        <button type="button" class="btn" id="workbenchClose">Close <kbd id="wkEsc"></kbd></button>
+      </div>
+      <div class="workbench-body">
+        <textarea id="wbSchema" spellcheck="false" title="Specimen JSON schema"></textarea>
+        <textarea id="wbManifest" spellcheck="false" title="Route manifest" hidden></textarea>
+      </div>
+      <div class="workbench-foot">
+        <button type="button" class="btn" id="wbCopy">Copy active tab</button>
+        <button type="button" class="btn btn-primary" id="wbSave">Apply (local stub)</button>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" role="status"></div>
+
+    <script>
+      (function () {
+        var isMac = /Mac|iPod|iPad|iPhone/i.test(navigator.platform);
+        var mod = isMac ? "⌘" : "Ctrl+";
+
+        function modDown(e) {
+          return isMac ? e.metaKey : e.ctrlKey;
+        }
+
+        document.getElementById("railKbdHint").textContent = mod + "B";
+        document.getElementById("cmdkKbdLaunch").textContent = mod + "K";
+        document.getElementById("dockTriggerKbd").textContent = mod + ".";
+        document.getElementById("hintB").textContent = mod + "B";
+        document.getElementById("hintK").textContent = mod + "K";
+        document.getElementById("hintDot").textContent = mod + ".";
+        document.getElementById("hintW").textContent = mod + "⇧W";
+        document.getElementById("wkEsc").textContent = "Esc";
+
+        document.getElementById("dk-c").textContent = "C";
+        document.getElementById("dk-m").textContent = "M";
+        document.getElementById("dk-v").textContent = "V";
+        document.getElementById("dk-h").textContent = "H";
+        document.getElementById("dk-p").textContent = "P";
+        document.getElementById("dk-d").textContent = "D";
+
+        var rail = document.getElementById("rail");
+        var railToggle = document.getElementById("railToggle");
+        var workspace = document.getElementById("workspace");
+        var panelHost = document.getElementById("panelHost");
+        var cmdk = document.getElementById("cmdk");
+        var cmdkBackdrop = document.getElementById("cmdkBackdrop");
+        var cmdkInput = document.getElementById("cmdkInput");
+        var cmdkList = document.getElementById("cmdkList");
+        var cmdkLaunch = document.getElementById("cmdkLaunch");
+        var dockWrap = document.getElementById("dockWrap");
+        var dockTrigger = document.getElementById("dockTrigger");
+        var afendaFab = document.getElementById("afendaFab");
+        var workbench = document.getElementById("workbench");
+        var workbenchClose = document.getElementById("workbenchClose");
+        var wbSchema = document.getElementById("wbSchema");
+        var wbManifest = document.getElementById("wbManifest");
+        var toast = document.getElementById("toast");
+
+        var SCHEMA_STUB = JSON.stringify(
+          {
+            $id: "https://afenda.dev/specimen/approval-row.json",
+            type: "object",
+            title: "ApprovalRow",
+            properties: {
+              id: { type: "string" },
+              state: { enum: ["pending", "approved", "deferred"] },
+            },
+            required: ["id", "state"],
+          },
+          null,
+          2,
+        );
+
+        var MANIFEST_STUB = JSON.stringify(
+          {
+            route: "/interface-lab/erp-patterns/procurement-approval-queue",
+            specimen: "AppApprovalRow",
+            version: 3,
+            tokens: ["--surface", "--accent"],
+          },
+          null,
+          2,
+        );
+
+        wbSchema.value = SCHEMA_STUB;
+        wbManifest.value = MANIFEST_STUB;
+
+        var commands = [
+          { id: "env", label: "Open Environment", hint: "config" },
+          { id: "flags", label: "Open Feature flags", hint: "config" },
+          { id: "specimen", label: "Open Specimen", hint: "workspace" },
+          { id: "tokens", label: "Open Tokens", hint: "workspace" },
+          { id: "qc", label: "Open QC", hint: "workspace" },
+          { id: "export", label: "Open Export bundle", hint: "ship" },
+          { id: "ci", label: "Open CI status", hint: "ship" },
+          { id: "clear", label: "Clear workspace", hint: "reset" },
+        ];
+
+        var activeIndex = 0;
+        var filtered = commands.slice();
+        var dockOpen = false;
+
+        function setRail(on) {
+          rail.dataset.expanded = on ? "true" : "false";
+          railToggle.setAttribute("aria-expanded", on ? "true" : "false");
+        }
+
+        railToggle.addEventListener("click", function () {
+          setRail(rail.dataset.expanded !== "true");
+        });
+
+        function toastMsg(msg) {
+          toast.textContent = msg;
+          toast.dataset.show = "true";
+          clearTimeout(toastMsg._t);
+          toastMsg._t = setTimeout(function () {
+            toast.dataset.show = "false";
+          }, 2200);
+        }
+
+        function copyText(text, ok) {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(
+              function () {
+                toastMsg(ok);
+              },
+              function () {
+                toastMsg("Clipboard blocked");
+              },
+            );
+          } else {
+            toastMsg("Clipboard unavailable");
+          }
+        }
+
+        function renderPanel(id) {
+          if (id === "clear") {
+            panelHost.innerHTML = "";
+            panelHost.hidden = true;
+            workspace.dataset.empty = "true";
+            syncRailCurrent(null);
+            return;
+          }
+
+          var blocks = {
+            env: "<h2>Environment</h2><pre>NODE_ENV=production\nBETTER_AUTH_URL=…</pre>",
+            flags: "<h2>Feature flags</h2><pre>SPECIMEN_AUDIT_V2=false</pre>",
+            specimen: "<h2>Specimen</h2><pre>AppApprovalRow · procurement queue</pre>",
+            tokens: "<h2>Tokens</h2><pre>canvas #000\nborder rgba(255,255,255,0.1)</pre>",
+            qc: "<h2>QC</h2><pre>axe CI · focus ring · contrast</pre>",
+            export: "<h2>Export bundle</h2><pre>pnpm interface-lab:codegen</pre>",
+            ci: "<h2>CI</h2><pre>main · passing</pre>",
+          };
+
+          panelHost.innerHTML = blocks[id] || "<h2>Unknown</h2>";
+          panelHost.hidden = false;
+          workspace.dataset.empty = "false";
+          syncRailCurrent(id);
+        }
+
+        function syncRailCurrent(id) {
+          Array.prototype.forEach.call(document.querySelectorAll(".rail-nav-btn"), function (b) {
+            b.setAttribute("aria-current", b.dataset.view === id ? "true" : "false");
+          });
+        }
+
+        function openCmdk() {
+          cmdk.dataset.open = "true";
+          cmdkBackdrop.dataset.open = "true";
+          cmdkInput.value = "";
+          filterCmdk("");
+          cmdkInput.focus();
+        }
+
+        function closeCmdk() {
+          cmdk.dataset.open = "false";
+          cmdkBackdrop.dataset.open = "false";
+        }
+
+        function filterCmdk(q) {
+          var n = q.trim().toLowerCase();
+          filtered = commands.filter(function (c) {
+            return (
+              !n ||
+              c.label.toLowerCase().indexOf(n) !== -1 ||
+              c.hint.toLowerCase().indexOf(n) !== -1
+            );
+          });
+          activeIndex = 0;
+          renderCmdkList();
+        }
+
+        function renderCmdkList() {
+          cmdkList.innerHTML = "";
+          filtered.forEach(function (c, i) {
+            var btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "cmdk-item";
+            btn.setAttribute("role", "option");
+            btn.dataset.active = i === activeIndex ? "true" : "false";
+            btn.innerHTML = "<span>" + c.label + "</span><small>" + c.hint + "</small>";
+            btn.addEventListener("click", function () {
+              runCmd(c.id);
+            });
+            cmdkList.appendChild(btn);
+          });
+        }
+
+        function runCmd(id) {
+          closeCmdk();
+          renderPanel(id);
+        }
+
+        cmdkLaunch.addEventListener("click", openCmdk);
+        cmdkBackdrop.addEventListener("click", closeCmdk);
+        cmdkInput.addEventListener("input", function () {
+          filterCmdk(cmdkInput.value);
+        });
+
+        cmdkInput.addEventListener("keydown", function (e) {
+          if (e.key === "Escape") {
+            e.preventDefault();
+            closeCmdk();
+            return;
+          }
+          if (e.key === "ArrowDown") {
+            e.preventDefault();
+            activeIndex = Math.min(filtered.length - 1, activeIndex + 1);
+            renderCmdkList();
+            return;
+          }
+          if (e.key === "ArrowUp") {
+            e.preventDefault();
+            activeIndex = Math.max(0, activeIndex - 1);
+            renderCmdkList();
+            return;
+          }
+          if (e.key === "Enter" && filtered[activeIndex]) {
+            e.preventDefault();
+            runCmd(filtered[activeIndex].id);
+          }
+        });
+
+        function setDock(open) {
+          dockOpen = open;
+          dockWrap.dataset.open = open ? "true" : "false";
+          dockTrigger.setAttribute("aria-expanded", open ? "true" : "false");
+        }
+
+        dockTrigger.addEventListener("click", function (e) {
+          e.stopPropagation();
+          setDock(!dockOpen);
+        });
+
+        document.getElementById("dockMenu").addEventListener("click", function (e) {
+          e.stopPropagation();
+        });
+
+        document.addEventListener("click", function (e) {
+          if (dockOpen && !dockWrap.contains(e.target)) setDock(false);
+        });
+
+        function dockAction(name) {
+          setDock(false);
+          if (name === "copy-code") copyText("// specimen stub\nexport function ApprovalRow() {}", "Code copied");
+          else if (name === "copy-manifest") copyText(MANIFEST_STUB, "Manifest copied");
+          else if (name === "variants") toastMsg("Variants: default · dense · compact (stub)");
+          else if (name === "ai") toastMsg("LLM help: wire to Afenda agent (stub)");
+          else if (name === "png") toastMsg("Export PNG: capture node in app build (stub)");
+          else if (name === "pdf") toastMsg("Export PDF: print stylesheet route (stub)");
+        }
+
+        Array.prototype.forEach.call(document.querySelectorAll(".dock-item"), function (btn) {
+          btn.addEventListener("click", function () {
+            dockAction(btn.dataset.action);
+          });
+        });
+
+        function openWorkbench() {
+          document.body.dataset.workbench = "open";
+          workbench.setAttribute("aria-hidden", "false");
+        }
+
+        function closeWorkbench() {
+          document.body.dataset.workbench = "closed";
+          workbench.setAttribute("aria-hidden", "true");
+        }
+
+        afendaFab.addEventListener("click", openWorkbench);
+        workbenchClose.addEventListener("click", closeWorkbench);
+
+        Array.prototype.forEach.call(document.querySelectorAll(".workbench-tabs button"), function (tab) {
+          tab.addEventListener("click", function () {
+            Array.prototype.forEach.call(document.querySelectorAll(".workbench-tabs button"), function (t) {
+              t.setAttribute("aria-selected", "false");
+            });
+            tab.setAttribute("aria-selected", "true");
+            var on = tab.dataset.tab === "schema";
+            wbSchema.hidden = !on;
+            wbManifest.hidden = on;
+          });
+        });
+
+        document.getElementById("wbCopy").addEventListener("click", function () {
+          var el = wbSchema.hidden ? wbManifest : wbSchema;
+          copyText(el.value, "Copied active tab");
+        });
+
+        document.getElementById("wbSave").addEventListener("click", function () {
+          toastMsg("Apply: persisted in real app via server action (stub here)");
+          closeWorkbench();
+        });
+
+        Array.prototype.forEach.call(document.querySelectorAll(".rail-nav-btn"), function (btn) {
+          btn.addEventListener("click", function () {
+            renderPanel(btn.dataset.view);
+          });
+        });
+
+        document.addEventListener("keydown", function (e) {
+          var m = modDown(e);
+
+          if (e.key === "Escape" && document.body.dataset.workbench === "open") {
+            e.preventDefault();
+            closeWorkbench();
+            return;
+          }
+
+          if (m && (e.key === "k" || e.key === "K")) {
+            e.preventDefault();
+            if (cmdk.dataset.open === "true") closeCmdk();
+            else openCmdk();
+            return;
+          }
+
+          if (m && (e.key === "b" || e.key === "B")) {
+            e.preventDefault();
+            setRail(rail.dataset.expanded !== "true");
+            return;
+          }
+
+          if (m && e.shiftKey && (e.key === "w" || e.key === "W")) {
+            e.preventDefault();
+            if (document.body.dataset.workbench === "open") closeWorkbench();
+            else openWorkbench();
+            return;
+          }
+
+          if (m && e.key === ".") {
+            e.preventDefault();
+            setDock(!dockOpen);
+            return;
+          }
+
+          if (
+            dockOpen &&
+            !m &&
+            !e.altKey &&
+            cmdk.dataset.open !== "true" &&
+            document.body.dataset.workbench !== "open"
+          ) {
+            var tag = (e.target && e.target.tagName) || "";
+            if (tag !== "INPUT" && tag !== "TEXTAREA") {
+              var k = e.key.toLowerCase();
+              if ("cmvhpd".indexOf(k) !== -1) {
+                e.preventDefault();
+                var map = { c: "copy-code", m: "copy-manifest", v: "variants", h: "ai", p: "png", d: "pdf" };
+                if (map[k]) dockAction(map[k]);
+              }
+            }
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>

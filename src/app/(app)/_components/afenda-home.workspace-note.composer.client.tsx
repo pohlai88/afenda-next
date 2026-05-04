@@ -7,65 +7,52 @@
  * @afenda-boundary client
  * @afenda-description Client composer for creating and showing the latest workspace note
  */
-import {
-  AppButton,
-  AppTextField,
-} from "@/components/ui/app.controls.primitive.client";
+import { useState } from "react";
+
 import { api } from "@/trpc/trpc.react.provider.client";
 
-import { useHomeState } from "./afenda-home.state.provider.client";
-
-export function WorkspaceNoteComposer() {
-  const [latestNote] = api.workspaceNote.getLatest.useSuspenseQuery();
+export function WorkspaceNoteComposer({ tenantSlug }: { tenantSlug: string }) {
+  const [draft, setDraft] = useState("");
+  const [latestNote] = api.workspaceNote.getLatest.useSuspenseQuery({ tenantSlug });
   const utils = api.useUtils();
-  const {
-    state: { composerDensity, noteDraft },
-    markNoteCreated,
-    setNoteDraft,
-  } = useHomeState();
 
   const createWorkspaceNote = api.workspaceNote.create.useMutation({
-    onSuccess: async (_, variables) => {
-      await utils.workspaceNote.invalidate();
-      markNoteCreated(variables.name);
+    onSuccess: async () => {
+      await utils.workspaceNote.getLatest.invalidate({ tenantSlug });
+      setDraft("");
     },
   });
 
   return (
-    <div
-      className={`w-full ${
-        composerDensity === "compact" ? "max-w-xs" : "max-w-sm"
-      } space-y-3`}
-    >
+    <div className="w-full max-w-sm space-y-3">
       {latestNote ? (
         <p className="truncate">Latest workspace note: {latestNote.name}</p>
       ) : (
         <p>No workspace notes yet.</p>
       )}
       <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          createWorkspaceNote.mutate({ name: noteDraft });
+        className="flex flex-col gap-3"
+        onSubmit={(event) => {
+          event.preventDefault();
+          createWorkspaceNote.mutate({
+            name: draft,
+            tenantSlug,
+          });
         }}
-        className={`flex flex-col ${
-          composerDensity === "compact" ? "gap-2" : "gap-3"
-        }`}
       >
-        <AppTextField
-          label="Workspace note"
-          onChange={setNoteDraft}
-          placeholder="Enter a workspace note"
-          value={noteDraft}
-        />
-        <AppButton
-          isDisabled={
-            createWorkspaceNote.isPending || noteDraft.trim().length === 0
-          }
-          type="submit"
-          variant="primary"
-        >
+        <label className="flex min-w-0 flex-col gap-2" htmlFor="workspace-note">
+          <span className="type-label">Workspace note</span>
+          <input
+            className="border-border bg-field rounded-(--radius-control) border px-3 py-2"
+            id="workspace-note"
+            onChange={(event) => setDraft(event.currentTarget.value)}
+            placeholder="Enter a workspace note"
+            value={draft}
+          />
+        </label>
+        <button disabled={createWorkspaceNote.isPending || draft.trim().length === 0} type="submit">
           {createWorkspaceNote.isPending ? "Saving..." : "Save note"}
-        </AppButton>
+        </button>
       </form>
     </div>
   );

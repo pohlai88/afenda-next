@@ -1,667 +1,599 @@
+/* ============================================================
+   AFENDA GLOBALS — TAILWIND CSS V4 (single-file visual contract)
+   - Deterministic, CSS-first Tailwind v4 setup
+   - Order: @import → @plugin → @custom-variant → @theme inline
+            → @utility → @source inline → @layer base/components
+   ============================================================ */
+
+/* -------------------------
+   CORE IMPORTS + PLUGINS
+   Load plugins early so their utilities/variants are available
+   ------------------------- */
 @import "tailwindcss";
+
+/* plugin: react aria components (project-specific) */
 @plugin "tailwindcss-react-aria-components";
 
-/*
- * AFENDA GLOBALS
- * Current runtime visual contract.
- *
- * Theme model:
- * - Light:  html.light or html[data-theme="light"]
- * - Dark:   html.dark or html[data-theme="dark"]
- * - System: no forced class, falls back to prefers-color-scheme
- *
- * Raw --palette-* tokens are foundation primitives.
- * Runtime UI should consume semantic --color-* / --text-* / --radius-* tokens.
- * Legacy palette.css variables are retired.
- */
+/* optional official helpers (opt-in) */
+@plugin "@tailwindcss/forms";
+@plugin "@tailwindcss/typography";
 
-/*
- * SIGNAL SYSTEM
- *
- * Signal is Afenda's machine-intelligence color system.
- * It is not a generic "primary" color.
- *
- * Formula:
- *   Signal = Intelligence + Verification + Motion + Authority
- *
- * Usage:
- * - --palette-signal-* = machine intelligence / decision pressure
- * - --palette-cyan-*   = verified state / live operational confirmation
- * - --color-accent     = main signal action or active state
- * - --color-verified   = resolved / verified / connected state
- *
- * Rules:
- * - Use Signal sparingly.
- * - Signal should guide attention, not decorate.
- * - Violet-blue carries intelligence.
- * - Cyan carries verification.
- * - Carbon carries authority.
- * - Amber is reserved for evidence / review / exception.
- * - Red is reserved for danger only.
- */
-
-/*
- * AFENDA SIGNAL FORMULA
- *
- * 85% Carbon authority
- * 10% Signal intelligence
- * 4% Verified cyan
- * 1% Evidence / exception
- *
- * The interface should feel mostly controlled and architectural.
- * Color appears only when the machine is resolving, verifying, warning,
- * or asking for judgment.
- *
- * Short ratio: 85 / 10 / 4 / 1 = Carbon / Signal / Verified / Evidence
- */
-
+/* custom dark variant supports class and data-theme on root and descendants */
 @custom-variant dark (&:where(.dark, .dark *, [data-theme="dark"], [data-theme="dark"] *));
+
+/* ============================================================
+      THEME BRIDGE — TAILWIND V4
+      @theme must stay top-level. inline is intentional because
+      Tailwind utilities should resolve against runtime theme
+      variables instead of frozen build-time values.
+      ============================================================ */
+@theme inline {
+  --font-sans:
+    var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+  /* Core semantic tokens (map runtime tokens into Tailwind theme) */
+  --color-background: var(--af-bg);
+  --color-foreground: var(--af-fg);
+  --color-foreground-subtle: var(--af-fg-subtle);
+  --color-foreground-muted: var(--af-fg-muted);
+
+  --color-surface: var(--af-surface);
+  --color-surface-muted: var(--af-surface-muted);
+  --color-surface-raised: var(--af-surface-raised);
+
+  --color-field: var(--af-field);
+  --color-field-hover: var(--af-field-hover);
+  --color-field-strong: var(--af-field-strong);
+  --color-input: var(--af-input);
+
+  --color-border: var(--af-border);
+  --color-border-strong: var(--af-border-strong);
+
+  --color-accent: var(--af-accent);
+  --color-accent-strong: var(--af-accent-strong);
+  --color-accent-soft: var(--af-accent-soft);
+  --color-accent-foreground: var(--af-accent-fg);
+  --color-accent-ring: var(--af-accent-ring);
+
+  --color-verified: var(--af-verified);
+  --color-verified-strong: var(--af-verified-strong);
+  --color-verified-soft: var(--af-verified-soft);
+  --color-verified-foreground: var(--af-verified-fg);
+
+  --color-info: var(--af-info);
+  --color-info-strong: var(--af-info-strong);
+  --color-info-soft: var(--af-info-soft);
+  --color-info-foreground: var(--af-info-fg);
+
+  --color-success: var(--af-success);
+  --color-success-strong: var(--af-success-strong);
+  --color-success-soft: var(--af-success-soft);
+  --color-success-foreground: var(--af-success-fg);
+
+  --color-warning: var(--af-warning);
+  --color-warning-strong: var(--af-warning-strong);
+  --color-warning-soft: var(--af-warning-soft);
+  --color-warning-foreground: var(--af-warning-fg);
+
+  --color-danger: var(--af-danger);
+  --color-danger-strong: var(--af-danger-strong);
+  --color-danger-soft: var(--af-danger-soft);
+  --color-danger-ring: var(--af-danger-ring);
+  --color-danger-foreground: var(--af-danger-fg);
+
+  --color-ring: var(--af-ring);
+  --color-ring-offset: var(--af-ring-offset);
+
+  --color-brand-gradient-from: var(--af-brand-gradient-from);
+  --color-brand-gradient-to: var(--af-brand-gradient-to);
+  --color-overlay: var(--af-overlay);
+
+  --color-chart-1: var(--af-chart-1);
+  --color-chart-2: var(--af-chart-2);
+  --color-chart-3: var(--af-chart-3);
+  --color-chart-4: var(--af-chart-4);
+  --color-chart-5: var(--af-chart-5);
+
+  /*
+      * Layout baseline — Tailwind v4 defaults (see theme + responsive-design docs).
+      * Declared explicitly so ERP layouts use documented values; does not replace
+      * Afenda radii, shadows, or type scale (those stay on --af-* above).
+      */
+  --spacing: 0.25rem;
+
+  --breakpoint-sm: 40rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 64rem;
+  --breakpoint-xl: 80rem;
+  --breakpoint-2xl: 96rem;
+
+  --container-3xs: 16rem;
+  --container-2xs: 18rem;
+  --container-xs: 20rem;
+  --container-sm: 24rem;
+  --container-md: 28rem;
+  --container-lg: 32rem;
+  --container-xl: 36rem;
+  --container-2xl: 42rem;
+  --container-3xl: 48rem;
+  --container-4xl: 56rem;
+  --container-5xl: 64rem;
+  --container-6xl: 72rem;
+  --container-7xl: 80rem;
+
+  /* Compatibility aliases for imported primitives */
+  --color-primary: var(--af-accent);
+  --color-primary-foreground: var(--af-accent-fg);
+  --color-secondary: var(--af-verified);
+  --color-secondary-foreground: var(--af-verified-fg);
+  --color-muted: var(--af-surface-muted);
+  --color-muted-foreground: var(--af-fg-muted);
+  --color-card: var(--af-surface);
+  --color-card-foreground: var(--af-fg);
+  --color-popover: var(--af-surface-raised);
+  --color-popover-foreground: var(--af-fg);
+  --color-destructive: var(--af-danger);
+  --color-destructive-foreground: var(--af-danger-fg);
+
+  /* Radii */
+  --radius-sm: var(--af-radius-sm);
+  --radius-md: var(--af-radius-md);
+  --radius-lg: var(--af-radius-lg);
+  --radius-xl: var(--af-radius-xl);
+  --radius-control: var(--af-radius-control);
+  --radius-panel: var(--af-radius-panel);
+
+  /* Shadows */
+  --shadow-xs: var(--af-shadow-xs);
+  --shadow-sm: var(--af-shadow-sm);
+  --shadow-md: var(--af-shadow-md);
+  --shadow-lg: var(--af-shadow-lg);
+
+  /* Type scale */
+  --text-display: var(--af-text-display);
+  --text-display--line-height: var(--af-text-display-line);
+  --text-section-title: var(--af-text-section-title);
+  --text-section-title--line-height: var(--af-text-section-title-line);
+  --text-panel-title: var(--af-text-panel-title);
+  --text-panel-title--line-height: var(--af-text-panel-title-line);
+  --text-body: var(--af-text-body);
+  --text-body--line-height: var(--af-text-body-line);
+  --text-body-sm: var(--af-text-body-sm);
+  --text-body-sm--line-height: var(--af-text-body-sm-line);
+  --text-label: var(--af-text-label);
+  --text-label--line-height: var(--af-text-label-line);
+  --text-meta: var(--af-text-meta);
+  --text-meta--line-height: var(--af-text-meta-line);
+  --text-caption: var(--af-text-caption);
+  --text-caption--line-height: var(--af-text-caption-line);
+
+  --tracking-tight: var(--af-tracking-tight);
+  --tracking-caps: var(--af-tracking-caps);
+}
+
+/* ============================================================
+      FOUNDATION TOKENS (raw palette + semantic runtime tokens)
+      - Keep raw palette tokens in :root; semantic tokens map to them.
+      ============================================================ */
 
 :root {
   color-scheme: light;
 
-  /* ============================================================
-     RAW PALETTE — AFENDA LIGHT
-     ============================================================ */
+  /* Raw palette — Afenda essence: archival, mineral, lasting */
+  --af-carbon-990: oklch(0.105 0.014 265);
+  --af-carbon-970: oklch(0.135 0.016 265);
+  --af-carbon-940: oklch(0.18 0.018 265);
+  --af-carbon-900: oklch(0.235 0.019 265);
+  --af-carbon-850: oklch(0.305 0.018 265);
+  --af-carbon-800: oklch(0.37 0.017 265);
+  --af-carbon-700: oklch(0.47 0.015 265);
+  --af-carbon-600: oklch(0.58 0.013 265);
+  --af-carbon-500: oklch(0.68 0.011 265);
+  --af-carbon-400: oklch(0.78 0.009 265);
+  --af-carbon-300: oklch(0.86 0.007 265);
+  --af-carbon-200: oklch(0.92 0.006 265);
+  --af-carbon-100: oklch(0.96 0.005 265);
+  --af-carbon-050: oklch(0.985 0.004 265);
+  --af-carbon-025: oklch(0.995 0.003 265);
 
-  --palette-carbon-990: oklch(0.12 0.01 260);
-  --palette-carbon-970: oklch(0.15 0.012 260);
-  --palette-carbon-940: oklch(0.19 0.014 260);
-  --palette-carbon-900: oklch(0.24 0.015 260);
-  --palette-carbon-850: oklch(0.31 0.016 260);
-  --palette-carbon-800: oklch(0.37 0.017 260);
-  --palette-carbon-700: oklch(0.47 0.016 260);
-  --palette-carbon-600: oklch(0.58 0.014 260);
-  --palette-carbon-500: oklch(0.68 0.012 260);
-  --palette-carbon-400: oklch(0.78 0.009 260);
-  --palette-carbon-300: oklch(0.86 0.007 260);
-  --palette-carbon-200: oklch(0.92 0.005 260);
-  --palette-carbon-100: oklch(0.96 0.004 260);
-  --palette-carbon-050: oklch(0.985 0.003 260);
-  --palette-carbon-025: oklch(0.995 0.002 260);
+  /* Archival paper */
+  --af-paper-050: oklch(0.985 0.011 82);
+  --af-paper-100: oklch(0.962 0.016 82);
+  --af-paper-200: oklch(0.925 0.022 82);
 
-  /* Machine intelligence */
-  --palette-signal-700: oklch(0.44 0.17 275); /* deep authority signal */
-  --palette-signal-600: oklch(0.51 0.19 272); /* primary light-mode accent */
-  --palette-signal-500: oklch(0.6 0.2 268); /* brand core */
-  --palette-signal-400: oklch(0.7 0.17 264); /* primary dark-mode accent */
-  --palette-signal-300: oklch(0.8 0.11 260); /* luminous highlight */
-  --palette-signal-200: oklch(0.9 0.055 260); /* soft tint */
+  /* Primary signal — deep constitutional indigo */
+  --af-signal-800: oklch(0.32 0.115 270);
+  --af-signal-700: oklch(0.39 0.14 270);
+  --af-signal-600: oklch(0.48 0.16 270);
+  --af-signal-500: oklch(0.58 0.17 268);
+  --af-signal-400: oklch(0.69 0.145 264);
+  --af-signal-300: oklch(0.8 0.095 262);
+  --af-signal-200: oklch(0.9 0.045 262);
 
-  /* Verification / resolved state */
-  --palette-cyan-600: oklch(0.56 0.12 205);
-  --palette-cyan-500: oklch(0.66 0.13 202);
-  --palette-cyan-400: oklch(0.76 0.11 198);
-  --palette-cyan-300: oklch(0.85 0.075 195);
-  --palette-cyan-200: oklch(0.92 0.045 192);
+  /* Verified — oxidized teal */
+  --af-cyan-700: oklch(0.38 0.09 205);
+  --af-cyan-600: oklch(0.48 0.105 205);
+  --af-cyan-500: oklch(0.59 0.115 202);
+  --af-cyan-400: oklch(0.72 0.095 198);
+  --af-cyan-300: oklch(0.84 0.06 196);
+  --af-cyan-200: oklch(0.92 0.035 194);
 
-  --palette-green-500: oklch(0.7 0.16 152);
-  --palette-green-300: oklch(0.86 0.09 153);
-  --palette-amber-500: oklch(0.78 0.15 82);
-  --palette-amber-300: oklch(0.9 0.08 86);
-  --palette-red-500: oklch(0.63 0.22 24);
-  --palette-red-300: oklch(0.84 0.1 22);
+  /* Operational status */
+  --af-green-600: oklch(0.49 0.115 150);
+  --af-green-500: oklch(0.6 0.13 150);
+  --af-green-300: oklch(0.82 0.075 152);
 
-  /* ============================================================
-     SEMANTIC TOKENS — LIGHT DEFAULT
-     ============================================================ */
+  --af-amber-600: oklch(0.58 0.13 72);
+  --af-amber-500: oklch(0.72 0.145 78);
+  --af-amber-300: oklch(0.88 0.075 84);
 
-  --color-background: var(--palette-carbon-025);
-  --color-foreground: var(--palette-carbon-970);
-  --color-foreground-subtle: color-mix(
+  --af-red-600: oklch(0.5 0.17 24);
+  --af-red-500: oklch(0.59 0.19 24);
+  --af-red-300: oklch(0.82 0.09 23);
+
+  /* Supporting data colors — mineral series */
+  --af-rose-500: oklch(0.58 0.14 350);
+  --af-orange-500: oklch(0.64 0.14 48);
+  --af-lime-500: oklch(0.65 0.12 132);
+  --af-blue-500: oklch(0.55 0.13 245);
+
+  /* Typography tokens */
+  --af-text-display: 3.5rem;
+  --af-text-display-line: 1.02;
+  --af-text-section-title: 1.875rem;
+  --af-text-section-title-line: 1.12;
+  --af-text-panel-title: 1.25rem;
+  --af-text-panel-title-line: 1.25;
+  --af-text-body: 1rem;
+  --af-text-body-line: 1.6;
+  --af-text-body-sm: 0.9375rem;
+  --af-text-body-sm-line: 1.55;
+  --af-text-label: 0.875rem;
+  --af-text-label-line: 1.35;
+  --af-text-meta: 0.75rem;
+  --af-text-meta-line: 1.45;
+  --af-text-caption: var(--af-text-meta);
+  --af-text-caption-line: var(--af-text-meta-line);
+
+  --af-tracking-tight: 0;
+  --af-tracking-caps: 0.14em;
+
+  /* Radii */
+  --af-radius-sm: 0.5rem;
+  --af-radius-md: 0.75rem;
+  --af-radius-lg: 1rem;
+  --af-radius-xl: 1.5rem;
+  --af-radius-control: var(--af-radius-md);
+  --af-radius-panel: var(--af-radius-lg);
+
+  /* Control sizing */
+  --af-control-height-comfortable: 2.75rem;
+  --af-control-height-compact: 2.375rem;
+  --af-control-padding-x-comfortable: 1rem;
+  --af-control-padding-x-compact: 0.75rem;
+  --af-control-padding-y-comfortable: 0.75rem;
+  --af-control-padding-y-compact: 0.5rem;
+
+  /* Light semantic runtime tokens — archival control surface */
+  --af-bg: var(--af-paper-050);
+  --af-fg: var(--af-carbon-970);
+  --af-fg-subtle: color-mix(in oklab, var(--af-carbon-970) 82%, transparent);
+  --af-fg-muted: color-mix(in oklab, var(--af-carbon-970) 58%, transparent);
+
+  --af-surface: color-mix(in oklab, white 76%, var(--af-paper-050));
+  --af-surface-muted: color-mix(in oklab, var(--af-paper-100) 76%, white);
+  --af-surface-raised: color-mix(in oklab, white 92%, var(--af-paper-050));
+
+  --af-field: color-mix(in oklab, var(--af-carbon-970) 3%, var(--af-surface));
+  --af-field-hover: color-mix(
     in oklab,
-    var(--palette-carbon-970) 82%,
+    var(--af-signal-600) 4%,
+    var(--af-surface)
+  );
+  --af-field-strong: color-mix(
+    in oklab,
+    var(--af-signal-600) 7%,
+    var(--af-surface)
+  );
+  --af-input: var(--af-field);
+
+  --af-border: color-mix(in oklab, var(--af-carbon-970) 13%, transparent);
+  --af-border-strong: color-mix(
+    in oklab,
+    var(--af-carbon-970) 22%,
     transparent
   );
-  --color-foreground-muted: color-mix(
-    in oklab,
-    var(--palette-carbon-970) 62%,
-    transparent
-  );
 
-  --color-surface: var(--palette-carbon-050);
-  --color-surface-muted: var(--palette-carbon-100);
-  --color-surface-raised: white;
+  --af-accent: var(--af-signal-600);
+  --af-accent-strong: var(--af-signal-700);
+  --af-accent-soft: color-mix(in oklab, var(--af-signal-500) 11%, white);
+  --af-accent-fg: white;
+  --af-accent-ring: color-mix(in oklab, var(--af-signal-500) 30%, transparent);
 
-  --color-field: color-mix(
-    in oklab,
-    var(--palette-carbon-970) 3%,
-    var(--color-surface)
-  );
-  --color-field-hover: color-mix(
-    in oklab,
-    var(--palette-carbon-970) 5%,
-    var(--color-surface)
-  );
-  --color-field-strong: color-mix(
-    in oklab,
-    var(--palette-carbon-970) 9%,
-    var(--color-surface)
-  );
-  --color-input: var(--color-field);
+  --af-verified: var(--af-cyan-600);
+  --af-verified-strong: var(--af-cyan-700);
+  --af-verified-soft: color-mix(in oklab, var(--af-cyan-500) 12%, white);
+  --af-verified-fg: white;
 
-  --color-border: color-mix(
-    in oklab,
-    var(--palette-carbon-970) 11%,
-    transparent
-  );
-  --color-border-strong: color-mix(
-    in oklab,
-    var(--palette-carbon-970) 18%,
-    transparent
-  );
+  --af-info: var(--af-blue-500);
+  --af-info-strong: var(--af-signal-600);
+  --af-info-soft: color-mix(in oklab, var(--af-blue-500) 11%, white);
+  --af-info-fg: white;
 
-  --color-accent: var(--palette-signal-600);
-  --color-accent-strong: var(--palette-signal-700);
-  --color-accent-soft: color-mix(
-    in oklab,
-    var(--palette-signal-500) 12%,
-    transparent
-  );
-  --color-accent-foreground: white;
-  --color-accent-ring: color-mix(
-    in oklab,
-    var(--palette-signal-500) 34%,
-    transparent
-  );
+  --af-success: var(--af-green-600);
+  --af-success-strong: var(--af-green-500);
+  --af-success-soft: color-mix(in oklab, var(--af-green-500) 12%, white);
+  --af-success-fg: oklch(0.2 0.035 150);
 
-  --color-verified: var(--palette-cyan-600);
-  --color-verified-strong: var(--palette-cyan-500);
-  --color-verified-soft: color-mix(
-    in oklab,
-    var(--palette-cyan-500) 13%,
-    transparent
-  );
-  --color-verified-foreground: white;
+  --af-warning: var(--af-amber-600);
+  --af-warning-strong: var(--af-amber-500);
+  --af-warning-soft: color-mix(in oklab, var(--af-amber-500) 14%, white);
+  --af-warning-fg: oklch(0.22 0.04 76);
 
-  --color-info: var(--palette-signal-600);
-  --color-info-strong: var(--palette-signal-500);
-  --color-info-soft: color-mix(
-    in oklab,
-    var(--palette-signal-500) 12%,
-    transparent
-  );
-  --color-info-foreground: white;
+  --af-danger: var(--af-red-600);
+  --af-danger-strong: var(--af-red-500);
+  --af-danger-soft: color-mix(in oklab, var(--af-red-500) 11%, white);
+  --af-danger-ring: color-mix(in oklab, var(--af-red-500) 26%, transparent);
+  --af-danger-fg: white;
 
-  --color-success: var(--palette-green-500);
-  --color-success-strong: var(--palette-green-300);
-  --color-success-soft: color-mix(
-    in oklab,
-    var(--palette-green-500) 13%,
-    transparent
-  );
-  --color-success-foreground: oklch(0.22 0.035 150);
+  --af-ring: var(--af-accent-ring);
+  --af-ring-offset: var(--af-bg);
 
-  --color-warning: var(--palette-amber-500);
-  --color-warning-strong: var(--palette-amber-300);
-  --color-warning-soft: color-mix(
-    in oklab,
-    var(--palette-amber-500) 16%,
-    transparent
-  );
-  --color-warning-foreground: oklch(0.24 0.04 82);
+  --af-brand-gradient-from: var(--af-cyan-500);
+  --af-brand-gradient-to: var(--af-signal-600);
+  --af-overlay: color-mix(in oklab, black 62%, transparent);
 
-  --color-danger: var(--palette-red-500);
-  --color-danger-strong: var(--palette-red-300);
-  --color-danger-soft: color-mix(
-    in oklab,
-    var(--palette-red-500) 13%,
-    transparent
-  );
-  --color-danger-ring: color-mix(
-    in oklab,
-    var(--palette-red-500) 28%,
-    transparent
-  );
-  --color-danger-foreground: white;
+  --af-chart-1: var(--af-signal-600);
+  --af-chart-2: var(--af-cyan-600);
+  --af-chart-3: var(--af-green-600);
+  --af-chart-4: var(--af-amber-600);
+  --af-chart-5: var(--af-rose-500);
 
-  --color-brand-gradient-from: var(--palette-cyan-500);
-  --color-brand-gradient-to: var(--palette-signal-600);
-
-  --color-overlay: color-mix(in oklab, black 62%, transparent);
-
-  /* Optional chart tokens */
-  --color-chart-1: var(--palette-signal-600);
-  --color-chart-2: var(--palette-cyan-600);
-  --color-chart-3: var(--palette-green-500);
-  --color-chart-4: var(--palette-amber-500);
-  --color-chart-5: var(--palette-red-500);
-
-  /* Radius */
-  --radius-sm: 0.5rem;
-  --radius-md: 0.75rem;
-  --radius-lg: 1rem;
-  --radius-xl: 1.5rem;
-  --radius-control: var(--radius-md);
-  --radius-panel: var(--radius-lg);
-
-  /* ERP type scale */
-  --text-display: 3.5rem;
-  --text-display--line-height: 1.02;
-  --text-section-title: 1.875rem;
-  --text-section-title--line-height: 1.12;
-  --text-panel-title: 1.25rem;
-  --text-panel-title--line-height: 1.25;
-  --text-body: 1rem;
-  --text-body--line-height: 1.6;
-  --text-body-sm: 0.9375rem;
-  --text-body-sm--line-height: 1.55;
-  --text-label: 0.875rem;
-  --text-label--line-height: 1.35;
-  --text-meta: 0.75rem;
-  --text-meta--line-height: 1.45;
-
-  --tracking-tight: 0;
-  --tracking-caps: 0.14em;
-
-  --control-height-comfortable: 2.75rem;
-  --control-height-compact: 2.375rem;
-  --control-padding-x-comfortable: 1rem;
-  --control-padding-x-compact: 0.75rem;
-  --control-padding-y-comfortable: 0.75rem;
-  --control-padding-y-compact: 0.5rem;
-
-  --shadow-xs: 0 1px 2px rgb(15 23 42 / 0.08);
-  --shadow-sm: 0 2px 8px rgb(15 23 42 / 0.1);
-  --shadow-md: 0 12px 28px rgb(15 23 42 / 0.12);
-  --shadow-lg: 0 22px 56px rgb(15 23 42 / 0.16);
+  --af-shadow-xs: 0 1px 2px rgb(15 23 42 / 0.08);
+  --af-shadow-sm: 0 2px 8px rgb(15 23 42 / 0.1);
+  --af-shadow-md: 0 12px 28px rgb(15 23 42 / 0.12);
+  --af-shadow-lg: 0 22px 56px rgb(15 23 42 / 0.16);
 }
 
-/* Explicit light switch */
+/* Explicit light/dark switches and system fallback */
 .light,
 [data-theme="light"] {
   color-scheme: light;
 }
 
-/* Explicit dark switch */
 .dark,
 [data-theme="dark"] {
   color-scheme: dark;
 
-  --color-background: var(--palette-carbon-990);
-  --color-foreground: var(--palette-carbon-050);
-  --color-foreground-subtle: color-mix(
+  /* Dark semantic runtime tokens — machine chamber, not neon dashboard */
+  --af-bg: var(--af-carbon-990);
+  --af-fg: var(--af-carbon-050);
+  --af-fg-subtle: color-mix(in oklab, var(--af-carbon-050) 84%, transparent);
+  --af-fg-muted: color-mix(in oklab, var(--af-carbon-050) 62%, transparent);
+
+  --af-surface: color-mix(
     in oklab,
-    var(--palette-carbon-050) 84%,
-    transparent
+    var(--af-carbon-940) 94%,
+    var(--af-signal-800)
   );
-  --color-foreground-muted: color-mix(
+  --af-surface-muted: color-mix(
     in oklab,
-    var(--palette-carbon-050) 64%,
-    transparent
+    var(--af-carbon-900) 95%,
+    var(--af-signal-800)
+  );
+  --af-surface-raised: color-mix(
+    in oklab,
+    var(--af-carbon-850) 92%,
+    var(--af-signal-800)
   );
 
-  --color-surface: var(--palette-carbon-940);
-  --color-surface-muted: var(--palette-carbon-900);
-  --color-surface-raised: var(--palette-carbon-850);
+  --af-field: color-mix(in oklab, var(--af-carbon-050) 5%, var(--af-surface));
+  --af-field-hover: color-mix(
+    in oklab,
+    var(--af-carbon-050) 8%,
+    var(--af-surface)
+  );
+  --af-field-strong: color-mix(
+    in oklab,
+    var(--af-carbon-050) 14%,
+    var(--af-surface)
+  );
+  --af-input: var(--af-field);
 
-  --color-field: color-mix(
+  --af-border: color-mix(in oklab, var(--af-carbon-050) 10%, transparent);
+  --af-border-strong: color-mix(
     in oklab,
-    var(--palette-carbon-050) 5.5%,
-    var(--color-surface)
-  );
-  --color-field-hover: color-mix(
-    in oklab,
-    var(--palette-carbon-050) 8.5%,
-    var(--color-surface)
-  );
-  --color-field-strong: color-mix(
-    in oklab,
-    var(--palette-carbon-050) 16%,
-    var(--color-surface)
-  );
-  --color-input: var(--color-field);
-
-  --color-border: color-mix(
-    in oklab,
-    var(--palette-carbon-050) 10%,
-    transparent
-  );
-  --color-border-strong: color-mix(
-    in oklab,
-    var(--palette-carbon-050) 17%,
+    var(--af-carbon-050) 18%,
     transparent
   );
 
-  --color-accent: var(--palette-signal-400);
-  --color-accent-strong: var(--palette-signal-300);
-  --color-accent-soft: color-mix(
-    in oklab,
-    var(--palette-signal-400) 18%,
-    transparent
-  );
-  --color-accent-foreground: oklch(0.19 0.03 270);
-  --color-accent-ring: color-mix(
-    in oklab,
-    var(--palette-signal-400) 38%,
-    transparent
-  );
+  --af-accent: var(--af-signal-400);
+  --af-accent-strong: var(--af-signal-300);
+  --af-accent-soft: color-mix(in oklab, var(--af-signal-400) 16%, transparent);
+  --af-accent-fg: oklch(0.16 0.035 270);
+  --af-accent-ring: color-mix(in oklab, var(--af-signal-400) 34%, transparent);
 
-  --color-verified: var(--palette-cyan-400);
-  --color-verified-strong: var(--palette-cyan-300);
-  --color-verified-soft: color-mix(
-    in oklab,
-    var(--palette-cyan-400) 17%,
-    transparent
-  );
-  --color-verified-foreground: oklch(0.18 0.03 200);
+  --af-verified: var(--af-cyan-400);
+  --af-verified-strong: var(--af-cyan-300);
+  --af-verified-soft: color-mix(in oklab, var(--af-cyan-400) 16%, transparent);
+  --af-verified-fg: oklch(0.16 0.03 205);
 
-  --color-info: var(--palette-signal-400);
-  --color-info-strong: var(--palette-signal-300);
-  --color-info-soft: color-mix(
-    in oklab,
-    var(--palette-signal-400) 18%,
-    transparent
-  );
-  --color-info-foreground: oklch(0.19 0.03 270);
+  --af-info: var(--af-blue-500);
+  --af-info-strong: var(--af-cyan-400);
+  --af-info-soft: color-mix(in oklab, var(--af-blue-500) 16%, transparent);
+  --af-info-fg: white;
 
-  --color-success: var(--palette-green-500);
-  --color-success-strong: var(--palette-green-300);
-  --color-success-soft: color-mix(
-    in oklab,
-    var(--palette-green-500) 17%,
-    transparent
-  );
-  --color-success-foreground: oklch(0.18 0.03 150);
+  --af-success: var(--af-green-500);
+  --af-success-strong: var(--af-green-300);
+  --af-success-soft: color-mix(in oklab, var(--af-green-500) 16%, transparent);
+  --af-success-fg: oklch(0.16 0.03 150);
 
-  --color-warning: var(--palette-amber-500);
-  --color-warning-strong: var(--palette-amber-300);
-  --color-warning-soft: color-mix(
-    in oklab,
-    var(--palette-amber-500) 18%,
-    transparent
-  );
-  --color-warning-foreground: oklch(0.22 0.04 82);
+  --af-warning: var(--af-amber-500);
+  --af-warning-strong: var(--af-amber-300);
+  --af-warning-soft: color-mix(in oklab, var(--af-amber-500) 17%, transparent);
+  --af-warning-fg: oklch(0.2 0.04 78);
 
-  --color-danger: var(--palette-red-500);
-  --color-danger-strong: var(--palette-red-300);
-  --color-danger-soft: color-mix(
-    in oklab,
-    var(--palette-red-500) 18%,
-    transparent
-  );
-  --color-danger-ring: color-mix(
-    in oklab,
-    var(--palette-red-500) 32%,
-    transparent
-  );
-  --color-danger-foreground: white;
+  --af-danger: var(--af-red-500);
+  --af-danger-strong: var(--af-red-300);
+  --af-danger-soft: color-mix(in oklab, var(--af-red-500) 17%, transparent);
+  --af-danger-ring: color-mix(in oklab, var(--af-red-500) 30%, transparent);
+  --af-danger-fg: white;
 
-  --color-brand-gradient-from: var(--palette-cyan-400);
-  --color-brand-gradient-to: var(--palette-signal-500);
+  --af-ring: var(--af-accent-ring);
+  --af-ring-offset: var(--af-bg);
 
-  --color-overlay: color-mix(in oklab, black 72%, transparent);
+  --af-brand-gradient-from: var(--af-cyan-400);
+  --af-brand-gradient-to: var(--af-signal-400);
+  --af-overlay: color-mix(in oklab, black 74%, transparent);
 
-  --color-chart-1: var(--palette-signal-400);
-  --color-chart-2: var(--palette-cyan-400);
-  --color-chart-3: var(--palette-green-500);
-  --color-chart-4: var(--palette-amber-500);
-  --color-chart-5: var(--palette-red-500);
+  --af-chart-1: var(--af-signal-400);
+  --af-chart-2: var(--af-cyan-400);
+  --af-chart-3: var(--af-green-500);
+  --af-chart-4: var(--af-amber-500);
+  --af-chart-5: var(--af-rose-500);
 
-  --shadow-xs: 0 1px 2px rgb(0 0 0 / 0.22);
-  --shadow-sm: 0 2px 8px rgb(0 0 0 / 0.26);
-  --shadow-md: 0 12px 28px rgb(0 0 0 / 0.28);
-  --shadow-lg: 0 24px 60px rgb(0 0 0 / 0.36);
+  --af-shadow-xs: 0 1px 2px rgb(0 0 0 / 0.22);
+  --af-shadow-sm: 0 2px 8px rgb(0 0 0 / 0.26);
+  --af-shadow-md: 0 12px 28px rgb(0 0 0 / 0.28);
+  --af-shadow-lg: 0 24px 60px rgb(0 0 0 / 0.36);
 }
 
-/* System mode fallback when no explicit .light/.dark or data-theme is set */
+/* System fallback when no explicit theme is selected */
 @media (prefers-color-scheme: dark) {
   :root:not(.light):not(.dark):not([data-theme="light"]):not(
       [data-theme="dark"]
     ) {
     color-scheme: dark;
 
-    --color-background: var(--palette-carbon-990);
-    --color-foreground: var(--palette-carbon-050);
-    --color-foreground-subtle: color-mix(
+    /* mirror dark tokens from .dark block for system mode */
+    --af-bg: var(--af-carbon-990);
+    --af-fg: var(--af-carbon-050);
+    --af-fg-subtle: color-mix(in oklab, var(--af-carbon-050) 84%, transparent);
+    --af-fg-muted: color-mix(in oklab, var(--af-carbon-050) 62%, transparent);
+
+    --af-surface: color-mix(
       in oklab,
-      var(--palette-carbon-050) 84%,
-      transparent
+      var(--af-carbon-940) 94%,
+      var(--af-signal-800)
     );
-    --color-foreground-muted: color-mix(
+    --af-surface-muted: color-mix(
       in oklab,
-      var(--palette-carbon-050) 64%,
-      transparent
+      var(--af-carbon-900) 95%,
+      var(--af-signal-800)
+    );
+    --af-surface-raised: color-mix(
+      in oklab,
+      var(--af-carbon-850) 92%,
+      var(--af-signal-800)
     );
 
-    --color-surface: var(--palette-carbon-940);
-    --color-surface-muted: var(--palette-carbon-900);
-    --color-surface-raised: var(--palette-carbon-850);
+    --af-field: color-mix(in oklab, var(--af-carbon-050) 5%, var(--af-surface));
+    --af-field-hover: color-mix(
+      in oklab,
+      var(--af-carbon-050) 8%,
+      var(--af-surface)
+    );
+    --af-field-strong: color-mix(
+      in oklab,
+      var(--af-carbon-050) 14%,
+      var(--af-surface)
+    );
+    --af-input: var(--af-field);
 
-    --color-field: color-mix(
+    --af-border: color-mix(in oklab, var(--af-carbon-050) 10%, transparent);
+    --af-border-strong: color-mix(
       in oklab,
-      var(--palette-carbon-050) 5.5%,
-      var(--color-surface)
-    );
-    --color-field-hover: color-mix(
-      in oklab,
-      var(--palette-carbon-050) 8.5%,
-      var(--color-surface)
-    );
-    --color-field-strong: color-mix(
-      in oklab,
-      var(--palette-carbon-050) 16%,
-      var(--color-surface)
-    );
-    --color-input: var(--color-field);
-
-    --color-border: color-mix(
-      in oklab,
-      var(--palette-carbon-050) 10%,
-      transparent
-    );
-    --color-border-strong: color-mix(
-      in oklab,
-      var(--palette-carbon-050) 17%,
+      var(--af-carbon-050) 18%,
       transparent
     );
 
-    --color-accent: var(--palette-signal-400);
-    --color-accent-strong: var(--palette-signal-300);
-    --color-accent-soft: color-mix(
+    --af-accent: var(--af-signal-400);
+    --af-accent-strong: var(--af-signal-300);
+    --af-accent-soft: color-mix(
       in oklab,
-      var(--palette-signal-400) 18%,
+      var(--af-signal-400) 16%,
       transparent
     );
-    --color-accent-foreground: oklch(0.19 0.03 270);
-    --color-accent-ring: color-mix(
+    --af-accent-fg: oklch(0.16 0.035 270);
+    --af-accent-ring: color-mix(
       in oklab,
-      var(--palette-signal-400) 38%,
+      var(--af-signal-400) 34%,
       transparent
     );
 
-    --color-verified: var(--palette-cyan-400);
-    --color-verified-strong: var(--palette-cyan-300);
-    --color-verified-soft: color-mix(
+    --af-verified: var(--af-cyan-400);
+    --af-verified-strong: var(--af-cyan-300);
+    --af-verified-soft: color-mix(
       in oklab,
-      var(--palette-cyan-400) 17%,
+      var(--af-cyan-400) 16%,
       transparent
     );
-    --color-verified-foreground: oklch(0.18 0.03 200);
+    --af-verified-fg: oklch(0.16 0.03 205);
 
-    --color-info: var(--palette-signal-400);
-    --color-info-strong: var(--palette-signal-300);
-    --color-info-soft: color-mix(
+    --af-info: var(--af-blue-500);
+    --af-info-strong: var(--af-cyan-400);
+    --af-info-soft: color-mix(in oklab, var(--af-blue-500) 16%, transparent);
+    --af-info-fg: white;
+
+    --af-success: var(--af-green-500);
+    --af-success-strong: var(--af-green-300);
+    --af-success-soft: color-mix(
       in oklab,
-      var(--palette-signal-400) 18%,
+      var(--af-green-500) 16%,
       transparent
     );
-    --color-info-foreground: oklch(0.19 0.03 270);
+    --af-success-fg: oklch(0.16 0.03 150);
 
-    --color-success: var(--palette-green-500);
-    --color-success-strong: var(--palette-green-300);
-    --color-success-soft: color-mix(
+    --af-warning: var(--af-amber-500);
+    --af-warning-strong: var(--af-amber-300);
+    --af-warning-soft: color-mix(
       in oklab,
-      var(--palette-green-500) 17%,
+      var(--af-amber-500) 17%,
       transparent
     );
-    --color-success-foreground: oklch(0.18 0.03 150);
+    --af-warning-fg: oklch(0.2 0.04 78);
 
-    --color-warning: var(--palette-amber-500);
-    --color-warning-strong: var(--palette-amber-300);
-    --color-warning-soft: color-mix(
-      in oklab,
-      var(--palette-amber-500) 18%,
-      transparent
-    );
-    --color-warning-foreground: oklch(0.22 0.04 82);
+    --af-danger: var(--af-red-500);
+    --af-danger-strong: var(--af-red-300);
+    --af-danger-soft: color-mix(in oklab, var(--af-red-500) 17%, transparent);
+    --af-danger-ring: color-mix(in oklab, var(--af-red-500) 30%, transparent);
+    --af-danger-fg: white;
 
-    --color-danger: var(--palette-red-500);
-    --color-danger-strong: var(--palette-red-300);
-    --color-danger-soft: color-mix(
-      in oklab,
-      var(--palette-red-500) 18%,
-      transparent
-    );
-    --color-danger-ring: color-mix(
-      in oklab,
-      var(--palette-red-500) 32%,
-      transparent
-    );
-    --color-danger-foreground: white;
+    --af-ring: var(--af-accent-ring);
+    --af-ring-offset: var(--af-bg);
 
-    --color-brand-gradient-from: var(--palette-cyan-400);
-    --color-brand-gradient-to: var(--palette-signal-500);
+    --af-brand-gradient-from: var(--af-cyan-400);
+    --af-brand-gradient-to: var(--af-signal-400);
+    --af-overlay: color-mix(in oklab, black 74%, transparent);
 
-    --color-overlay: color-mix(in oklab, black 72%, transparent);
+    --af-chart-1: var(--af-signal-400);
+    --af-chart-2: var(--af-cyan-400);
+    --af-chart-3: var(--af-green-500);
+    --af-chart-4: var(--af-amber-500);
+    --af-chart-5: var(--af-rose-500);
 
-    --color-chart-1: var(--palette-signal-400);
-    --color-chart-2: var(--palette-cyan-400);
-    --color-chart-3: var(--palette-green-500);
-    --color-chart-4: var(--palette-amber-500);
-    --color-chart-5: var(--palette-red-500);
-
-    --shadow-xs: 0 1px 2px rgb(0 0 0 / 0.22);
-    --shadow-sm: 0 2px 8px rgb(0 0 0 / 0.26);
-    --shadow-md: 0 12px 28px rgb(0 0 0 / 0.28);
-    --shadow-lg: 0 24px 60px rgb(0 0 0 / 0.36);
+    --af-shadow-xs: 0 1px 2px rgb(0 0 0 / 0.22);
+    --af-shadow-sm: 0 2px 8px rgb(0 0 0 / 0.26);
+    --af-shadow-md: 0 12px 28px rgb(0 0 0 / 0.28);
+    --af-shadow-lg: 0 24px 60px rgb(0 0 0 / 0.36);
   }
 }
 
-@theme inline {
-  --font-sans:
-    var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-
-  --color-background: var(--color-background);
-  --color-foreground: var(--color-foreground);
-  --color-foreground-muted: var(--color-foreground-muted);
-  --color-foreground-subtle: var(--color-foreground-subtle);
-
-  --color-surface: var(--color-surface);
-  --color-surface-muted: var(--color-surface-muted);
-  --color-surface-raised: var(--color-surface-raised);
-
-  --color-field: var(--color-field);
-  --color-field-hover: var(--color-field-hover);
-  --color-field-strong: var(--color-field-strong);
-  --color-input: var(--color-input);
-
-  --color-border: var(--color-border);
-  --color-border-strong: var(--color-border-strong);
-
-  --color-accent: var(--color-accent);
-  --color-accent-strong: var(--color-accent-strong);
-  --color-accent-soft: var(--color-accent-soft);
-  --color-accent-foreground: var(--color-accent-foreground);
-  --color-accent-ring: var(--color-accent-ring);
-
-  --color-verified: var(--color-verified);
-  --color-verified-strong: var(--color-verified-strong);
-  --color-verified-soft: var(--color-verified-soft);
-  --color-verified-foreground: var(--color-verified-foreground);
-
-  --color-info: var(--color-info);
-  --color-info-strong: var(--color-info-strong);
-  --color-info-soft: var(--color-info-soft);
-  --color-info-foreground: var(--color-info-foreground);
-
-  --color-success: var(--color-success);
-  --color-success-strong: var(--color-success-strong);
-  --color-success-soft: var(--color-success-soft);
-  --color-success-foreground: var(--color-success-foreground);
-
-  --color-warning: var(--color-warning);
-  --color-warning-strong: var(--color-warning-strong);
-  --color-warning-soft: var(--color-warning-soft);
-  --color-warning-foreground: var(--color-warning-foreground);
-
-  --color-danger: var(--color-danger);
-  --color-danger-strong: var(--color-danger-strong);
-  --color-danger-soft: var(--color-danger-soft);
-  --color-danger-ring: var(--color-danger-ring);
-  --color-danger-foreground: var(--color-danger-foreground);
-
-  --color-brand-gradient-from: var(--color-brand-gradient-from);
-  --color-brand-gradient-to: var(--color-brand-gradient-to);
-  --color-overlay: var(--color-overlay);
-
-  --color-chart-1: var(--color-chart-1);
-  --color-chart-2: var(--color-chart-2);
-  --color-chart-3: var(--color-chart-3);
-  --color-chart-4: var(--color-chart-4);
-  --color-chart-5: var(--color-chart-5);
-
-  /*
-   * Compatibility aliases for imported primitives only.
-   * Do not use these names in new Afenda-owned CSS.
-   */
-  --color-primary: var(--color-accent);
-  --color-primary-foreground: var(--color-accent-foreground);
-  --color-secondary: var(--color-verified);
-  --color-secondary-foreground: var(--color-verified-foreground);
-  --color-muted: var(--color-surface-muted);
-  --color-muted-foreground: var(--color-foreground-muted);
-  --color-card: var(--color-surface);
-  --color-card-foreground: var(--color-foreground);
-  --color-popover: var(--color-surface-raised);
-  --color-popover-foreground: var(--color-foreground);
-  --color-destructive: var(--color-danger);
-  --color-destructive-foreground: var(--color-danger-foreground);
-  --color-ring: var(--color-accent-ring);
-
-  --shadow-xs: var(--shadow-xs);
-  --shadow-sm: var(--shadow-sm);
-  --shadow-md: var(--shadow-md);
-  --shadow-lg: var(--shadow-lg);
-
-  --radius-sm: var(--radius-sm);
-  --radius-md: var(--radius-md);
-  --radius-lg: var(--radius-lg);
-  --radius-xl: var(--radius-xl);
-  --radius-control: var(--radius-control);
-  --radius-panel: var(--radius-panel);
-
-  --text-display: var(--text-display);
-  --text-display--line-height: var(--text-display--line-height);
-  --text-section-title: var(--text-section-title);
-  --text-section-title--line-height: var(--text-section-title--line-height);
-  --text-panel-title: var(--text-panel-title);
-  --text-panel-title--line-height: var(--text-panel-title--line-height);
-  --text-body: var(--text-body);
-  --text-body--line-height: var(--text-body--line-height);
-  --text-body-sm: var(--text-body-sm);
-  --text-body-sm--line-height: var(--text-body-sm--line-height);
-  --text-label: var(--text-label);
-  --text-label--line-height: var(--text-label--line-height);
-  --text-meta: var(--text-meta);
-  --text-meta--line-height: var(--text-meta--line-height);
-
-  --tracking-tight: var(--tracking-tight);
-  --tracking-caps: var(--tracking-caps);
-}
-
+/* ============================================================
+      BASE LAYER
+      ============================================================ */
 @layer base {
   * {
     box-sizing: border-box;
-    border-color: var(--color-border);
+    border-color: var(--af-border);
   }
 
   html {
     min-height: 100%;
     font-family: var(--font-sans);
-    background-color: var(--color-background);
-    color: var(--color-foreground);
+    background-color: var(--af-bg);
+    color: var(--af-fg);
   }
 
   body {
@@ -669,17 +601,21 @@
     margin: 0;
     background:
       radial-gradient(
-        circle at 20% 0%,
-        color-mix(in oklab, var(--color-accent) 8%, transparent),
-        transparent 32rem
+        circle at 12% -12%,
+        color-mix(in oklab, var(--af-accent) 8%, transparent),
+        transparent 36rem
       ),
       radial-gradient(
-        circle at 80% 10%,
-        color-mix(in oklab, var(--color-verified) 7%, transparent),
-        transparent 34rem
+        circle at 88% 0%,
+        color-mix(in oklab, var(--af-verified) 6%, transparent),
+        transparent 38rem
       ),
-      var(--color-background);
-    color: var(--color-foreground);
+      linear-gradient(
+        180deg,
+        color-mix(in oklab, var(--af-bg) 94%, white),
+        var(--af-bg)
+      );
+    color: var(--af-fg);
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -691,11 +627,9 @@
   select {
     font: inherit;
   }
-
   button {
     cursor: pointer;
   }
-
   button:disabled,
   input:disabled,
   textarea:disabled,
@@ -704,155 +638,190 @@
   }
 
   ::selection {
-    background-color: var(--color-accent-soft);
-    color: var(--color-foreground);
+    background-color: var(--af-accent-soft);
+    color: var(--af-fg);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--af-ring);
+    outline-offset: 2px;
   }
 }
+
+/* ============================================================
+      UTILITIES — CSS-first @utility primitives
+      - Keep small, deterministic utilities here.
+      ============================================================ */
 
 @utility brand-gradient {
   background: linear-gradient(
     135deg,
-    var(--color-brand-gradient-from),
-    var(--color-brand-gradient-to)
+    var(--af-brand-gradient-from),
+    var(--af-brand-gradient-to)
   );
 }
 
 @utility brand-gradient-text {
   background: linear-gradient(
     135deg,
-    var(--color-brand-gradient-from),
-    var(--color-brand-gradient-to)
+    var(--af-brand-gradient-from),
+    var(--af-brand-gradient-to)
   );
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  background-clip: text;
   color: transparent;
 }
 
 @utility type-page-title {
-  font-size: var(--text-display);
-  line-height: var(--text-display--line-height);
+  font-size: var(--af-text-display);
+  line-height: var(--af-text-display-line);
   font-weight: 650;
-  letter-spacing: var(--tracking-tight);
+  letter-spacing: var(--af-tracking-tight);
 }
 
 @utility type-section-title {
-  font-size: var(--text-section-title);
-  line-height: var(--text-section-title--line-height);
+  font-size: var(--af-text-section-title);
+  line-height: var(--af-text-section-title-line);
   font-weight: 650;
-  letter-spacing: var(--tracking-tight);
+  letter-spacing: var(--af-tracking-tight);
 }
 
 @utility type-panel-title {
-  font-size: var(--text-panel-title);
-  line-height: var(--text-panel-title--line-height);
+  font-size: var(--af-text-panel-title);
+  line-height: var(--af-text-panel-title-line);
   font-weight: 650;
-  letter-spacing: var(--tracking-tight);
+  letter-spacing: var(--af-tracking-tight);
 }
 
 @utility type-body {
-  font-size: var(--text-body);
-  line-height: var(--text-body--line-height);
+  font-size: var(--af-text-body);
+  line-height: var(--af-text-body-line);
 }
-
 @utility type-body-sm {
-  font-size: var(--text-body-sm);
-  line-height: var(--text-body-sm--line-height);
+  font-size: var(--af-text-body-sm);
+  line-height: var(--af-text-body-sm-line);
 }
-
 @utility type-label {
-  font-size: var(--text-label);
-  line-height: var(--text-label--line-height);
+  font-size: var(--af-text-label);
+  line-height: var(--af-text-label-line);
   font-weight: 550;
 }
-
 @utility type-meta {
-  font-size: var(--text-meta);
-  line-height: var(--text-meta--line-height);
+  font-size: var(--af-text-meta);
+  line-height: var(--af-text-meta-line);
 }
-
+@utility type-caption {
+  font-size: var(--af-text-caption);
+  line-height: var(--af-text-caption-line);
+}
 @utility type-kicker {
-  font-size: var(--text-meta);
-  line-height: var(--text-meta--line-height);
+  font-size: var(--af-text-meta);
+  line-height: var(--af-text-meta-line);
   font-weight: 650;
-  letter-spacing: var(--tracking-caps);
+  letter-spacing: var(--af-tracking-caps);
   text-transform: uppercase;
 }
 
 @utility surface-panel {
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-panel);
-  box-shadow: var(--shadow-sm);
+  background-color: var(--af-surface);
+  border: 1px solid var(--af-border);
+  border-radius: var(--af-radius-panel);
+  box-shadow: var(--af-shadow-sm);
 }
 
 @utility surface-raised {
-  background-color: var(--color-surface-raised);
-  border: 1px solid var(--color-border-strong);
-  border-radius: var(--radius-panel);
-  box-shadow: var(--shadow-md);
+  background-color: var(--af-surface-raised);
+  border: 1px solid var(--af-border-strong);
+  border-radius: var(--af-radius-panel);
+  box-shadow: var(--af-shadow-md);
 }
 
+/* field-control kept as a utility for convenience (optional to use) */
 @utility field-control {
-  min-height: var(--control-height-comfortable);
-  padding-inline: var(--control-padding-x-comfortable);
-  padding-block: var(--control-padding-y-comfortable);
-  background-color: var(--color-field);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-control);
+  min-height: var(--af-control-height-comfortable);
+  padding-inline: var(--af-control-padding-x-comfortable);
+  padding-block: var(--af-control-padding-y-comfortable);
+  background-color: var(--af-field);
+  border: 1px solid var(--af-border);
+  border-radius: var(--af-radius-control);
 }
 
 @utility field-control-compact {
-  min-height: var(--control-height-compact);
-  padding-inline: var(--control-padding-x-compact);
-  padding-block: var(--control-padding-y-compact);
-  background-color: var(--color-field);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-control);
+  min-height: var(--af-control-height-compact);
+  padding-inline: var(--af-control-padding-x-compact);
+  padding-block: var(--af-control-padding-y-compact);
+  background-color: var(--af-field);
+  border: 1px solid var(--af-border);
+  border-radius: var(--af-radius-control);
 }
 
+/* Deterministic animations (small, repo-owned) */
+@keyframes af-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes af-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@utility animate-fade-in {
+  animation: af-fade-in 240ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+}
+@utility animate-pop {
+  animation: af-pop 220ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+}
+
+/* Force emission of custom utilities used by CI/grep even if not referenced in markup */
+@source inline("animate-fade-in animate-pop");
+
+/* ============================================================
+      COMPONENTS — token-driven, deterministic components
+      ============================================================ */
 @layer components {
+  /* Afenda signal panel */
   .afenda-signal-panel {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    box-shadow: var(--shadow-sm);
+    background: var(--af-surface);
+    border: 1px solid var(--af-border);
+    box-shadow: var(--af-shadow-sm);
+    border-radius: var(--af-radius-panel);
   }
 
   .afenda-signal-panel[data-state="active"] {
-    border-color: color-mix(
-      in oklab,
-      var(--color-accent) 24%,
-      var(--color-border)
-    );
+    border-color: color-mix(in oklab, var(--af-accent) 24%, var(--af-border));
     box-shadow:
-      0 0 0 1px color-mix(in oklab, var(--color-accent) 10%, transparent),
-      var(--shadow-md);
+      0 0 0 1px color-mix(in oklab, var(--af-accent) 10%, transparent),
+      var(--af-shadow-md);
   }
 
   .afenda-signal-panel[data-state="verified"] {
-    border-color: color-mix(
-      in oklab,
-      var(--color-verified) 22%,
-      var(--color-border)
-    );
+    border-color: color-mix(in oklab, var(--af-verified) 22%, var(--af-border));
     box-shadow:
-      0 0 0 1px color-mix(in oklab, var(--color-verified) 8%, transparent),
-      var(--shadow-md);
+      0 0 0 1px color-mix(in oklab, var(--af-verified) 8%, transparent),
+      var(--af-shadow-md);
   }
 
   .afenda-signal-panel[data-state="evidence"] {
-    border-color: color-mix(
-      in oklab,
-      var(--color-warning) 22%,
-      var(--color-border)
-    );
+    border-color: color-mix(in oklab, var(--af-warning) 22%, var(--af-border));
     box-shadow:
-      0 0 0 1px color-mix(in oklab, var(--color-warning) 8%, transparent),
-      var(--shadow-md);
+      0 0 0 1px color-mix(in oklab, var(--af-warning) 8%, transparent),
+      var(--af-shadow-md);
   }
-}
 
-@layer components {
+  /* Focus / accessibility helpers (explicit @apply pattern) */
   .rac-focus-ring[data-focus-visible] {
     @apply ring-accent-ring ring-offset-background ring-2 ring-offset-2 outline-none;
   }
@@ -860,8 +829,65 @@
   .rac-disabled[data-disabled] {
     @apply cursor-not-allowed opacity-50;
   }
-
   .rac-invalid[data-invalid] {
     @apply border-danger ring-danger-ring;
   }
+
+  /* Deterministic form helpers (explicit built-ins used across repo) */
+  .af-form-input {
+    @apply rounded-control text-body-sm w-full px-3 py-2;
+    background: var(--af-field);
+    border: 1px solid var(--af-border);
+    color: var(--af-fg);
+  }
+
+  .af-form-input:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--af-accent-soft);
+    border-color: var(--af-accent);
+  }
+
+  .af-form-select {
+    @apply rounded-control text-body-sm w-full px-3 py-2;
+    appearance: none;
+    background: var(--af-field);
+    border: 1px solid var(--af-border);
+    color: var(--af-fg);
+  }
+
+  .af-form-help {
+    font-size: var(--af-text-meta);
+    color: var(--af-fg-muted);
+  }
+
+  /* View transition helpers */
+  ::view-transition-new(.toast):only-child {
+    animation: afenda-toast-slide-in 400ms ease-out;
+  }
+  ::view-transition-old(.toast):only-child {
+    animation: afenda-toast-slide-out 400ms ease-in forwards;
+  }
+
+  @keyframes afenda-toast-slide-in {
+    from {
+      translate: 100% 0;
+      opacity: 0;
+    }
+  }
+  @keyframes afenda-toast-slide-out {
+    to {
+      translate: 100% 0;
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
 }
+
+/* ============================================================
+      NOTES (for maintainers)
+      - Keep @plugin and @custom-variant at the top.
+      - Keep @theme inline top-level (not inside @layer).
+      - Use @source inline(...) for any custom @utility you want guaranteed in dist/output.css.
+      - Prefer explicit built-in @apply patterns across components; add a single @utility only when many call sites share identical rules.
+      - Document browser floor (v4: Chrome 111+, Safari 16.4+, Firefox 128+) in DESIGN.md if you rely on oklch/color-mix.
+      ============================================================ */

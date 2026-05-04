@@ -32,6 +32,7 @@
     }
   ],
   "files.associations": {
+    "**/src/styles/afenda.tokens.css": "css",
     "*.css": "tailwindcss"
   },
   "files.eol": "\n",
@@ -46,6 +47,12 @@
   },
   "files.insertFinalNewline": true,
   "files.trimTrailingWhitespace": true,
+  "[css]": {
+    "editor.formatOnSave": false
+  },
+  "[tailwindcss]": {
+    "editor.formatOnSave": false
+  },
   "javascript.preferences.importModuleSpecifier": "non-relative",
   "npm.packageManager": "pnpm",
   "prettier.requireConfig": true,
@@ -66,6 +73,7 @@
     ".*ClassName",
     ".*ClassNames"
   ],
+  "tailwindCSS.emmetCompletions": true,
   "tailwindCSS.experimental.classRegex": [
     [
       "cva\\(([^)]*)\\)",
@@ -76,6 +84,9 @@
       "[\"'`]([^\"'`]*).*?[\"'`]"
     ]
   ],
+  "tailwindCSS.includeLanguages": {
+    "css": "tailwindcss"
+  },
   "typescript.preferences.importModuleSpecifier": "non-relative",
   "typescript.tsdk": "node_modules/typescript/lib",
   "typescript.updateImportsOnFileMove.enabled": "always"

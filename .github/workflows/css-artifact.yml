@@ -1,0 +1,38 @@
+name: CSS artifact
+
+on:
+  push:
+    paths:
+      - "src/styles/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "postcss.config.js"
+      - "scripts/repo.css-artifact.check.automation.mjs"
+  pull_request:
+    paths:
+      - "src/styles/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "postcss.config.js"
+      - "scripts/repo.css-artifact.check.automation.mjs"
+
+jobs:
+  tailwind-cli:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Tailwind CLI build + substring checks
+        run: pnpm run check:css-artifact

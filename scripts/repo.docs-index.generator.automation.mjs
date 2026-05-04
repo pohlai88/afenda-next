@@ -32,7 +32,7 @@ const guidelineNextjsDir = path.join(guidelineDir, "nextjs");
 const guidelineReactAriaDir = path.join(guidelineDir, "react-aria");
 const srcDir = path.join(repoRoot, "src");
 const componentsDir = path.join(srcDir, "components");
-const uiComponentsDir = path.join(componentsDir, "ui");
+const uiComponentsDir = path.join(componentsDir, "ui-governance");
 
 const rootReadmePath = path.join(repoRoot, "README.md");
 const rootReadmeSourcePath = path.join(docsSourceDir, "root-readme.md");

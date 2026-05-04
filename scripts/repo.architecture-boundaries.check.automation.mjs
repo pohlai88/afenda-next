@@ -14,6 +14,7 @@ const srcRoot = path.join(repoRoot, "src");
 const appRoot = path.join(srcRoot, "app");
 const e2eRoot = path.join(repoRoot, "e2e");
 const serverRoot = path.join(srcRoot, "server");
+const sharedUiRoot = path.join(srcRoot, "components", "ui-governance");
 const trpcServerPath = path.join(
   srcRoot,
   "trpc",
@@ -95,6 +96,16 @@ const requiredAfendaAnnotations = [
   "boundary",
   "description",
 ];
+const allowedSharedUiRootFiles = new Set([
+  "README.md",
+  "governance.ui.css-snapshot.shared.ts",
+  "governance.ui.guard.shared.ts",
+  "governance.ui.manifest.shared.ts",
+  "governance.ui.registry.shared.ts",
+  "governance.ui.types.shared.ts",
+  "ui.controls.styles.shared.ts",
+  "ui.controls.types.shared.ts",
+]);
 
 const errors = [];
 
@@ -396,6 +407,15 @@ function expectedBoundaryFromSuffix(relativePath) {
 }
 
 function expectedMetadataFromFilename(relativePath) {
+  if (relativePath === "src/components/schema.shared.ts") {
+    return {
+      owner: "components",
+      subject: "schema",
+      artifact: "root",
+      boundary: "shared",
+    };
+  }
+
   const filename = path.basename(relativePath).replace(/\.(ts|tsx|js|jsx)$/, "");
   const segments = filename.split(".");
 
@@ -616,6 +636,65 @@ function checkTestImports() {
   }
 }
 
+function checkSharedUiTree() {
+  if (!existsSync(sharedUiRoot)) return;
+
+  const rootEntries = readdirSync(sharedUiRoot, { withFileTypes: true });
+
+  for (const entry of rootEntries) {
+    if (entry.isDirectory()) {
+      if (entry.name === "__tests__") {
+        continue;
+      }
+
+      if (entry.name === "use-client" || entry.name === "use-server") {
+        errors.push(
+          `src/components/ui-governance/${entry.name} is not allowed. Keep the canonical shared UI tree flat at src/components/ui-governance/app-*/ without extra execution-taxonomy folders.`,
+        );
+        continue;
+      }
+
+      if (!entry.name.startsWith("app-")) {
+        errors.push(
+          `src/components/ui-governance/${entry.name} is not an approved shared UI folder. Use canonical app-* folders only.`,
+        );
+        continue;
+      }
+
+      const folderRoot = path.join(sharedUiRoot, entry.name);
+      const folderEntries = readdirSync(folderRoot, { withFileTypes: true });
+      const allowedClientFile = `${entry.name}.control.primitive.client.tsx`;
+      const allowedContractFile = `${entry.name}.contract.primitive.shared.ts`;
+      const allowedManifestFile = `${entry.name}.ui.manifest.shared.ts`;
+
+      for (const folderEntry of folderEntries) {
+        if (folderEntry.isDirectory()) {
+          errors.push(
+            `src/components/ui-governance/${entry.name}/${folderEntry.name} is not allowed. Keep each shared UI export folder shallow with only its component and manifest files.`,
+          );
+          continue;
+        }
+
+        if (
+          folderEntry.name !== allowedClientFile &&
+          folderEntry.name !== allowedContractFile &&
+          folderEntry.name !== allowedManifestFile
+        ) {
+          errors.push(
+            `src/components/ui-governance/${entry.name}/${folderEntry.name} is not an approved canonical shared UI file. Expected only ${allowedClientFile}, ${allowedContractFile}, and ${allowedManifestFile}.`,
+          );
+        }
+      }
+    }
+
+    if (entry.isFile() && !allowedSharedUiRootFiles.has(entry.name)) {
+      errors.push(
+        `src/components/ui-governance/${entry.name} is not an approved shared UI root file. Keep only shared root metadata files and canonical app-* folders here.`,
+      );
+    }
+  }
+}
+
 function checkFileNaming() {
   const sourceFiles = walk(srcRoot).filter((filePath) =>
     sourceFilePattern.test(filePath),
@@ -691,6 +770,15 @@ function checkFileNaming() {
           `${relativePath} is a client file and must not import "server-only".`,
         );
       }
+    }
+
+    if (
+      relativePath.startsWith("src/components/ui-governance/") &&
+      (relativePath.endsWith(".server.ts") || relativePath.endsWith(".server.tsx"))
+    ) {
+      errors.push(
+        `${relativePath} is not allowed inside the shared UI boundary. Shared React Aria wrappers stay .client.tsx and shared metadata stays .shared.ts.`,
+      );
     }
 
     if (
@@ -825,6 +913,7 @@ checkClientServerImports();
 checkServerOnlyMarkers();
 checkBetterAuthReactBoundary();
 checkTestImports();
+checkSharedUiTree();
 checkFileNaming();
 checkE2eNaming();
 checkScriptNaming();

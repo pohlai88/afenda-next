@@ -1,0 +1,5 @@
+ALTER TABLE "session" DROP COLUMN IF EXISTS "activeOrganizationId";
+
+DROP TABLE IF EXISTS "invitation" CASCADE;
+DROP TABLE IF EXISTS "member" CASCADE;
+DROP TABLE IF EXISTS "organization" CASCADE;

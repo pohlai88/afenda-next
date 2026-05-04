@@ -29,6 +29,15 @@ Mandatory Next.js MCP workflow:
 - Use `nextjs_call` for errors, routes, logs, project metadata, page metadata, and Server Action lookup when useful.
 - Use browser automation for rendered behavior, hydration, console errors, and workflow verification when UI changes are made.
 
+Root `src/app` shell (Next.js 16 file conventions — align with official docs via Next.js MCP):
+- `layout.tsx`: Server Component; set `metadataBase` to the public origin (`NEXT_PUBLIC_APP_URL` / `BETTER_AUTH_URL` via `publicAppOrigin()`); keep fonts and global CSS here; avoid promoting large trees to Client Components.
+- `page.tsx`: Prefer thin re-exports or server-first composition; own data reads close to the route.
+- `loading.tsx`: Default Server Component; lightweight, accessible fallback (`aria-busy`, `aria-live`); does not wrap the sibling `layout` in Suspense — see loading.js caveats for layouts that call request-time APIs.
+- `error.tsx`: **Client Component** (`"use client"`); use `unstable_retry()` for recovery; log in `useEffect`; never leak server error messages in production (use `digest` for correlation).
+- `global-error.tsx`: **Client Component**; must include own `<html>` / `<body>`; import global CSS/fonts as needed; no `metadata` export — use `<title>`; replaces the root layout when active.
+- `not-found.tsx`: Server Component by default; root file also handles unmatched URLs; pair with `notFound()` in segments; keep copy operator-safe.
+- `robots.ts` / `sitemap.ts`: `MetadataRoute` handlers; keep URLs aligned with `metadataBase`; disallow non-public paths (e.g. `/api/`) in `robots` when appropriate; extend sitemap only for intentionally indexable routes.
+
 Before editing, classify the task into one or more boundaries:
 - Route UI
 - Client island

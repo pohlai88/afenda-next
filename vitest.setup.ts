@@ -1,54 +1,55 @@
-import { afterEach } from "vitest";
+import "@testing-library/jest-dom/vitest";
+import { afterEach, beforeAll, vi } from "vitest";
 
-declare global {
-  var IS_REACT_ACT_ENVIRONMENT: boolean;
-
-  interface Window {
-    IS_REACT_ACT_ENVIRONMENT: boolean;
+/** Used by tests that assert navigation via `window.location.assign`. */
+export const locationAssignMock = vi.fn();
+const locationReloadMock = vi.fn();
+const locationReplaceMock = vi.fn();
+const preventDocumentNavigation = (event: Event) => {
+  if (event.type === "submit") {
+    event.preventDefault();
+    return;
   }
-}
 
-globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+  const target = event.target;
+  if (!(target instanceof Element)) {
+    return;
+  }
 
-if (globalThis.window) {
-  globalThis.window.IS_REACT_ACT_ENVIRONMENT = true;
-}
+  const anchor = target.closest("a[href]");
+  if (anchor) {
+    event.preventDefault();
+  }
+};
 
-await import("@testing-library/jest-dom/vitest");
-const { installPointerEvent } = await import("@react-aria/test-utils");
-const { act, cleanup, configure } = await import("@testing-library/react");
+beforeAll(() => {
+  Object.defineProperty(window, "location", {
+    configurable: true,
+    value: {
+      assign: locationAssignMock,
+      hash: "",
+      host: "localhost",
+      hostname: "localhost",
+      href: "http://localhost/",
+      origin: "http://localhost",
+      pathname: "/",
+      port: "",
+      protocol: "http:",
+      reload: locationReloadMock,
+      replace: locationReplaceMock,
+      search: "",
+      toString() {
+        return "http://localhost/";
+      },
+    },
+  });
 
-installPointerEvent();
-
-configure({
-  asyncWrapper: async (callback) => {
-    const previousActEnvironment = globalThis.IS_REACT_ACT_ENVIRONMENT;
-    globalThis.IS_REACT_ACT_ENVIRONMENT = true;
-
-    try {
-      let result: unknown;
-      await act(async () => {
-        result = await callback();
-      });
-      return result;
-    } finally {
-      globalThis.IS_REACT_ACT_ENVIRONMENT = previousActEnvironment ?? true;
-    }
-  },
+  document.addEventListener("click", preventDocumentNavigation, true);
+  document.addEventListener("submit", preventDocumentNavigation, true);
 });
 
-if (!globalThis.CSS) {
-  Object.defineProperty(globalThis, "CSS", {
-    value: {},
-    writable: true,
-  });
-}
-
-if (!globalThis.CSS.escape) {
-  globalThis.CSS.escape = (value: string) =>
-    value.replaceAll(/[^a-zA-Z0-9_-]/g, "\\$&");
-}
-
 afterEach(() => {
-  cleanup();
+  locationAssignMock.mockReset();
+  locationReloadMock.mockReset();
+  locationReplaceMock.mockReset();
 });
