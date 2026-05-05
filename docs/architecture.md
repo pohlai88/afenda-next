@@ -12,11 +12,11 @@ Afenda is an ERP-oriented Next.js application with:
 
 - Server-first route composition under `src/app`.
 - Shared UI primitives under `src/components`, with governed `App*` primitives currently authored in `src/components/ui-governance` (`app-*` folders with co-located `*.control.primitive.client.tsx`, `*.contract.primitive.shared.ts`, and `*.ui.manifest.shared.ts` files).
-- **Interface Lab** (`/interface-lab`) as the route-local, fixture-backed preview and registry surface (no parallel legacy preview route).
+- **Interface Studio** (`/interface-studio`) as the route-local, fixture-backed preview and registry surface (no parallel legacy preview route).
 - Privileged auth, API, and database runtime under `src/server`.
 - tRPC for structured server/client query boundaries.
 
-Current scope is a hardened auth boundary plus Interface Lab for ERP UI references and mock-backed previews.
+Current scope is a hardened auth boundary plus Interface Studio for ERP UI references and mock-backed previews.
 
 **Public marketing landing** (when implemented) is governed by [**ADR 0011: Afenda Marketing Landing — Business Truth Engine**](./adr/0011-afenda-marketing-landing-business-truth.md): the “business truth engine” thesis, one-page section spine, ontology alignment, fixture plausibility rules, and phased delivery expectations.
 
@@ -27,12 +27,12 @@ src
 ├── app
 │   ├── (app)
 │   │   ├── _components
-│   │   ├── interface-lab
+│   │   ├── interface-studio
 │   │   │   ├── blocks/[slug]/page.tsx
 │   │   │   ├── components/[slug]/page.tsx
 │   │   │   ├── erp-patterns/[slug]/page.tsx
-│   │   │   ├── interface-lab.config.ts
-│   │   │   ├── interface-lab.types.ts
+│   │   │   ├── interface-studio.config.ts
+│   │   │   ├── interface-studio.types.ts
 │   │   │   └── page.tsx
 │   │   ├── sign-in
 │   │   │   ├── _components
@@ -66,12 +66,12 @@ src
   - Reads session state with `getSession()`.
   - Prefetches `workspaceNote.getLatest` for authenticated users.
   - Uses a server action for sign-out through Better Auth.
-- `src/app/(app)/sign-in/page.tsx`
+- `src/app/(app)/iam/sign-in/page.tsx`
   - Server route wrapper for sign-in.
   - Redirects authenticated users away from the sign-in screen.
   - Normalizes `callbackUrl` to same-origin relative paths only.
-- `src/app/(app)/interface-lab/page.tsx`
-  - Server-first Interface Lab root: registry navigation, fixture digest, and links to `[slug]` preview leaves.
+- `src/app/(app)/(public)/interface-studio/page.tsx`
+  - Server-first Interface Studio root: registry navigation, fixture digest, and links to `[slug]` preview leaves.
   - No database reads and no server mutations; preview context comes from `@mock` where needed.
 
 ### Shared UI (`src/components/ui-governance`)
@@ -82,10 +82,10 @@ src
 - **Schema:** `governance.ui.manifest.shared.ts` validates manifest objects, including explicit composition and token contracts.
 - `src/styles/globals.css` — semantic tokens and shared visual utilities.
 
-### Interface Lab (`src/app/(app)/interface-lab`)
+### Interface Studio (`src/app/(app)/(public)/interface-studio`)
 
-- `interface-lab.config.ts` — single source of truth for sections, registry entries, and featured previews.
-- Dynamic leaves under `blocks/`, `components/`, and `erp-patterns/` keep each preview a dedicated URL under `/interface-lab/...`.
+- `interface-studio.config.ts` — single source of truth for sections, registry entries, and featured previews.
+- Dynamic leaves under `ui-blocks/`, `ui-components/`, `ui-dashboard/`, and `screens/` keep each preview a dedicated URL under `/interface-studio/...`.
 
 Preview fixtures live in repo-root `.mock/` and are imported as `@mock`.
 
@@ -115,10 +115,10 @@ Preview fixtures live in repo-root `.mock/` and are imported as `@mock`.
 2. If a session exists, the route redirects to `/`.
 3. Otherwise it passes a safe callback path and enabled OAuth provider ids into the client sign-in surface.
 
-### Interface Lab
+### Interface Studio
 
 1. Lab routes render as Server Components unless a preview explicitly introduces a client island.
-2. Registry and copy are owned by `interface-lab.config.ts` so navigation does not drift.
+2. Registry and copy are owned by `interface-studio.config.ts` so navigation does not drift.
 3. Procurement and other ERP-shaped previews use deterministic mock rows only.
 
 ### API Surface
@@ -146,6 +146,6 @@ Preview fixtures live in repo-root `.mock/` and are imported as `@mock`.
 ## 7) Design Intent Notes
 
 - Keep auth configuration, callback origin, and session resolution inside the explicit Better Auth server boundary.
-- Keep Interface Lab thin: config-owned registry, server-first shells, and `@mock` for rows — not a second product backend.
-- Treat Interface Lab as the operator-facing reference for dense ERP UI patterns, not as committed business workflow implementation.
+- Keep Interface Studio thin: config-owned registry, server-first shells, and `@mock` for rows — not a second product backend.
+- Treat Interface Studio as the operator-facing reference for dense ERP UI patterns, not as committed business workflow implementation.
 - Treat governed shared UI primitives as canonical frontend-consumable contracts, not as loosely typed wrappers.

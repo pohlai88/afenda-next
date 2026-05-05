@@ -1,6 +1,6 @@
 import type { MockProcurementApproval } from "../mock.types.shared";
 
-/** Small queue for Interface Lab / storybook-style previews and e2e labels. */
+/** Small queue for Interface Studio / storybook-style previews and e2e labels. */
 export const MOCK_PROCUREMENT_APPROVALS: readonly MockProcurementApproval[] = [
   {
     id: "po-mock-1001",

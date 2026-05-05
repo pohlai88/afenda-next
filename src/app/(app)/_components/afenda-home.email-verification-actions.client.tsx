@@ -44,7 +44,7 @@ export function EmailVerificationActions({ email }: Props) {
 
     try {
       const { error } = await authClient.sendVerificationEmail({
-        callbackURL: "/sign-in?verified=1",
+        callbackURL: "/iam/sign-in?verified=1",
         email,
       });
 

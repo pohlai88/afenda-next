@@ -127,7 +127,7 @@ const uiGovernanceManifestList: ApprovedComponentManifest[] = [
   appSearchAutocompleteManifest,
 ];
 
-/** Full ordered list for deterministic guards, docs, and Interface Lab previews. */
+/** Full ordered list for deterministic guards, docs, and Interface Studio previews. */
 export const uiComponentRegistry = [...uiGovernanceManifestList];
 
 export const uiComponentRegistryById: Record<string, ApprovedComponentManifest> =

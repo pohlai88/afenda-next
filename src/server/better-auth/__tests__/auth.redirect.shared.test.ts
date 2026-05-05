@@ -14,11 +14,11 @@ import {
 
 describe("auth redirect helpers", () => {
   it("keeps same-origin internal callback paths", () => {
-    expect(safeInternalPath("/account/security", "/")).toBe(
-      "/account/security",
+    expect(safeInternalPath("/iam/account/security", "/")).toBe(
+      "/iam/account/security",
     );
-    expect(safeInternalPath("/interface-lab?mode=grid", "/")).toBe(
-      "/interface-lab?mode=grid",
+    expect(safeInternalPath("/interface-studio?mode=grid", "/")).toBe(
+      "/interface-studio?mode=grid",
     );
   });
 
@@ -31,8 +31,8 @@ describe("auth redirect helpers", () => {
   });
 
   it("builds sign-in redirects with encoded internal callback paths", () => {
-    expect(getSignInHref("/account/security")).toBe(
-      "/sign-in?callbackUrl=%2Faccount%2Fsecurity",
+    expect(getSignInHref("/iam/account/security")).toBe(
+      "/iam/sign-in?callbackUrl=%2Fiam%2Faccount%2Fsecurity",
     );
   });
 });

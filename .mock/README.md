@@ -3,7 +3,7 @@
 Central **non-production** fixtures for:
 
 - Playwright **E2E** (deterministic labels, `toHaveText` targets)
-- **Interface Lab** in-app previews (`import { … } from "@mock"` in lab routes)
+- **Interface Studio** in-app previews (`import { … } from "@mock"` in lab routes)
 - **Demos** and local UI reviews
 
 ## Rules

@@ -1,9 +1,9 @@
 /**
- * @afenda-owner interface-lab
+ * @afenda-owner interface-studio
  * @afenda-subject ui-blocks
  * @afenda-artifact shell
  * @afenda-boundary client
- * @afenda-description Five-zone Interface Lab shell: void canvas, collapsible index, CMDK oracle, execution bar, and inspector drawer using ui-governance primitives.
+ * @afenda-description Five-zone Interface Studio shell: void canvas, collapsible index, CMDK oracle, execution bar, and inspector drawer using ui-governance primitives.
  */
 "use client";
 

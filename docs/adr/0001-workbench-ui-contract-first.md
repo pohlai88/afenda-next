@@ -17,7 +17,7 @@ The “ERP Runtime Workbench” as the primary UI contract boundary, procurement
 **Use instead**
 
 - Shared UI shape and manifests: [0008-shared-ui-manifest-doctrine.md](./0008-shared-ui-manifest-doctrine.md), [0010-single-ui-system-migration.md](./0010-single-ui-system-migration.md), `src/components/ui-governance/README.md`.
-- Operator-facing UI reference: **Interface Lab** (`/interface-lab`) and route-local previews, not a separate workbench product slice.
+- Operator-facing UI reference: **Interface Studio** (`/interface-studio`) and route-local previews, not a separate workbench product slice.
 
 ## Decision
 

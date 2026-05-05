@@ -3,7 +3,7 @@
  * @afenda-subject content
  * @afenda-artifact data
  * @afenda-boundary fixture
- * @afenda-description Runtime neutral content data fixture for public marketing landing
+ * @afenda-description Static content data for public marketing landing
  */
 
 export type LandingNavItem = {
@@ -11,332 +11,251 @@ export type LandingNavItem = {
   readonly href: string;
 };
 
-export type OntologyLayer = {
+export type ProofField = {
   readonly label: string;
-  readonly summary: string;
-  readonly signals: readonly string[];
+  readonly value: string;
 };
 
-export type TruthFlowNode = {
-  readonly label: string;
-  readonly example: string;
-  readonly artifactTypes?: readonly string[];
+export type PainPoint = {
+  readonly title: string;
+  readonly body: string;
 };
 
-export type ProcurementRow = {
-  readonly id: string;
-  readonly supplier: string;
-  readonly owner: string;
-  readonly state: string;
-  readonly policyStatus: "cleared" | "exception" | "review";
-  readonly amount: string;
-  readonly actor: string;
-  readonly updatedAt: string;
-  readonly reason: string;
+export type ResolutionStep = {
+  readonly label: string;
+  readonly detail: string;
+};
+
+export type OperatorScenario = {
+  readonly label: string;
+  readonly record: string;
+  readonly state: "review" | "resolved" | "blocked";
+  readonly signal: string;
+  readonly decision: string;
+  readonly proof: string;
 };
 
 export type EvidenceArtifact = {
-  readonly id: string;
-  readonly type: string;
-  readonly owner: string;
-  readonly receivedAt: string;
-  readonly state: string;
-};
-
-export type ApprovalRecord = {
-  readonly approver: string;
-  readonly time: string;
-  readonly policyContext: string;
-  readonly rationale: string;
-  readonly attachments: readonly string[];
-  readonly outcome: string;
-};
-
-export type ProcurementRecord = {
-  readonly id: string;
-  readonly title: string;
-  readonly owner: string;
-  readonly costCenter: string;
-  readonly state: string;
-  readonly actor: string;
-  readonly reason: string;
-  readonly policyStatus: string;
-  readonly evidence: readonly EvidenceArtifact[];
-  readonly approvals: readonly ApprovalRecord[];
-};
-
-export type LineageNode = {
   readonly label: string;
   readonly detail: string;
-  readonly tone: "input" | "action" | "policy" | "object" | "output" | "evidence";
 };
 
-export type LandingMetric = {
+export type ImplementationProof = {
   readonly label: string;
-  readonly value: string;
-  readonly scope: string;
-  readonly trend: readonly number[];
+  readonly detail: string;
 };
 
-export type ArchitecturePrinciple = {
+export type TruthStackLayer = {
+  readonly label: string;
   readonly title: string;
-  readonly body: string;
-  readonly proof: string;
+  readonly detail: string;
+  readonly edge: string;
+  readonly tone: "accent" | "verified" | "foundation";
+  readonly nodes: readonly string[];
 };
 
 export const landingNavItems = [
   { label: "Platform", href: "#platform" },
-  { label: "Ontology", href: "#ontology" },
-  { label: "Operations", href: "#operations" },
-  { label: "Evidence", href: "#evidence" },
-  { label: "Architecture", href: "#architecture" },
-  { label: "Pricing", href: "#pricing" },
+  { label: "Workflows", href: "#workflows" },
+  { label: "Trust", href: "#evidence" },
+  { label: "Execution", href: "#implementation" },
 ] satisfies readonly LandingNavItem[];
 
-export const ontologyLayers = [
-  {
-    label: "Operations and agents",
-    summary: "People, integrations, and AI agents propose work through one operating boundary.",
-    signals: ["Planner", "Buyer", "Warehouse", "Agent"],
-  },
-  {
-    label: "Decision model",
-    summary: "Entities, events, and state transitions resolve each action into a canonical record.",
-    signals: ["CanonicalRecord", "StateTransition", "PolicyCheck"],
-  },
-  {
-    label: "Security and governance",
-    summary: "Policy checks, approval rules, and actor identity stay bound to every change.",
-    signals: ["Zero trust", "Role scope", "Exception path"],
-  },
-  {
-    label: "Enterprise data",
-    summary: "Documents, API payloads, contracts, inventory, and finance records converge into proof.",
-    signals: ["Documents", "ERP data", "Payloads", "Evidence"],
-  },
-] satisfies readonly OntologyLayer[];
-
-export const valueChainSteps = [
-  "Estimate",
-  "Source",
-  "Approve",
-  "Receive",
-  "Invoice",
-  "Reconcile",
+export const truthDomains = [
+  "Procurement",
+  "Inventory",
+  "Contracts",
+  "Projects",
+  "Finance",
   "Audit",
 ] as const;
 
-export const truthQuestions = [
-  "Who",
-  "What",
-  "When",
-  "Where",
-  "Why",
-  "Which",
-  "Whose",
-  "How",
-] as const;
+export const proofLedgerFields = [
+  { label: "Who", value: "Nadia Harun, Regional Procurement Lead" },
+  { label: "What", value: "Freight surcharge outside approved corridor" },
+  { label: "When", value: "2026-05-05 09:42 GMT+8" },
+  { label: "Where", value: "Shah Alam consolidation hub" },
+  { label: "Why", value: "Carrier uplift exceeded contract threshold" },
+  { label: "Which", value: "PO-78221 / Contract C-4418 / Lane MY-SG" },
+  { label: "Whose", value: "SEA operations cost center" },
+  { label: "How", value: "Policy-scored route with bound rationale" },
+] satisfies readonly ProofField[];
 
-export const truthFlowNodes = [
-  {
-    label: "Document",
-    example: "Supplier quote Q-4471 with signed commercial terms",
-  },
-  {
-    label: "Entity",
-    example: "Canonical supplier, project, cost center, and purchase order objects",
-  },
-  {
-    label: "Event",
-    example: "PO-78234 submitted by procurement operations",
-  },
-  {
-    label: "State transition",
-    example: "Draft -> Submitted -> Policy cleared -> Ready to receive",
-  },
-  {
-    label: "Evidence",
-    example: "Bound proof used to justify action and later audit",
-    artifactTypes: ["Signatures", "Sensor data", "API payloads", "Signed quotes"],
-  },
-  {
-    label: "Audit trail",
-    example: "Actor, policy, reason, evidence, and outcome retained together",
-  },
-] satisfies readonly TruthFlowNode[];
+export const heroLedgerSummary = [
+  { label: "Record", value: "RES-2026-051" },
+  { label: "State", value: "Resolved" },
+  { label: "Owner", value: "Operations West" },
+  { label: "Source", value: "ERP + WMS + contract" },
+] satisfies readonly ProofField[];
 
-export const procurementRows = [
+export const painPoints = [
   {
-    id: "PO-78234",
-    supplier: "Northline Industrial",
-    owner: "Procurement North",
-    state: "Policy cleared",
-    policyStatus: "cleared",
-    amount: "USD 118,420",
-    actor: "Ari Chen",
-    updatedAt: "2026-05-05 09:42",
-    reason: "Line 3 conveyor rebuild requires approved spare assemblies",
+    title: "Teams move fast, context moves slow",
+    body: "Procurement, warehouse, and finance resolve exceptions under time pressure while context stays fragmented across systems.",
   },
   {
-    id: "PO-78221",
-    supplier: "Kato Logistics",
-    owner: "Operations West",
-    state: "Exception review",
-    policyStatus: "exception",
-    amount: "USD 42,875",
-    actor: "Integration: WMS",
-    updatedAt: "2026-05-05 08:16",
-    reason: "Freight uplift exceeds lane tolerance by 6.4 percent",
+    title: "Approval confidence decays",
+    body: "By the time an approver reviews a case, source payloads, policy scope, and human rationale are already disconnected.",
   },
   {
-    id: "PO-78188",
-    supplier: "Mira Packaging",
-    owner: "Packaging Cell",
-    state: "Awaiting approval",
-    policyStatus: "review",
-    amount: "USD 27,640",
-    actor: "Agent: reorder-guard",
-    updatedAt: "2026-05-04 17:08",
-    reason: "Inventory coverage projected below committed project demand",
+    title: "Audit becomes reconstruction",
+    body: "Teams spend cycles rebuilding lineage after decisions, instead of carrying proof with work from the first mutation.",
   },
-  {
-    id: "PO-78172",
-    supplier: "Orion Controls",
-    owner: "Maintenance",
-    state: "Ready to receive",
-    policyStatus: "cleared",
-    amount: "USD 9,860",
-    actor: "Marta Silva",
-    updatedAt: "2026-05-04 15:33",
-    reason: "Approved replacement sensors match preventive maintenance plan",
-  },
-] satisfies readonly ProcurementRow[];
+] satisfies readonly PainPoint[];
 
-export const selectedProcurementRecord = {
-  id: "PO-78234",
-  title: "Line 3 conveyor rebuild spare assemblies",
-  owner: "Procurement North",
-  costCenter: "OPS-310 Conveyor Reliability",
-  state: "Policy cleared",
-  actor: "Ari Chen",
-  reason: "Line 3 conveyor rebuild requires approved spare assemblies before shutdown window",
-  policyStatus: "Cleared by spend, supplier, and project controls",
-  evidence: [
-    {
-      id: "EV-1190",
-      type: "Signed quote",
-      owner: "Northline Industrial",
-      receivedAt: "2026-05-05 09:17",
-      state: "Verified hash",
-    },
-    {
-      id: "EV-1191",
-      type: "Inventory sensor extract",
-      owner: "Warehouse A",
-      receivedAt: "2026-05-05 09:20",
-      state: "Bound to event",
-    },
-    {
-      id: "EV-1192",
-      type: "Budget policy payload",
-      owner: "Finance controls",
-      receivedAt: "2026-05-05 09:24",
-      state: "Policy checked",
-    },
-  ],
-  approvals: [
-    {
-      approver: "Dana Morris",
-      time: "2026-05-05 09:38",
-      policyContext: "Capital threshold under approved shutdown budget",
-      rationale: "Supplier quote matches negotiated frame agreement and timing protects the planned outage",
-      attachments: ["EV-1190", "EV-1192"],
-      outcome: "Approved",
-    },
-    {
-      approver: "System policy",
-      time: "2026-05-05 09:40",
-      policyContext: "Supplier risk, spend band, and cost center match",
-      rationale: "No blocked sanctions, no duplicate PO, budget available",
-      attachments: ["EV-1190", "EV-1191", "EV-1192"],
-      outcome: "Cleared",
-    },
-  ],
-} satisfies ProcurementRecord;
+export const resolutionSteps = [
+  {
+    label: "Capture signal",
+    detail:
+      "A handoff, exception, posting, or external payload enters one governed operating boundary.",
+  },
+  {
+    label: "Scope context",
+    detail:
+      "Actor identity, role scope, source system, and policy intent are attached before action begins.",
+  },
+  {
+    label: "Resolve with ontology",
+    detail:
+      "Palinter aligns entities and relationships so teams evaluate the same business meaning across workflows.",
+  },
+  {
+    label: "Bind record",
+    detail:
+      "Decision, rationale, and evidence become one canonical operating record instead of scattered artifacts.",
+  },
+  {
+    label: "Prove outcome",
+    detail:
+      "Audit can read who changed what, why it was approved, and which proof justified execution.",
+  },
+] satisfies readonly ResolutionStep[];
 
-export const lineageNodes = [
+export const truthStackLayers = [
   {
-    label: "Project plan",
-    detail: "Shutdown window approved for line 3 reliability work",
-    tone: "input",
+    label: "Layer 01",
+    title: "Operator Work",
+    detail:
+      "Exceptions, approvals, movements, postings, and handoffs arrive from real operating workflows.",
+    edge: "Business workflows",
+    tone: "accent",
+    nodes: ["Procurement exception", "Inventory movement", "Finance handoff"],
   },
   {
-    label: "Buyer action",
-    detail: "Ari Chen submits PO-78234 with reason and supplier terms",
-    tone: "action",
+    label: "Layer 02",
+    title: "Resolution Core",
+    detail:
+      "Afenda binds actor, record, rule, reason, source, and evidence before action moves.",
+    edge: "Decision boundary",
+    tone: "accent",
+    nodes: ["Source", "Owner", "Policy", "Reason"],
   },
   {
-    label: "Policy check",
-    detail: "Spend, supplier, project, and duplicate-order checks pass",
-    tone: "policy",
+    label: "Layer 03",
+    title: "Evidence + Policy",
+    detail:
+      "Proof stays attached to the work so approvals remain traceable at the moment of decision.",
+    edge: "Proof packet",
+    tone: "verified",
+    nodes: ["7W1H", "Contract", "Threshold", "Approval note"],
   },
   {
-    label: "Canonical object",
-    detail: "Purchase order, cost center, supplier, and inventory objects are linked",
-    tone: "object",
+    label: "Layer 04",
+    title: "Ontology Model",
+    detail:
+      "Shared business meaning keeps procurement, finance, inventory, and audit aligned.",
+    edge: "Business meaning",
+    tone: "foundation",
+    nodes: ["Actor", "Record", "Method", "Asset"],
   },
   {
-    label: "Goods received",
-    detail: "Receipt state inherits the approved order and bound evidence",
-    tone: "output",
+    label: "Layer 05",
+    title: "ERP Data / Logic / Action",
+    detail:
+      "Core systems remain the base: ERP transactions, events, rules, and downstream action.",
+    edge: "System substrate",
+    tone: "foundation",
+    nodes: ["ERP", "WMS", "Finance", "Audit"],
   },
-  {
-    label: "Audit evidence",
-    detail: "Quote, sensor extract, policy payload, actor, rationale, and outcome retained",
-    tone: "evidence",
-  },
-] satisfies readonly LineageNode[];
+] satisfies readonly TruthStackLayer[];
 
-export const landingMetrics = [
+export const operatorScenarios = [
   {
-    label: "Procurement cycle time",
-    value: "31% faster",
-    scope: "Example metric from demo lineage data",
-    trend: [48, 45, 42, 38, 35, 33],
+    label: "Procurement variance",
+    record: "PO-78221",
+    state: "review",
+    signal: "Carrier applies non-contracted surcharge 38 minutes before dispatch.",
+    decision: "Hold release until policy score, lane terms, and budget owner acceptance align.",
+    proof: "Rate card delta, contract clause, planner note, and owner approval trail.",
   },
   {
-    label: "Policy exceptions",
-    value: "14 open",
-    scope: "Demo exceptions with actor and evidence attached",
-    trend: [20, 18, 16, 17, 15, 14],
+    label: "Inventory critical move",
+    record: "INV-4410",
+    state: "resolved",
+    signal: "Critical spare is requested for emergency shift on Line 3.",
+    decision:
+      "Post movement only when destination, maintenance order, and receiving authority are verified.",
+    proof: "Scanner trail, work-order link, bin transfer event, supervisor attestation.",
   },
   {
-    label: "Evidence coverage",
-    value: "96%",
-    scope: "Example coverage across purchase-order transitions",
-    trend: [82, 86, 88, 91, 94, 96],
+    label: "Finance invoice mismatch",
+    record: "INV-90872",
+    state: "blocked",
+    signal:
+      "Invoice tax and quantity differ from PO after goods receipt confirmation.",
+    decision: "Block payment until procurement, receiving, and tax rule checks converge.",
+    proof: "Invoice image, PO ledger line, receiving event, policy checkpoint verdict.",
   },
-] satisfies readonly LandingMetric[];
+  {
+    label: "Method governance",
+    record: "MTH-118",
+    state: "resolved",
+    signal: "Project site requests temporary deviation from approved operating method.",
+    decision:
+      "Approve only after method version, risk category, and accountable approver are bound in one packet.",
+    proof: "Method revision, job context, exception rationale, signed decision lineage.",
+  },
+] satisfies readonly OperatorScenario[];
 
-export const architecturePrinciples = [
+export const evidenceArtifacts = [
   {
-    title: "Canonical record",
-    body: "Every commercial or physical reality resolves into one object surface operators can inspect.",
-    proof: "Reduces reconciliation across scattered ERP tables",
+    label: "Source integrity",
+    detail: "ERP object, WMS event, finance ledger, and signed documents are retained as first-class evidence.",
   },
   {
-    title: "Bound evidence",
-    body: "Documents, payloads, signatures, and sensor readings stay attached to the action they justify.",
-    proof: "Keeps approvals and audits traceable",
+    label: "Policy intelligence",
+    detail: "Pass, review, or block outcomes remain linked to the rule version and threshold context.",
   },
   {
-    title: "Operational autonomy",
-    body: "Humans, integrations, and agents can move work forward inside centralized guardrails.",
-    proof: "Preserves throughput without weakening control",
+    label: "Human accountability",
+    detail: "Operator and approver rationale are bound to the same record as machine-validated outcomes.",
   },
   {
-    title: "Audit visibility",
-    body: "Actor, policy, reason, evidence, and state transition are captured as first-class facts.",
-    proof: "Makes outcomes explainable without manual reconstruction",
+    label: "Audit continuity",
+    detail:
+      "Timestamp, actor, source lineage, and linked records stay queryable without post-facto reconstruction.",
   },
-] satisfies readonly ArchitecturePrinciple[];
+] satisfies readonly EvidenceArtifact[];
+
+export const implementationProofs = [
+  {
+    label: "Server-first and indexable",
+    detail:
+      "Landing route remains static App Router output with segment-owned metadata and crawl-friendly delivery.",
+  },
+  {
+    label: "Brand-system aligned",
+    detail:
+      "Visual language consumes Afenda runtime tokens to stay coherent with product surfaces, not a disconnected marketing skin.",
+  },
+  {
+    label: "Workflow-native storytelling",
+    detail:
+      "Narrative structure reflects real ERP operator workflows: exception, decision, proof, and execution.",
+  },
+  {
+    label: "No template lock-in",
+    detail:
+      "Reference quality informs craft while implementation stays native: no external template runtime, no extra UI dependency sprawl.",
+  },
+] satisfies readonly ImplementationProof[];

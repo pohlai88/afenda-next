@@ -1,14 +1,15 @@
 /**
- * Generates Next.js App Router favicon + apple-touch assets from the approved
- * full-color mark embedded in `afenda-icon-full-color.svg`.
+ * Generates public icon set aligned with Afenda Node conventions:
+ * `public/icons/afenda-icon-{512,192,180}-transparent.png`, `afenda-icon-512-maskable.png`,
+ * `public/favicon.ico` (multi-resolution), from `afenda-icon-full-color.svg`.
  *
- * Preserves transparency (no background fill). Trims uniform edge padding, then
- * scales into large square PNGs with transparent letterboxing.
+ * Preserves transparency. Run: `pnpm icons:generate`
  */
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import pngToIco from "png-to-ico";
 import sharp from "sharp";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -36,22 +37,65 @@ try {
   // No uniform edge to trim.
 }
 
-await pipeline
-  .clone()
-  .resize(512, 512, {
-    fit: "contain",
-    background: transparent,
-  })
-  .png({ compressionLevel: 9 })
-  .toFile(path.join(root, "src/app/icon.png"));
+const iconsDir = path.join(root, "public/icons");
+fs.mkdirSync(iconsDir, { recursive: true });
+
+const pngOpts = { compressionLevel: 9 };
 
 await pipeline
   .clone()
-  .resize(180, 180, {
+  .resize(512, 512, { fit: "contain", background: transparent })
+  .png(pngOpts)
+  .toFile(path.join(iconsDir, "afenda-icon-512-transparent.png"));
+
+await pipeline
+  .clone()
+  .resize(192, 192, { fit: "contain", background: transparent })
+  .png(pngOpts)
+  .toFile(path.join(iconsDir, "afenda-icon-192-transparent.png"));
+
+await pipeline
+  .clone()
+  .resize(180, 180, { fit: "contain", background: transparent })
+  .png(pngOpts)
+  .toFile(path.join(iconsDir, "afenda-icon-180-transparent.png"));
+
+const maskInner = 410;
+const maskFg = await pipeline
+  .clone()
+  .resize(maskInner, maskInner, {
     fit: "contain",
     background: transparent,
   })
-  .png({ compressionLevel: 9 })
-  .toFile(path.join(root, "src/app/apple-icon.png"));
+  .png()
+  .toBuffer();
 
-console.log("Wrote src/app/icon.png (512) and src/app/apple-icon.png (180)");
+await sharp({
+  create: {
+    width: 512,
+    height: 512,
+    channels: 4,
+    background: transparent,
+  },
+})
+  .composite([{ input: maskFg, gravity: "centre" }])
+  .png(pngOpts)
+  .toFile(path.join(iconsDir, "afenda-icon-512-maskable.png"));
+
+const icoSizes = [16, 32, 48];
+const icoLayers = await Promise.all(
+  icoSizes.map((dim) =>
+    pipeline
+      .clone()
+      .resize(dim, dim, { fit: "contain", background: transparent })
+      .png()
+      .toBuffer(),
+  ),
+);
+
+const icoBuf = await pngToIco(icoLayers);
+fs.writeFileSync(path.join(root, "public/favicon.ico"), icoBuf);
+
+console.log(
+  "Wrote public/icons/*.png (transparent + maskable), public/favicon.ico",
+);

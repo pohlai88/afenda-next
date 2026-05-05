@@ -99,7 +99,7 @@ Treat as **accepted** toward product goals when:
 
 2. **Pure brand/marketing microsite divorced from ontology and module architecture** — Rejected: the landing must **preview** real application semantics so claims stay accountable to modeled objects.
 
-3. **Workbench-style extension of Interface Lab/registry for every marketing molecule** — Rejected **for Phase 1**: violates KISS; governed `App*` registration is unnecessary until a primitive is intentionally promoted for product reuse.
+3. **Workbench-style extension of Interface Studio/registry for every marketing molecule** — Rejected **for Phase 1**: violates KISS; governed `App*` registration is unnecessary until a primitive is intentionally promoted for product reuse.
 
 ## Consequences
 

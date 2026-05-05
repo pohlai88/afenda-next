@@ -127,11 +127,11 @@ export async function listOperatorInvites(limit = 10) {
 }
 
 export function buildOperatorInviteUrl(token: string) {
-  return `${publicAppOrigin()}/accept-invite?token=${encodeURIComponent(token)}`;
+  return `${publicAppOrigin()}/iam/accept-invite?token=${encodeURIComponent(token)}`;
 }
 
 export function getVerificationCallbackUrl() {
-  return `${publicAppOrigin()}/sign-in?verified=1`;
+  return `${publicAppOrigin()}/iam/sign-in?verified=1`;
 }
 
 export function normalizeOperatorInviteEmail(email: string) {

@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 
+import { publicTrustIndexableRoutes } from "@/features/public-trust/public-trust.content.data.fixture";
 import { publicAppOrigin } from "@/lib/url.public-app-origin.shared";
 
 /**
@@ -11,12 +12,14 @@ import { publicAppOrigin } from "@/lib/url.public-app-origin.shared";
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = publicAppOrigin();
   const now = new Date();
+  const publicRoutes = ["", ...publicTrustIndexableRoutes];
+
   return [
-    {
-      url: base,
+    ...publicRoutes.map((route, index) => ({
+      url: `${base}${route}`,
       lastModified: now,
-      changeFrequency: "weekly",
-      priority: 1,
-    },
+      changeFrequency: "weekly" as const,
+      priority: index === 0 ? 1 : 0.8,
+    })),
   ];
 }

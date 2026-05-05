@@ -11,7 +11,7 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const signInUrl = new URL("/sign-in", request.url);
+  const signInUrl = new URL("/iam/sign-in", request.url);
   signInUrl.searchParams.set(
     "callbackUrl",
     `${request.nextUrl.pathname}${request.nextUrl.search}`,
@@ -22,14 +22,14 @@ export function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/account/identity/:path*",
-    "/account/no-tenants",
-    "/account/security/:path*",
-    "/account/select-tenant",
-    "/account/step-up/:path*",
-    "/account/workspace/:path*",
-    "/admin/:path*",
-    "/auth/post-login",
-    "/t/:path*",
+    "/iam/account/identity/:path*",
+    "/iam/account/no-tenants",
+    "/iam/account/security/:path*",
+    "/iam/account/select-tenant",
+    "/iam/account/step-up/:path*",
+    "/iam/account/workspace/:path*",
+    "/iam/admin/:path*",
+    "/iam/auth/post-login",
+    "/iam/t/:path*",
   ],
 };

@@ -39,7 +39,7 @@ describe("home email verification actions", () => {
 
     await waitFor(() => {
       expect(sendVerificationEmailMock).toHaveBeenCalledWith({
-        callbackURL: "/sign-in?verified=1",
+        callbackURL: "/iam/sign-in?verified=1",
         email: "user@afenda.test",
       });
     });

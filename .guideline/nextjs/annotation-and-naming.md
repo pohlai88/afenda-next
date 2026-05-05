@@ -64,7 +64,7 @@ Examples:
 ```txt
 app.controls.primitive.client.tsx
 erp-runtime-workbench.route.surface.client.tsx
-interface-lab.config.ts
+interface-studio.config.ts
 auth.oauth.provider.shared.ts
 procurement.purchase-request.policy.server.ts
 procurement.approval-queue.table.client.tsx

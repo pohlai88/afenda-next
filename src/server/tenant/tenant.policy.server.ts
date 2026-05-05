@@ -9,8 +9,8 @@ import { getActiveTenantContext } from "./tenant.context.server";
 
 export async function requireTenantSession(
   tenantSlug: string,
-  callbackUrl = `/t/${tenantSlug}`,
-  fallbackPath = "/account/select-tenant",
+  callbackUrl = `/iam/t/${tenantSlug}`,
+  fallbackPath = "/iam/account/select-tenant",
 ) {
   const session = await requireSession(callbackUrl);
   const tenantContext = await getActiveTenantContext(session.user.id, tenantSlug);
@@ -28,8 +28,8 @@ export async function requireTenantSession(
 export async function requireTenantPermission(
   tenantSlug: string,
   permissionKey: string,
-  callbackUrl = `/t/${tenantSlug}`,
-  fallbackPath = `/t/${tenantSlug}?error=unauthorized`,
+  callbackUrl = `/iam/t/${tenantSlug}`,
+  fallbackPath = `/iam/t/${tenantSlug}?error=unauthorized`,
 ) {
   const tenantSession = await requireTenantSession(tenantSlug, callbackUrl, fallbackPath);
 

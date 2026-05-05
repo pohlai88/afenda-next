@@ -59,15 +59,15 @@ describe("auth policy helpers", () => {
 
     getSessionMock.mockResolvedValue(session);
 
-    await expect(requireSession("/account/security")).resolves.toBe(session);
+    await expect(requireSession("/iam/account/security")).resolves.toBe(session);
     expect(redirectMock).not.toHaveBeenCalled();
   });
 
   it("redirects anonymous requests to sign-in with a preserved callback", async () => {
     getSessionMock.mockResolvedValue(null);
 
-    await expect(requireSession("/account/security")).rejects.toThrow(
-      "REDIRECT:/sign-in?callbackUrl=%2Faccount%2Fsecurity",
+    await expect(requireSession("/iam/account/security")).rejects.toThrow(
+      "REDIRECT:/iam/sign-in?callbackUrl=%2Fiam%2Faccount%2Fsecurity",
     );
   });
 
@@ -87,7 +87,7 @@ describe("auth policy helpers", () => {
     });
 
     await expect(isVerifiedEmailSession()).resolves.toBe(true);
-    await expect(requireVerifiedEmail("/account/security")).resolves.toEqual({
+    await expect(requireVerifiedEmail("/iam/account/security")).resolves.toEqual({
       session: { createdAt: new Date("2026-05-04T00:00:00Z"), id: "session-1" },
       user: { emailVerified: true, id: "user-1", role: "user" },
     });
@@ -99,7 +99,7 @@ describe("auth policy helpers", () => {
       user: { emailVerified: false, id: "user-1", role: "user" },
     });
 
-    await expect(requireVerifiedEmail("/account/security")).rejects.toThrow(
+    await expect(requireVerifiedEmail("/iam/account/security")).rejects.toThrow(
       "REDIRECT:/",
     );
   });
@@ -154,7 +154,7 @@ describe("auth policy helpers", () => {
       user: { emailVerified: false, id: "bootstrap-admin" },
     });
 
-    await expect(requireAdminSession("/admin/users")).resolves.toEqual({
+    await expect(requireAdminSession("/iam/admin/users")).resolves.toEqual({
       session: { createdAt: new Date("2026-05-04T00:00:00Z"), id: "session-1" },
       user: { emailVerified: false, id: "bootstrap-admin" },
     });
@@ -166,7 +166,7 @@ describe("auth policy helpers", () => {
       user: { emailVerified: true, id: "user-1", role: "operator" },
     });
 
-    await expect(requireAdminSession("/admin/users")).rejects.toThrow(
+    await expect(requireAdminSession("/iam/admin/users")).rejects.toThrow(
       "REDIRECT:/",
     );
   });
@@ -180,11 +180,11 @@ describe("auth policy helpers", () => {
     });
 
     await expect(isFreshSession()).resolves.toBe(true);
-    await expect(requireFreshSession("/account/security")).resolves.toEqual({
+    await expect(requireFreshSession("/iam/account/security")).resolves.toEqual({
       session: { createdAt: new Date("2026-05-04T00:00:00Z"), id: "session-1" },
       user: { emailVerified: true, id: "user-1", role: "user" },
     });
-    await expect(requireStepUpSession("/account/security")).resolves.toEqual({
+    await expect(requireStepUpSession("/iam/account/security")).resolves.toEqual({
       session: { createdAt: new Date("2026-05-04T00:00:00Z"), id: "session-1" },
       user: { emailVerified: true, id: "user-1", role: "user" },
     });
@@ -199,16 +199,16 @@ describe("auth policy helpers", () => {
       user: { emailVerified: true, id: "user-1", role: "admin" },
     });
 
-    await expect(requireFreshSession("/account/security")).rejects.toThrow(
-      "REDIRECT:/account/step-up?callbackUrl=%2Faccount%2Fsecurity",
+    await expect(requireFreshSession("/iam/account/security")).rejects.toThrow(
+      "REDIRECT:/iam/account/step-up?callbackUrl=%2Fiam%2Faccount%2Fsecurity",
     );
     await expect(
-      requireFreshVerifiedEmailSession("/account/security"),
+      requireFreshVerifiedEmailSession("/iam/account/security"),
     ).rejects.toThrow(
-      "REDIRECT:/account/step-up?callbackUrl=%2Faccount%2Fsecurity",
+      "REDIRECT:/iam/account/step-up?callbackUrl=%2Fiam%2Faccount%2Fsecurity",
     );
-    await expect(requireFreshAdminSession("/admin/users")).rejects.toThrow(
-      "REDIRECT:/account/step-up?callbackUrl=%2Fadmin%2Fusers",
+    await expect(requireFreshAdminSession("/iam/admin/users")).rejects.toThrow(
+      "REDIRECT:/iam/account/step-up?callbackUrl=%2Fiam%2Fadmin%2Fusers",
     );
     vi.useRealTimers();
   });

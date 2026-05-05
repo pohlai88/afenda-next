@@ -125,8 +125,8 @@
   /* Compatibility aliases for imported primitives */
   --color-primary: var(--af-accent);
   --color-primary-foreground: var(--af-accent-fg);
-  --color-secondary: var(--af-verified);
-  --color-secondary-foreground: var(--af-verified-fg);
+  --color-secondary: var(--af-surface-muted);
+  --color-secondary-foreground: var(--af-fg);
   --color-muted: var(--af-surface-muted);
   --color-muted-foreground: var(--af-fg-muted);
   --color-card: var(--af-surface);
@@ -232,7 +232,7 @@
   --af-red-500: oklch(0.59 0.19 24);
   --af-red-300: oklch(0.82 0.09 23);
 
-  /* Supporting data colors — mineral series */
+  /* Supporting data colors — chart-only mineral series */
   --af-rose-500: oklch(0.58 0.14 350);
   --af-orange-500: oklch(0.64 0.14 48);
   --af-lime-500: oklch(0.65 0.12 132);
@@ -599,22 +599,11 @@
   body {
     min-height: 100vh;
     margin: 0;
-    background:
-      radial-gradient(
-        circle at 12% -12%,
-        color-mix(in oklab, var(--af-accent) 8%, transparent),
-        transparent 36rem
-      ),
-      radial-gradient(
-        circle at 88% 0%,
-        color-mix(in oklab, var(--af-verified) 6%, transparent),
-        transparent 38rem
-      ),
-      linear-gradient(
-        180deg,
-        color-mix(in oklab, var(--af-bg) 94%, white),
-        var(--af-bg)
-      );
+    background: linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--af-bg) 97%, var(--af-surface-muted)),
+      var(--af-bg)
+    );
     color: var(--af-fg);
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
@@ -792,6 +781,171 @@
       COMPONENTS — token-driven, deterministic components
       ============================================================ */
 @layer components {
+  .marketing-shell,
+  .cinematic-shell,
+  .landing-hero {
+    background:
+      radial-gradient(
+        circle at 12% -12%,
+        color-mix(in oklab, var(--af-accent) 7%, transparent),
+        transparent 36rem
+      ),
+      radial-gradient(
+        circle at 88% 0%,
+        color-mix(in oklab, var(--af-verified) 5%, transparent),
+        transparent 38rem
+      ),
+      var(--af-bg);
+  }
+
+  .afenda-facade-surface {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .afenda-facade-surface::before {
+    position: fixed;
+    z-index: -1;
+    inset: 0;
+    background:
+      linear-gradient(
+        90deg,
+        color-mix(in oklab, var(--af-accent) 11%, transparent) 0,
+        transparent 18rem
+      ),
+      repeating-linear-gradient(
+        90deg,
+        color-mix(in oklab, var(--af-carbon-970) 4%, transparent) 0,
+        color-mix(in oklab, var(--af-carbon-970) 4%, transparent) 1px,
+        transparent 1px,
+        transparent 5.75rem
+      ),
+      repeating-linear-gradient(
+        0deg,
+        transparent 0,
+        transparent 5.45rem,
+        color-mix(in oklab, var(--af-border) 44%, transparent) 5.5rem
+      );
+    content: "";
+    pointer-events: none;
+  }
+
+  .afenda-facade-surface::after {
+    position: fixed;
+    z-index: -1;
+    inset: 0;
+    background:
+      radial-gradient(
+        circle at 84% 10%,
+        color-mix(in oklab, var(--af-verified) 4%, transparent),
+        transparent 28rem
+      ),
+      linear-gradient(
+        180deg,
+        color-mix(in oklab, var(--af-bg) 98%, var(--af-surface-muted)),
+        transparent 28rem
+      );
+    content: "";
+    pointer-events: none;
+  }
+
+  .afenda-declaration-surface {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .afenda-declaration-surface::before {
+    position: fixed;
+    z-index: -1;
+    inset: 0;
+    background:
+      linear-gradient(
+        90deg,
+        color-mix(in oklab, var(--af-accent) 8%, transparent) 0,
+        transparent 14rem
+      ),
+      linear-gradient(
+        180deg,
+        color-mix(in oklab, var(--af-surface-raised) 94%, white),
+        transparent 18rem
+      );
+    content: "";
+    pointer-events: none;
+  }
+
+  .afenda-declaration-surface::after {
+    position: fixed;
+    z-index: -1;
+    inset: 0;
+    background:
+      radial-gradient(
+        circle at 86% 8%,
+        color-mix(in oklab, var(--af-verified) 4%, transparent),
+        transparent 28rem
+      ),
+      repeating-linear-gradient(
+        0deg,
+        transparent 0,
+        transparent 5.95rem,
+        color-mix(in oklab, var(--af-border) 32%, transparent) 6rem
+      );
+    content: "";
+    pointer-events: none;
+    opacity: 0.6;
+  }
+
+  .afenda-trust-surface {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .afenda-trust-surface::before {
+    position: fixed;
+    z-index: -1;
+    inset: 0;
+    background:
+      linear-gradient(
+        90deg,
+        color-mix(in oklab, var(--af-accent) 10%, transparent) 0,
+        transparent 16rem
+      ),
+      repeating-linear-gradient(
+        90deg,
+        color-mix(in oklab, var(--af-carbon-970) 3%, transparent) 0,
+        color-mix(in oklab, var(--af-carbon-970) 3%, transparent) 1px,
+        transparent 1px,
+        transparent 7rem
+      ),
+      linear-gradient(
+        180deg,
+        color-mix(in oklab, var(--af-surface-raised) 95%, white),
+        transparent 20rem
+      );
+    content: "";
+    pointer-events: none;
+  }
+
+  .afenda-trust-surface::after {
+    position: fixed;
+    z-index: -1;
+    inset: 0;
+    background:
+      radial-gradient(
+        circle at 84% 10%,
+        color-mix(in oklab, var(--af-verified) 5%, transparent),
+        transparent 28rem
+      ),
+      repeating-linear-gradient(
+        0deg,
+        transparent 0,
+        transparent 6.2rem,
+        color-mix(in oklab, var(--af-border) 26%, transparent) 6.25rem
+      );
+    content: "";
+    pointer-events: none;
+    opacity: 0.72;
+  }
+
   /* Afenda signal panel */
   .afenda-signal-panel {
     background: var(--af-surface);

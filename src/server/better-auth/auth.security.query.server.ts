@@ -13,7 +13,7 @@ import { cache } from "react";
 import { getAuth } from "./auth.config.adapter.server";
 import { requireFreshVerifiedEmailSession } from "./auth.policy.server";
 
-const securityCallbackUrl = "/account/security";
+const securityCallbackUrl = "/iam/account/security";
 
 export const listSessions = cache(async () => {
   await requireFreshVerifiedEmailSession(securityCallbackUrl);

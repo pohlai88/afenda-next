@@ -27,6 +27,7 @@ const allowedSrcDirectories = new Set([
   "client-runtime",
   "components",
   "features",
+  "lib",
   "server",
   "styles",
   "test-runtime",

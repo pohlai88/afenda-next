@@ -21,31 +21,31 @@ export function safeInternalPath(raw: string | undefined, fallback: string) {
 }
 
 export function getPostLoginHref() {
-  return "/auth/post-login" as const;
+  return "/iam/auth/post-login" as const;
 }
 
 export function getSignInHref(callbackUrl: string) {
   const safeCallbackUrl = safeInternalPath(callbackUrl, getPostLoginHref());
-  return `/sign-in?${new URLSearchParams({ callbackUrl: safeCallbackUrl }).toString()}`;
+  return `/iam/sign-in?${new URLSearchParams({ callbackUrl: safeCallbackUrl }).toString()}`;
 }
 
 export function getStepUpHref(callbackUrl: string) {
   const safeCallbackUrl = safeInternalPath(callbackUrl, getPostLoginHref());
-  return `/account/step-up?${new URLSearchParams({ callbackUrl: safeCallbackUrl }).toString()}`;
+  return `/iam/account/step-up?${new URLSearchParams({ callbackUrl: safeCallbackUrl }).toString()}`;
 }
 
 export function getTwoFactorHref(
   callbackUrl: string,
   methods: readonly string[] = [],
 ) {
-  return buildTwoFactorHref("/sign-in/two-factor", callbackUrl, methods);
+  return buildTwoFactorHref("/iam/sign-in/two-factor", callbackUrl, methods);
 }
 
 export function getStepUpTwoFactorHref(
   callbackUrl: string,
   methods: readonly string[] = [],
 ) {
-  return buildTwoFactorHref("/account/step-up/two-factor", callbackUrl, methods);
+  return buildTwoFactorHref("/iam/account/step-up/two-factor", callbackUrl, methods);
 }
 
 function buildTwoFactorHref(

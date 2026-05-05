@@ -1,9 +1,9 @@
 /**
- * @afenda-owner interface-lab
+ * @afenda-owner interface-studio
  * @afenda-subject ui-blocks
  * @afenda-artifact types
  * @afenda-boundary shared
- * @afenda-description Structural types for the Interface Lab five-zone app shell (void, nav, oracle, execution, inspector).
+ * @afenda-description Structural types for the Interface Studio five-zone app shell (void, nav, oracle, execution, inspector).
  */
 import type { ReactNode } from "react";
 
